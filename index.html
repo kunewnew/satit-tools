@@ -175,6 +175,7 @@
        ======================================================== -->
     <div class="w-full lg:w-[65%] xl:w-[68%] p-6 sm:p-10 lg:p-12 overflow-y-auto z-10 flex flex-col justify-between">
       
+      <!-- Content Wrapper -->
       <div>
         <!-- Heading Label -->
         <div class="mb-6 flex justify-between items-center">
@@ -435,9 +436,16 @@
       const ctx = canvas.getContext('2d');
       let animationFrameId;
       
+      let currentWidth = window.innerWidth;
+      let currentHeight = window.innerHeight;
       const resizeCanvas = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        if (window.innerWidth === currentWidth && Math.abs(window.innerHeight - currentHeight) < 120) {
+          return; // Skip small vertical resize on mobile caused by browser address bar collapsing
+        }
+        currentWidth = window.innerWidth;
+        currentHeight = window.innerHeight;
+        canvas.width = currentWidth;
+        canvas.height = currentHeight;
       };
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
@@ -491,14 +499,26 @@
     })();
  
     // ==========================================
-    //  Mascot Magnet Hover Effect
+    //  Mascot Magnet Hover Effect (Optimized to prevent layout thrashing & CPU locks)
     // ==========================================
     (function() {
       const wrapper = document.getElementById('mascot-wrapper');
       if (!wrapper) return;
       
+      // Do not run on touch devices as there is no mouse pointer, preventing heavy touchmove handling
+      const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches);
+      if (isTouchDevice) return;
+      
       const padding = 150;
       const strength = 3.5;
+      
+      // Cache bounding rect to prevent forced synchronous layout calculation (layout thrashing) on mousemove
+      let rect = wrapper.getBoundingClientRect();
+      const updateRect = () => {
+        rect = wrapper.getBoundingClientRect();
+      };
+      window.addEventListener("resize", updateRect);
+      window.addEventListener("scroll", updateRect, { passive: true });
       
       const resetPosition = () => {
         wrapper.style.transition = "transform 0.6s ease-in-out";
@@ -506,7 +526,6 @@
       };
       
       window.addEventListener("mousemove", (e) => {
-        const rect = wrapper.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         
