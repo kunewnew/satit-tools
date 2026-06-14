@@ -233,7 +233,7 @@
    ถ้าเปิดจาก GitHub Pages ให้กรอก URL ครั้งแรก (จำไว้ใน localStorage) */
 var SCRIPT_URL = "<?= scriptUrl ?>";
 if (!SCRIPT_URL || SCRIPT_URL.indexOf("script.google") === -1) {
-  SCRIPT_URL = localStorage.getItem('gradeScriptUrl') || '';
+  SCRIPT_URL = localStorage.getItem('gradeScriptUrl') || 'https://script.google.com/macros/s/AKfycbyrdVll59hQVArQGjBTPPfovFBZ0eG5mjTWn93R2GJ_Xwl3wBTjMttgjrNW6Nr-ZfbF/exec';
   if (!SCRIPT_URL) {
     SCRIPT_URL = prompt('วาง Web App URL ของ Google Apps Script:') || '';
     if (SCRIPT_URL) localStorage.setItem('gradeScriptUrl', SCRIPT_URL);

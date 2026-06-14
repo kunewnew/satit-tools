@@ -252,6 +252,18 @@
         </div>
       </a>
 
+      <a href="ประกาศผลสอบ/index.html" class="flex items-center gap-3 p-3 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-neon/10 hover:border-neon/30 text-cream/80 hover:text-white transition-all duration-300 group">
+        <div class="w-9 h-9 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center group-hover:bg-neon/20 group-hover:border-neon/40 transition-all duration-300">
+          <svg viewBox="0 0 24 24" class="w-5.5 h-5.5 stroke-neon stroke-[2] fill-none">
+            <path d="M9 17h6M9 13h6M9 9h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0 text-left">
+          <div class="text-xs font-bold truncate group-hover:text-neon transition-colors duration-200">8. ประกาศผลสอบ & ติดตามเกรด 0</div>
+          <div class="text-[9px] text-cream/40 font-light truncate mt-0.5">ประกาศคะแนน / แก้เกรดไม่สมบูรณ์ค้างส่ง</div>
+        </div>
+      </a>
+
       <!-- แบ่งประเภทส่วน QR Code -->
       <div class="pt-4 pb-1.5 px-1 text-left">
         <span class="text-[9px] font-extrabold tracking-widest text-teal-400 uppercase">ชุดจัดการ QR Code / การ์ด</span>
@@ -657,6 +669,42 @@
               </a>
             </div>
           </div>
+
+          <!-- การ์ด 9: ประกาศผลสอบ & ติดตามเกรด 0 -->
+          <a href="ประกาศผลสอบ/index.html" class="liquid-glass p-6 rounded-[28px] flex flex-col justify-between min-h-[170px] cursor-pointer group hover:-translate-y-1.5 hover:border-neon/40 hover:shadow-[0_15px_30px_rgba(111,255,0,0.15)] transition-all duration-300">
+            <!-- วิดีโอโฮโลแกรมอวกาศหลังการ์ด -->
+            <div class="absolute inset-0 z-0 opacity-0 group-hover:opacity-[0.22] transition-opacity duration-500 rounded-[28px] overflow-hidden">
+              <video autoplay loop muted playsinline class="w-full h-full object-cover">
+                <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_054411_511c1b7a-fb2f-42ef-bf6c-32c0b1a06e79.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="absolute inset-0 bg-spacebg/40 z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="relative z-10">
+              <div class="flex justify-between items-start mb-4">
+                <div class="w-12 h-12 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center group-hover:bg-neon/10 transition-colors duration-300">
+                  <svg viewBox="0 0 24 24" class="w-7 h-7 fill-none stroke-neon stroke-[2]">
+                    <path d="M9 17h6M9 13h6M9 9h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z" stroke="currentColor" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <span class="text-[9px] font-extrabold px-3 py-1 rounded-full border border-neon/40 text-neon bg-neon/10 shadow-[0_0_15px_rgba(111,255,0,0.1)]">
+                  GRADE PORTAL 📊
+                </span>
+              </div>
+              <h3 class="font-extrabold text-sm sm:text-base text-white group-hover:text-neon transition-colors duration-300 tracking-wide">
+                ระบบประกาศผลสอบ & ติดตามเกรด 0
+              </h3>
+              <p class="text-[11px] sm:text-xs text-cream/55 font-light mt-1.5 leading-relaxed">
+                ประกาศผลคะแนนรายเทอม ติดตามแก้คะแนนผลการเรียนไม่สมบูรณ์ (0, ร, มส) สำหรับนักเรียน ม.6 และระดับอื่นๆ
+              </p>
+            </div>
+            <div class="relative z-10 flex items-center gap-1.5 text-xs font-bold text-neon tracking-wider mt-5">
+              เข้าใช้งานแดชบอร์ด
+              <svg class="w-3.5 h-3.5 fill-none stroke-current stroke-[2.5] transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 24 24">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </a>
 
         </div>
       </div>
