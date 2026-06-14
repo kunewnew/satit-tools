@@ -372,25 +372,70 @@
         
         <!-- Teacher login form (shown if not logged in) -->
         <div id="teacher-login-card" class="max-w-md mx-auto liquid-glass p-8 rounded-[28px] text-center my-12">
-          <div class="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mx-auto mb-4 text-2xl shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-            🔒
-          </div>
-          <h2 class="text-xl font-black text-white mb-2">เข้าสู่ระบบคุณครู</h2>
-          <p class="text-xs text-cream/50 mb-6">กรอกข้อมูลประจำตัวของคุณครูเพื่อเปิดแผงควบคุมและเครื่องมือนำเข้าข้อมูลเกรด</p>
           
-          <div class="space-y-4 text-left">
-            <div>
-              <label class="text-xs text-cream/60 font-semibold mb-1">ชื่อบัญชี / ครูประจำวิชา</label>
-              <input id="teacher-username" type="text" placeholder="เช่น ครูนิวตรอน" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+          <!-- LOGIN VIEW -->
+          <div id="teacher-login-view" class="space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mx-auto mb-4 text-2xl shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+              🔒
             </div>
-            <div>
-              <label class="text-xs text-cream/60 font-semibold mb-1">รหัสผ่าน</label>
-              <input id="teacher-password" type="password" placeholder="••••••" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+            <h2 class="text-xl font-black text-white mb-2">เข้าสู่ระบบคุณครู</h2>
+            <p class="text-xs text-cream/50 mb-6">กรอกข้อมูลประจำตัวของคุณครูเพื่อเปิดแผงควบคุมและเครื่องมือนำเข้าข้อมูลเกรด</p>
+            
+            <div class="space-y-4 text-left">
+              <div>
+                <label class="text-xs text-cream/60 font-semibold mb-1">ชื่อบัญชี / ครูประจำวิชา</label>
+                <input id="teacher-username" type="text" placeholder="เช่น ครูนิวตรอน" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+              </div>
+              <div>
+                <label class="text-xs text-cream/60 font-semibold mb-1">รหัสผ่าน</label>
+                <input id="teacher-password" type="password" placeholder="••••••" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+              </div>
+              <button onclick="teacherLogin()" class="w-full bg-neon text-spacebg hover:brightness-110 active:scale-95 shadow-[0_0_15px_rgba(111,255,0,0.3)] font-extrabold text-sm rounded-xl py-2.5 transition-all duration-200 mt-2">
+                เข้าสู่ระบบ 🔑
+              </button>
             </div>
-            <button onclick="teacherLogin()" class="w-full bg-neon text-spacebg hover:brightness-110 active:scale-95 shadow-[0_0_15px_rgba(111,255,0,0.3)] font-extrabold text-sm rounded-xl py-2.5 transition-all duration-200 mt-2">
-              เข้าสู่ระบบ 🔑
-            </button>
+            
+            <div class="pt-4 text-center">
+              <button onclick="toggleRegisterView(true)" class="text-xs text-neon hover:underline">
+                ยังไม่มีรหัสผ่าน? คลิกเพื่อสร้างรหัสผ่าน/บัญชีครูใหม่
+              </button>
+            </div>
           </div>
+
+          <!-- REGISTER VIEW (hidden initially) -->
+          <div id="teacher-register-view" class="hidden space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center mx-auto mb-4 text-2xl shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+              🔑
+            </div>
+            <h2 class="text-xl font-black text-white mb-2">สร้างบัญชีครูใหม่</h2>
+            <p class="text-xs text-cream/50 mb-6">ตั้งค่ารหัสผ่านและสร้างบัญชีประจำตัวสำหรับคุณครูแต่ละท่าน</p>
+            
+            <div class="space-y-4 text-left">
+              <div>
+                <label class="text-xs text-cream/60 font-semibold mb-1">ชื่อคุณครู (เช่น ครูอัจฉริยะ)</label>
+                <input id="reg-teacher-username" type="text" placeholder="พิมพ์ชื่อคุณครูของคุณ" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+              </div>
+              <div>
+                <label class="text-xs text-cream/60 font-semibold mb-1">ตั้งค่ารหัสผ่านใหม่ (เช่น 123456)</label>
+                <input id="reg-teacher-password" type="password" placeholder="ตั้งรหัสผ่านของคุณ" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+              </div>
+              <div>
+                <label class="text-xs text-cream/60 font-semibold mb-1">รหัสความปลอดภัยของโรงเรียน (Master Sign-up PIN)</label>
+                <input id="reg-teacher-masterkey" type="password" placeholder="ถามรหัสความปลอดภัยนี้จากครูแอดมิน" class="bg-spacebg/80 border border-white/10 rounded-xl px-4 py-2.5 text-sm w-full text-cream placeholder-cream/35 outline-none focus:border-neon">
+                <span class="text-[9px] text-cream/40 block mt-1">คีย์สมัครสมาชิกเริ่มต้นคือ `NEUTRON2026` (แก้ไขได้ใน Google Sheets ที่ชีต `TeacherSettings` แถว `__MasterKey__`)</span>
+              </div>
+              <button onclick="teacherRegister()" class="w-full bg-neon text-spacebg hover:brightness-110 active:scale-95 shadow-[0_0_15px_rgba(111,255,0,0.3)] font-extrabold text-sm rounded-xl py-2.5 transition-all duration-200 mt-2">
+                สร้างบัญชี / ยืนยันรหัสผ่าน 💾
+              </button>
+            </div>
+            
+            <div class="pt-4 text-center">
+              <button onclick="toggleRegisterView(false)" class="text-xs text-neon hover:underline">
+                มีบัญชีแล้ว? กลับสู่หน้าเข้าสู่ระบบ
+              </button>
+            </div>
+          </div>
+
         </div>
 
         <!-- Teacher Dashboard (shown after log in) -->
@@ -1154,6 +1199,54 @@
       document.getElementById('teacher-name-label').textContent = loggedInTeacher;
       
       loadClassesList();
+    }
+
+    function toggleRegisterView(isRegister) {
+      playBeep('click');
+      const loginView = document.getElementById('teacher-login-view');
+      const registerView = document.getElementById('teacher-register-view');
+      
+      if (isRegister) {
+        loginView.classList.add('hidden');
+        registerView.classList.remove('hidden');
+      } else {
+        loginView.classList.remove('hidden');
+        registerView.classList.add('hidden');
+      }
+    }
+
+    function teacherRegister() {
+      playBeep('click');
+      const user = document.getElementById('reg-teacher-username').value.trim();
+      const pass = document.getElementById('reg-teacher-password').value.trim();
+      const masterKey = document.getElementById('reg-teacher-masterkey').value.trim();
+      
+      if (!user || !pass || !masterKey) {
+        alert("กรุณากรอกข้อมูลสมัครสมาชิกให้ครบถ้วน");
+        playBeep('error');
+        return;
+      }
+      
+      fetch(`${SCRIPT_URL}?action=teacher_register&username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&masterKey=${encodeURIComponent(masterKey)}`)
+        .then(res => res.json())
+        .then(res => {
+          if (res.success) {
+            playBeep('success');
+            alert(res.message || "สร้างบัญชีผู้ใช้สำเร็จ! สามารถเข้าสู่ระบบได้ทันที");
+            document.getElementById('reg-teacher-username').value = "";
+            document.getElementById('reg-teacher-password').value = "";
+            document.getElementById('reg-teacher-masterkey').value = "";
+            toggleRegisterView(false);
+          } else {
+            playBeep('error');
+            alert(res.error || "เกิดข้อผิดพลาดในการลงทะเบียน");
+          }
+        })
+        .catch(err => {
+          playBeep('error');
+          alert("ไม่สามารถติดต่อเซิร์ฟเวอร์ระบบสมัครสมาชิกได้");
+          console.error(err);
+        });
     }
 
     function teacherLogin() {
