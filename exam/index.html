@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📝 ระบบสอบเก็บคะแนน ม.4 - ครูนิวตรอน.com</title>
+  <meta name="description" content="ห้องสอบออนไลน์วิชาคณิตศาสตร์เพิ่มเติม ม.4 มีระบบสุ่มข้อสอบสลับข้อ และระบบตรวจจับพับย่อหน้าจอเพื่อความเป็นธรรมในการสอบ">
+
+  <!-- Google Fonts - Kanit, Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Outfit:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#0C0C0C',
+            textlight: '#D7E2EA',
+            accentpurple: '#8b5cf6',
+            accentblue: '#3b82f6',
+            accentpink: '#ec4899',
+            accentemerald: '#10b981',
+            accentamber: '#f59e0b',
+            accentred: '#f43f5e',
+            accentteal: '#2dd4bf',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html, body {
+      background-color: #0C0C0C;
+      color: #D7E2EA;
+      font-family: 'Kanit', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0C0C0C;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A2A2A;
+      border-radius: 99px;
+    }
+    .hero-heading {
+      background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glass-card {
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @media (min-width: 1024px) {
+      .glass-card {
+        background: rgba(17, 24, 39, 0.45);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+    }
+    .option-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease;
+    }
+    .option-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .option-btn.selected {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: #f43f5e;
+      color: #FFFFFF;
+    }
+    .no-select {
+      user-select: none;
+    }
+  </style>
+</head>
+<body class="bg-darkbg text-textlight select-none no-select">
+
+  <!-- Background elements -->
+  <canvas id="starfield" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+  <div class="hidden lg:block absolute top-[10%] left-[20%] w-[35vw] h-[35vw] rounded-full bg-accentred/3 blur-[140px] pointer-events-none z-0"></div>
+  <div class="hidden lg:block absolute bottom-[15%] right-[10%] w-[25vw] h-[25vw] rounded-full bg-accentpurple/3 blur-[140px] pointer-events-none z-0"></div>
+
+  <!-- Main Wrapper -->
+  <div class="w-full min-h-screen z-10 relative flex flex-col justify-between">
+    
+    <!-- Header -->
+    <header class="w-full max-w-5xl mx-auto px-6 pt-6 pb-4 flex justify-between items-center border-b border-white/5">
+      <a href="../index.html" id="back-btn" class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-textlight/70 hover:text-white transition-colors duration-300 group">
+        <svg class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        ⬅️ กลับสู่ระบบหลัก
+      </a>
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-accentred to-accentpurple flex items-center justify-center">
+          <svg class="w-4 h-4 fill-none stroke-white stroke-[2.5]" viewBox="0 0 24 24">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" />
+            <path d="M9 12L11 14L15 10" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="font-bold text-xs sm:text-sm tracking-widest text-white font-kanit">
+          KRUNEWTRON<span class="text-accentred">.COM</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-3xl mx-auto px-6 py-8 flex-1 flex flex-col justify-center">
+      
+      <!-- SCREEN 1: LOGIN & START SCREEN -->
+      <section id="setup-screen" class="glass-card p-6 sm:p-8 rounded-3xl border border-white/5 space-y-6">
+        <div class="text-center space-y-2">
+          <span class="text-3xl sm:text-4xl">Exam 📝</span>
+          <h2 class="text-xl sm:text-2xl font-bold text-white font-kanit">ระบบสอบเก็บคะแนนท้ายบท ม.4</h2>
+          <p class="text-xs text-textlight/50 font-kanit">กรุณากรอกข้อมูลและเลือกหัวข้อวิชาที่ต้องการสอบเพื่อเริ่มต้นการทดสอบอย่างเป็นทางการ</p>
+        </div>
+
+        <div class="border-t border-white/5 pt-6 space-y-4 font-kanit">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-textlight/40 font-semibold mb-1">ระดับชั้น / ห้องเรียน</label>
+              <select id="exam-room" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-textlight outline-none focus:border-accentred transition-colors">
+                <option value="ม.4/1">ม.4/1</option>
+                <option value="ม.4/2">ม.4/2</option>
+                <option value="ม.4/3">ม.4/3</option>
+                <option value="ม.4/4">ม.4/4</option>
+                <option value="ม.4/5">ม.4/5</option>
+                <option value="ม.4/6">ม.4/6</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-textlight/40 font-semibold mb-1">เลขที่ประจำตัว</label>
+              <input type="number" id="exam-no" min="1" max="60" placeholder="เช่น 15" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-textlight outline-none focus:border-accentred transition-colors">
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-xs text-textlight/40 font-semibold mb-1">ชื่อ - นามสกุลจริง</label>
+            <input type="text" id="exam-name" placeholder="เช่น นายวิทยา รักดี" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-xs sm:text-sm text-textlight outline-none focus:border-accentred transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-xs text-textlight/40 font-semibold mb-2">เลือกวิชา / บทเรียนที่ต้องการสอบ</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button onclick="selectChapter('set')" id="btn-chapter-set" class="chapter-btn p-3 rounded-xl border border-white/10 text-left text-xs hover:bg-white/5 transition-all flex items-center justify-between">
+                <span>🔵 บทที่ 1: เซต</span>
+                <span class="text-[10px] text-textlight/40 font-light">คลัง 40 ข้อ</span>
+              </button>
+              <button onclick="selectChapter('logic')" id="btn-chapter-logic" class="chapter-btn p-3 rounded-xl border border-white/10 text-left text-xs hover:bg-white/5 transition-all flex items-center justify-between">
+                <span>🧠 บทที่ 2: ตรรกศาสตร์</span>
+                <span class="text-[10px] text-textlight/40 font-light">คลัง 40 ข้อ</span>
+              </button>
+              <button onclick="selectChapter('real')" id="btn-chapter-real" class="chapter-btn p-3 rounded-xl border border-white/10 text-left text-xs hover:bg-white/5 transition-all flex items-center justify-between">
+                <span>⚡ บทที่ 3: ระบบจำนวนจริง</span>
+                <span class="text-[10px] text-textlight/40 font-light">คลัง 40 ข้อ</span>
+              </button>
+              <button onclick="selectChapter('function')" id="btn-chapter-function" class="chapter-btn p-3 rounded-xl border border-white/10 text-left text-xs hover:bg-white/5 transition-all flex items-center justify-between">
+                <span>📐 บทที่ 4: ความสัมพันธ์และฟังก์ชัน</span>
+                <span class="text-[10px] text-textlight/40 font-light">คลัง 40 ข้อ</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-accentred/5 border border-accentred/20 text-[11px] leading-relaxed text-accentred font-medium space-y-1">
+            <p class="font-bold">🚨 กฎระเบียบความปลอดภัยในห้องสอบ:</p>
+            <p>1. ระบบมีตรรกะ **ตรวจจับการทุจริต** ห้ามสลับแท็บบนเบราว์เซอร์ และห้ามสลับแอปบนหน้าจอมือถือ/คอมพิวเตอร์เด็ดขาด</p>
+            <p>2. หากตรวจพบว่าหน้าจอเบราว์เซอร์ **สูญเสียการโฟกัส** (พับหน้าจอ สลับแท็บ หรือเปิดแอปอื่น) ข้อสอบจะถูก **โมฆะและสุ่มเปลี่ยนข้อสอบใหม่ทันที**</p>
+            <p>3. คุณครูจะสามารถดูประวัติการบันทึกสอบและคะแนนทั้งหมดได้จากชีตหลักหลังบ้านครับ</p>
+          </div>
+
+          <div id="setup-error-msg" class="text-xs font-semibold text-accentred hidden"></div>
+
+          <button onclick="startExam()" class="w-full py-3 rounded-xl bg-accentred hover:bg-accentred/90 text-white font-bold text-sm shadow-lg shadow-accentred/15 transition-all flex items-center justify-center gap-2">
+            <span>🚀 เข้าสู่ห้องสอบและเริ่มทำข้อสอบ</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: ACTIVE EXAM SHEET -->
+      <section id="exam-screen" class="hidden space-y-6">
+        
+        <!-- Sticky Exam Info Header -->
+        <div class="glass-card p-4 rounded-2xl border border-white/5 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div class="font-kanit text-center sm:text-left">
+            <div class="text-[10px] font-semibold text-accentred tracking-wider uppercase">นักเรียนผู้เข้าสอบ</div>
+            <h3 class="text-sm font-bold text-white leading-tight">
+              ห้อง <span id="info-room" class="text-accentemerald">ม.4/1</span> เลขที่ <span id="info-no" class="text-accentemerald">99</span> - <span id="info-name" class="text-white">นายจำลอง สอบเก็บคะแนน</span>
+            </h3>
+            <div class="text-[10px] text-textlight/50 font-light mt-0.5">
+              วิชาสอบ: <span id="info-subject" class="font-semibold text-textlight/70">บทที่ 1: เซต</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 shrink-0">
+            <!-- Timer widget -->
+            <div class="px-4 py-2 rounded-xl bg-black/40 border border-white/10 flex items-center gap-2">
+              <span class="text-accentred animate-pulse">⏰</span>
+              <span id="exam-timer" class="font-outfit text-sm font-bold text-white tracking-widest">40:00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning bar -->
+        <div class="px-4 py-2 rounded-xl bg-accentred/10 border border-accentred/20 text-[10px] text-accentred font-medium leading-relaxed font-kanit text-center animate-pulse">
+          ⚠️ ห้ามพับหน้าต่างเบราว์เซอร์ สลับแท็บ หรือย่อจอเด็ดขาด! มิฉะนั้นข้อสอบจะรีเซ็ตสุ่มใหม่ทันที!
+        </div>
+
+        <!-- Questions Form -->
+        <div id="exam-questions-container" class="space-y-6">
+          <!-- Dynamically injected questions -->
+        </div>
+
+        <!-- Action bar -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5 font-kanit">
+          <div id="exam-feedback" class="text-xs font-semibold text-accentred"></div>
+          <button onclick="confirmSubmitExam()" class="px-8 py-3.5 text-xs font-bold rounded-xl bg-accentemerald text-white hover:bg-accentemerald/90 shadow-md shadow-accentemerald/15 transition-all w-full sm:w-auto">
+            💾 ส่งกระดาษคำตอบและบันทึกคะแนน
+          </button>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: EXAM COMPLETED SCREEN -->
+      <section id="result-screen" class="hidden glass-card p-8 rounded-3xl border border-white/5 text-center space-y-6">
+        <div class="space-y-2">
+          <span class="text-5xl">🎉</span>
+          <h2 class="text-2xl font-bold text-white font-kanit">ส่งข้อสอบสำเร็จเรียบร้อยแล้ว</h2>
+          <p class="text-xs text-textlight/50 font-kanit">คะแนนของคุณถูกบันทึกส่งตรงลงในระบบเก็บคะแนนของครูนิวตรอนเรียบร้อยแล้ว</p>
+        </div>
+
+        <div class="py-6 border-y border-white/5 space-y-2 font-kanit">
+          <div class="text-2xl font-bold text-accentemerald tracking-wider flex items-center justify-center gap-2">
+            <span>💾</span> บันทึกคะแนนเข้าระบบสำเร็จ
+          </div>
+          <p class="text-xs text-textlight/60 leading-relaxed max-w-sm mx-auto">
+            ระบบได้นำส่งและบันทึกกระดาษคำตอบวิชาสอบนี้เข้าระบบของครูนิวตรอนเรียบร้อยแล้ว <br>
+            คุณครูจะเป็นผู้แจ้งผลคะแนนสอบและการผ่านเกณฑ์ให้นักเรียนทราบในภายหลังครับ
+          </p>
+        </div>
+
+        <div class="space-y-3 font-kanit">
+          <p class="text-[10px] text-textlight/40 italic">
+            * ระบบจะไม่แสดงผลเฉลยของตัวเลือกที่ถูกต้อง เพื่อรักษาความปลอดภัยและความเป็นธรรมในการประเมินผล
+          </p>
+          <a href="../index.html" class="inline-block px-6 py-2.5 rounded-xl border border-white/10 hover:bg-white/5 text-textlight font-semibold text-xs transition-all">
+            ⬅️ กลับสู่หน้าหลัก
+          </a>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full max-w-5xl mx-auto px-6 border-t border-white/5 py-4 mt-8 flex flex-col sm:flex-row justify-between items-center text-[10px] sm:text-xs text-textlight/30 gap-3">
+      <p>© 2026 ครูนิวตรอน.com. ระบบประเมินผลป้องกันการทุจริต</p>
+      <p class="font-kanit">ความปลอดภัยสูงสุด ⚛️</p>
+    </footer>
+  </div>
+
+  <!-- ANTI-CHEATING WARNING MODAL (FULL SCREEN) -->
+  <div id="cheat-modal" class="fixed inset-0 w-full h-full z-50 bg-black/95 backdrop-blur-lg hidden flex-col items-center justify-center p-6 text-center">
+    <div class="max-w-md space-y-6">
+      <div class="w-20 h-20 rounded-full bg-accentred/10 border border-accentred/20 flex items-center justify-center text-4xl mx-auto animate-bounce">
+        🚨
+      </div>
+      
+      <div class="space-y-2">
+        <h2 class="text-xl sm:text-2xl font-black text-accentred uppercase font-kanit">ตรวจพบการสลับหน้าจอ!</h2>
+        <p class="text-xs sm:text-sm text-textlight/70 leading-relaxed font-kanit">
+          ระบบความปลอดภัยได้ตรวจพบการสูญเสียโฟกัส หรือการสลับไปเปิดแอปพลิเคชันอื่นของหน้าจอเบราว์เซอร์
+        </p>
+        <p class="text-xs text-accentamber font-semibold font-kanit">
+          ข้อสอบชุดเดิมของท่านถูกยกเลิกแล้ว และระบบได้ทำการสุ่มข้อสอบ 20 ข้อชุดใหม่ขึ้นมาสลับแทนที่เรียบร้อยเพื่อความโปร่งใส
+        </p>
+      </div>
+
+      <button onclick="restartExamAfterCheat()" class="w-full py-3 rounded-xl bg-accentred hover:bg-accentred/90 text-white font-bold text-xs sm:text-sm transition-all font-kanit">
+        🔄 เริ่มทำข้อสอบใหม่อีกครั้ง
+      </button>
+    </div>
+  </div>
+
+  <!-- JavaScript logics -->
+  <script>
+    // ==========================================
+    //  Starfield Background Canvas Animation
+    // ==========================================
+    (function() {
+      const canvas = document.getElementById('starfield');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let animationFrameId;
+      
+      let currentWidth = window.innerWidth;
+      let currentHeight = window.innerHeight;
+      const resizeCanvas = () => {
+        currentWidth = window.innerWidth;
+        currentHeight = window.innerHeight;
+        canvas.width = currentWidth;
+        canvas.height = currentHeight;
+      };
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      const stars = [];
+      const numStars = 80;
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 1.5 + 0.3,
+          speed: Math.random() * 0.03 + 0.01,
+          alpha: Math.random(),
+          fade: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+      
+      const render = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(star => {
+          ctx.fillStyle = `rgba(215, 226, 234, ${star.alpha})`;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fill();
+          
+          star.y -= star.speed;
+          if (star.y < 0) {
+            star.y = canvas.height;
+            star.x = Math.random() * canvas.width;
+          }
+          
+          star.alpha += 0.006 * star.fade;
+          if (star.alpha > 1) {
+            star.alpha = 1;
+            star.fade = -1;
+          } else if (star.alpha < 0.1) {
+            star.alpha = 0.1;
+            star.fade = 1;
+          }
+        });
+        animationFrameId = requestAnimationFrame(render);
+      };
+      render();
+    })();
+
+    // ==========================================
+    //  QUESTION BANK POOL (Copied from learning hub, 10 per lesson, 20 per chapter)
+    // ==========================================
+    const originalLessonsData = [
+      {
+        id: "set-1",
+        grade: "set",
+        title: "การดำเนินการของเซต",
+        quiz: [
+          { q: "กำหนดให้ A = {1, 2, 3} และ B = {3, 4, 5} ข้อใดคือผลลัพธ์ของ A ∩ B?", a: ["{3}", "{1, 2, 3, 4, 5}", "{1, 2}", "{4, 5}"], correct: 0 },
+          { q: "กำหนดให้ A = {1, 2, 3} และ B = {3, 4, 5} ข้อใดคือผลลัพธ์ของ A ∪ B?", a: ["{1, 2, 3, 4, 5}", "{3}", "{1, 2}", "{4, 5}"], correct: 0 },
+          { q: "กำหนดให้ A = {1, 2, 3} และ B = {3, 4, 5} ข้อใดคือผลลัพธ์ของ A - B?", a: ["{1, 2}", "{3}", "{4, 5}", "{1, 2, 3, 4, 5}"], correct: 0 },
+          { q: "กำหนด U = {1, 2, 3, 4, 5} และ A = {1, 3, 5} ข้อใดคือค่าของคอมพลีเมนต์ A'?", a: ["{2, 4}", "{1, 3, 5}", "{1, 2, 3, 4, 5}", "{ }"], correct: 0 },
+          { q: "กำหนดให้เซต A = {a, b} เซต A จะมีสับเซตทั้งหมดกี่สับเซต?", a: ["4 สับเซต", "2 สับเซต", "8 สับเซต", "ไม่มีสับเซต"], correct: 0 },
+          { q: "เซตใดต่อไปนี้ที่เป็นสับเซตของทุกเซตเสมอ?", a: ["เซตว่าง (∅)", "เอกภพสัมพัทธ์ (U)", "เซตของจำนวนจริง", "เซตตัวมันเอง"], correct: 0 },
+          { q: "กำหนด A = {1, {2}} ข้อความใดต่อไปนี้เป็นจริง?", a: ["{2} ∈ A", "2 ∈ A", "{2} ⊂ A", "{{2}} ∈ A"], correct: 0 },
+          { q: "กำหนด A = {1, 2} ข้อใดคือเพาเวอร์เซต P(A) ที่ถูกต้อง?", a: ["{ ∅, {1}, {2}, {1, 2} }", "{ {1}, {2} }", "{ ∅, 1, 2 }", "{ {1}, {2}, {1, 2} }"], correct: 0 },
+          { q: "กำหนด A = {x ∈ N | x < 5} (เมื่อ N คือเซตของจำนวนนับ) เซต A มีจำนวนสมาชิกกี่ตัว?", a: ["4 ตัว", "5 ตัว", "3 ตัว", "จำนวนอนันต์"], correct: 0 },
+          { q: "กำหนด A = {2, 4, 6} เซตในข้อใดต่อไปนี้ ไม่เป็น สับเซตของ A?", a: ["{2, 3}", "{2}", "{4, 6}", "{2, 4, 6}"], correct: 0 },
+          { q: "กำหนด A = {5, 10} และ B = {10, 15} ข้อใดคือค่าของ B - A?", a: ["{15}", "{5}", "{10}", "{5, 15}"], correct: 0 },
+          { q: "หากเซต A มีจำนวนสมาชิก n(A) = 3 จะมีสับเซตทั้งหมดกี่สับเซต?", a: ["8 สับเซต", "6 สับเซต", "9 สับเซต", "3 สับเซต"], correct: 0 },
+          { q: "กำหนด A = {x ∈ Z | x เป็นจำนวนเฉพาะที่เป็นคู่} ข้อใดคือเซต A?", a: ["{2}", "{2, 4, 6}", "{ }", "{2, 3, 5}"], correct: 0 },
+          { q: "กำหนด U = {1, 2, 3, 4, 5}, A = {1, 2, 3} และ B = {2, 3, 4} ข้อใดคือ (A ∩ B)'?", a: ["{1, 4, 5}", "{2, 3}", "{1, 5}", "{4, 5}"], correct: 0 },
+          { q: "กำหนด A = {0} จงหาจำนวนสมาชิกของเพาเวอร์เซต n(P(A))?", a: ["2 ตัว", "1 ตัว", "4 ตัว", "0 ตัว"], correct: 0 },
+          { q: "กำหนด A = {a, b, c} และ B = {b, c, d} ข้อใดคือ A - B?", a: ["{a}", "{d}", "{b, c}", "{a, d}"], correct: 0 },
+          { q: "เซตในข้อใดต่อไปนี้เป็น เซตจำกัด?", a: ["{x | x เป็นจำนวนเฉพาะที่น้อยกว่า 10}", "{x | x เป็นจำนวนเต็มคี่}", "{x | x เป็นจำนวนจริง}", "{1, 2, 3, ...}"], correct: 0 },
+          { q: "ถ้า A ⊂ B แล้ว ข้อสรุปใดถูกต้องเสมอ?", a: ["A ∩ B = A", "A ∪ B = A", "A - B = B", "B - A = ∅"], correct: 0 },
+          { q: "กำหนด A = {1, 2, 3} จำนวนสับเซตแท้ (สับเซตที่ไม่ใช่ตัวเอง) ของ A มีกี่สับเซต?", a: ["7 สับเซต", "8 สับเซต", "6 สับเซต", "15 สับเซต"], correct: 0 },
+          { q: "กำหนด A = {∅} เซต A มีจำนวนสมาชิกกี่ตัว?", a: ["1 ตัว", "0 ตัว", "2 ตัว", "ไม่มีสมาชิกเลย"], correct: 0 }
+        ]
+      },
+      {
+        id: "set-2",
+        grade: "set",
+        title: "แผนภาพเวนน์และการคำนวณ",
+        quiz: [
+          { q: "กำหนด n(A) = 10, n(B) = 15 และ n(A ∩ B) = 3 จงหาค่าของ n(A ∪ B)?", a: ["22", "25", "28", "12"], correct: 0 },
+          { q: "กำหนด n(A) = 20, n(B) = 25 และ n(A ∪ B) = 40 จงหาค่าของ n(A ∩ B)?", a: ["5", "15", "10", "20"], correct: 0 },
+          { q: "นักเรียนห้องหนึ่งมี 40 คน ชอบคณิตศาสตร์ 25 คน ชอบวิทยาศาสตร์ 20 คน ชอบทั้งสองวิชา 10 คน มีนักเรียนกี่คนที่ชอบอย่างน้อยหนึ่งวิชา?", a: ["35 คน", "45 คน", "30 คน", "25 คน"], correct: 0 },
+          { q: "นักเรียน 50 คน ทุกคนชอบเล่นกีฬาอย่างน้อยหนึ่งชนิด ชอบฟุตบอล 30 คน ชอบบาสเกตบอล 25 คน มีกี่คนที่ชอบทั้งสองอย่าง?", a: ["5 คน", "10 คน", "15 คน", "20 คน"], correct: 0 },
+          { q: "กำหนด n(U) = 100 และ n(A) = 60 จงหาค่าของ n(A')?", a: ["40", "60", "100", "0"], correct: 0 },
+          { q: "กำหนด n(A) = 12 และ n(A ∩ B) = 4 จงหาจำนวนสมาชิกของ n(A - B)?", a: ["8", "16", "4", "12"], correct: 0 },
+          { q: "ถ้าเซต A และ B ไม่มีสมาชิกร่วมกันเลย (A ∩ B = ∅) โดย n(A) = 8 และ n(B) = 7 จงหา n(A ∪ B)?", a: ["15", "8", "7", "1"], correct: 0 },
+          { q: "ในแผนภาพเวนน์ของ 2 เซต พื้นที่ส่วนที่อยู่ในวงกลม A แต่ไม่อยู่ในวงกลม B แทนด้วยการดำเนินการใด?", a: ["A - B", "B - A", "A ∩ B", "A ∪ B"], correct: 0 },
+          { q: "กำหนด n(U) = 50, n(A) = 20, n(B) = 25 และ n(A ∩ B) = 8 จงหา n((A ∪ B)')?", a: ["13", "37", "5", "23"], correct: 0 },
+          { q: "นักเรียนห้องหนึ่งมี 30 คน ชอบเรียนอังกฤษ 18 คน ชอบเรียนฝรั่งเศส 12 คน โดยไม่มีใครชอบทั้งสองวิชาเลย มีนักเรียนกี่คนที่ไม่ชอบทั้งสองวิชานี้เลย?", a: ["0 คน", "6 คน", "10 คน", "12 คน"], correct: 0 },
+          { q: "กำหนด n(A) = 15, n(B) = 20 และ n(A - B) = 10 จงคำนวณหาค่า n(A ∩ B)?", a: ["5", "10", "15", "25"], correct: 0 },
+          { q: "จากการสำรวจคน 80 คน พบว่าชอบเลี้ยงแมว 50 คน ชอบเลี้ยงสุนัข 40 คน ชอบเลี้ยงทั้งสองชนิด 20 คน มีกี่คนที่ชอบเลี้ยงเฉพาะแมวเพียงอย่างเดียว?", a: ["30 คน", "50 คน", "20 คน", "10 คน"], correct: 0 },
+          { q: "ถ้า A ⊂ B โดย n(A) = 5 และ n(B) = 12 จงหาค่า n(A ∪ B)?", a: ["12", "5", "17", "7"], correct: 0 },
+          { q: "ถ้า A ⊂ B โดย n(A) = 5 และ n(B) = 12 จงหาค่า n(A - B)?", a: ["0", "5", "7", "12"], correct: 0 },
+          { q: "กำหนดให้ n(A) = 30, n(B) = 25 และ n(A ∪ B) = 45 จงหาจำนวนสมาชิกของ n(B - A)?", a: ["15", "25", "20", "10"], correct: 0 },
+          { q: "ในการสำรวจคน 100 คน ชอบดื่มกาแฟ 70 คน ชอบดื่มชา 40 คน และไม่ชอบดื่มทั้งสองอย่างเลย 10 คน มีคนชอบดื่มทั้งกาแฟและชากี่คน?", a: ["20 คน", "10 คน", "30 คน", "40 คน"], correct: 0 },
+          { q: "ห้องเรียน 30 คน มีคนชอบสีแดง 15 คน ชอบสีฟ้า 12 คน ชอบทั้งสองสี 5 คน มีนักเรียนกี่คนที่ไม่ชอบสีแดงและสีฟ้าเลย?", a: ["8 คน", "5 คน", "13 คน", "3 คน"], correct: 0 },
+          { q: "กำหนด n(U) = 60, n(A) = 30, n(B) = 20 และ n(A ∩ B) = 10 จงหา n(A' ∩ B')?", a: ["20", "40", "10", "30"], correct: 0 },
+          { q: "ถ้า A ∩ B = ∅ แล้ว การดำเนินการ n(A - B) จะมีค่าเท่ากับข้อใด?", a: ["n(A)", "n(B)", "0", "n(A) - n(B)"], correct: 0 },
+          { q: "คนกลุ่มหนึ่ง 40 คน ทุกคนชอบดื่มนมหรือดื่มน้ำหวาน ชอบดื่มนม 28 คน ชอบดื่มน้ำหวาน 22 คน มีกี่คนที่ชอบดื่มทั้งสองอย่าง?", a: ["10 คน", "18 คน", "12 คน", "6 คน"], correct: 0 }
+        ]
+      },
+      {
+        id: "logic-1",
+        grade: "logic",
+        title: "ประพจน์และตัวเชื่อม",
+        quiz: [
+          { q: "ประโยคใดต่อไปนี้จัดว่าเป็น 'ประพจน์'?", a: ["10 เป็นจำนวนคู่", "ห้ามส่งเสียงดังในห้องสมุด", "กรุณาปิดประตูให้สนิท", "คุณชอบทานผลไม้ไหม"], correct: 0 },
+          { q: "ประโยคในข้อใดต่อไปนี้ ไม่เป็น ประพจน์?", a: ["ช่วยหยิบดินสอให้หน่อย", "2 เป็นจำนวนคี่", "กรุงเทพฯ เป็นเมืองหลวงของไทย", "3 + 5 = 8"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ∧ q?", a: ["เท็จ (False)", "จริง (True)", "เป็นจริงบ้างเท็จบ้าง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ∨ q?", a: ["จริง (True)", "เท็จ (False)", "เป็นจริงบ้างเท็จบ้าง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p → q?", a: ["เท็จ (False)", "จริง (True)", "เป็นจริงกึ่งหนึ่ง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ↔ q?", a: ["เท็จ (False)", "จริง (True)", "เป็นสัจนิรันดร์", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ข้อใดคือค่าความจริงของนิเสธของประพจน์ที่เป็นเท็จ (~False)?", a: ["จริง (True)", "เท็จ (False)", "อาจเป็นจริงหรือเท็จก็ได้", "เป็นนิเสธสมบูรณ์"], correct: 0 },
+          { q: "จงหาค่าความจริงของประพจน์เชื่อมต่อไปนี้: (True ∧ False) → True?", a: ["จริง (True)", "เท็จ (False)", "เป็นเท็จเสมอ", "หาค่าความจริงไม่ได้"], correct: 0 },
+          { q: "จงหาค่าความจริงของประพจน์เชื่อมต่อไปนี้: (True ∨ False) ∧ False?", a: ["เท็จ (False)", "จริง (True)", "เป็นสัจนิรันดร์", "หาค่าไม่ได้"], correct: 0 },
+          { q: "นิเสธของข้อความ '5 > 3' ตรงกับข้อใด?", a: ["5 ≤ 3", "5 < 3", "5 ≠ 3", "5 = 3"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นเท็จ (F) และ q เป็นจริง (T) ข้อใดคือค่าความจริงของ p → q?", a: ["จริง (True)", "เท็จ (False)", "มีค่าความจริงสลับกัน", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นเท็จ (F) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ∨ q?", a: ["เท็จ (False)", "จริง (True)", "เป็นจริงกึ่งหนึ่ง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p ∧ q มีค่าความจริงเป็น 'จริง' ข้อใดสรุปได้ถูกต้อง?", a: ["ทั้ง p และ q ต้องเป็นจริงทั้งคู่", "p เป็นจริง หรือ q เป็นจริง", "ทั้ง p และ q ต้องเป็นเท็จทั้งคู่", "p เป็นเท็จ q เป็นจริง"], correct: 0 },
+          { q: "ถ้าประพจน์ p ∨ q มีค่าความจริงเป็น 'เท็จ' ข้อใดสรุปได้ถูกต้อง?", a: ["ทั้ง p และ q ต้องเป็นเท็จทั้งคู่", "p เป็นจริง q เป็นเท็จ", "p เป็นเท็จ q เป็นจริง", "p และ q เป็นจริงอย่างน้อยหนึ่งตัว"], correct: 0 },
+          { q: "ถ้าประพจน์เชื่อม p → q มีค่าความจริงเป็น 'เท็จ' ค่าความจริงของ p และ q ตามลำดับคือข้อใด?", a: ["จริง (T) และ เท็จ (F)", "จริง (T) และ จริง (T)", "เท็จ (F) และ เท็จ (F)", "เท็จ (F) และ จริง (T)"], correct: 0 },
+          { q: "นิเสธของข้อความ 'ฝนตก และ แดดออก' ตรงกับข้อใด?", a: ["ฝนไม่ตก หรือ แดดไม่ออก", "ฝนไม่ตก และ แดดไม่ออก", "ถ้าฝนไม่ตก แล้วแดดจะไม่ออก", "ฝนตก หรือ แดดไม่ออก"], correct: 0 },
+          { q: "ถ้ากำหนดให้ประพจน์ p เป็น 'จริง' แล้ว ค่าความจริงของ p ∨ q จะเป็นอย่างไร?", a: ["เป็นจริงเสมอ โดยไม่ต้องสนใจค่าของ q", "เป็นเท็จเสมอ", "ขึ้นอยู่กับว่า q เป็นจริงหรือเท็จ", "เป็นจริงเฉพาะเมื่อ q เป็นจริง"], correct: 0 },
+          { q: "ถ้ากำหนดให้ประพจน์ p เป็น 'เท็จ' แล้ว ค่าความจริงของ p ∧ q จะเป็นอย่างไร?", a: ["เป็นเท็จเสมอ โดยไม่ต้องสนใจค่าของ q", "เป็นจริงเสมอ", "ขึ้นอยู่กับว่า q เป็นจริงหรือเท็จ", "เป็นจริงเฉพาะเมื่อ q เป็นเท็จ"], correct: 0 },
+          { q: "จงหาค่าความจริงของประพจน์ (False ↔ False) ∨ True?", a: ["จริง (True)", "เท็จ (False)", "เป็นทั้งจริงและเท็จ", "หาไม่ได้"], correct: 0 },
+          { q: "นิเสธของข้อความ 'x = 3' ตรงกับข้อใด?", a: ["x ≠ 3", "x > 3", "x < 3", "x ≤ 3"], correct: 0 }
+        ]
+      },
+      {
+        id: "logic-2",
+        grade: "logic",
+        title: "สัจนิรันดร์และสมมูล",
+        quiz: [
+          { q: "รูปแบบประพจน์ในข้อใดสมมูลกับ p → q?", a: ["~p ∨ q", "p ∧ ~q", "~p → ~q", "q → p"], correct: 0 },
+          { q: "รูปแบบประพจน์ในข้อใดสมมูลกับ ~p → ~q?", a: ["q → p", "p → q", "~q → ~p", "p ∨ ~q"], correct: 0 },
+          { q: "ตามกฎเดอมอร์แกน (De Morgan's Laws) รูปแบบประพจน์ ~(p ∧ q) สมมูลกับข้อใด?", a: ["~p ∨ ~q", "~p ∧ ~q", "p ∨ q", "~p → q"], correct: 0 },
+          { q: "รูปแบบประพจน์ ~(p ∨ q) สมมูลกับข้อใด?", a: ["~p ∧ ~q", "~p ∨ ~q", "p ∧ q", "~p → ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ∨ ~p มีค่าความจริงเป็นจริงในทุกกรณีหรือไม่? (เรียกว่าเป็นสัจนิรันดร์หรือไม่)", a: ["เป็นสัจนิรันดร์ (จริงทุกกรณี)", "ไม่เป็นสัจนิรันดร์ (เป็นเท็จบางกรณี)", "เป็นเท็จทุกกรณี", "สรุปไม่ได้ขึ้นอยู่กับตัวแปร"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ∧ ~p เป็นสัจนิรันดร์หรือไม่?", a: ["ไม่เป็นสัจนิรันดร์ (เป็นเท็จทุกกรณี)", "เป็นสัจนิรันดร์", "เป็นจริงบางกรณี", "สรุปไม่ได้"], correct: 0 },
+          { q: "รูปแบบประพจน์ใดสมมูลกับ p ↔ q?", a: ["(p → q) ∧ (q → p)", "(p → q) ∨ (q → p)", "~p ↔ ~q", "p ∨ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ ~(~p) มีค่าความจริงสมมูลกับข้อใด?", a: ["p", "~p", "จริง (T)", "เท็จ (F)"], correct: 0 },
+          { q: "นิเสธของรูปแบบประพจน์ p → q สมมูลกับรูปแบบข้อใด?", a: ["p ∧ ~q", "~p ∨ q", "~p ∧ q", "p ∨ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ (p ∧ q) → p เป็นสัจนิรันดร์หรือไม่?", a: ["เป็นสัจนิรันดร์ (จริงทุกกรณี)", "ไม่เป็นสัจนิรันดร์", "เป็นเท็จทุกกรณี", "เป็นจริงเฉพาะเมื่อ q เป็นจริง"], correct: 0 },
+          { q: "ข้อความใดสมมูลกับ 'ถ้าฝนตก แล้วถนนเปียก'?", a: ["ฝนไม่ตก หรือ ถนนเปียก", "ถ้าฝนไม่ตก แล้วถนนไม่เปียก", "ฝนตก และถนนไม่เปียก", "ถนนเปียก ก็ต่อเมื่อ ฝนตก"], correct: 0 },
+          { q: "ข้อความใดสมมูลกับประโยค 'ถ้าฉันสอบผ่าน พ่อจะซื้อจักรยานให้'?", a: ["ถ้าพ่อไม่ซื้อจักรยานให้ แสดงว่าฉันสอบไม่ผ่าน", "ถ้าฉันสอบตก พ่อจะไม่ซื้อจักรยานให้", "ถ้าพ่อซื้อจักรยานให้ แสดงว่าฉันสอบผ่าน", "ฉันสอบผ่าน และพ่อไม่ซื้อจักรยานให้"], correct: 0 },
+          { q: "รูปแบบใดสมมูลกับ ~(p ∨ ~q)?", a: ["~p ∧ q", "~p ∨ q", "p ∧ ~q", "~p ∧ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p → (p ∨ q) เป็นสัจนิรันดร์หรือไม่?", a: ["เป็นสัจนิรันดร์ (จริงทุกกรณี)", "ไม่เป็นสัจนิรันดร์", "เป็นเท็จทุกกรณี", "ขึ้นอยู่กับค่าของ q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ∧ q สมมูลกับ q ∧ p หรือไม่?", a: ["สมมูลกัน (สลับที่ตัวเชื่อมและได้)", "ไม่สมมูลกัน", "สมมูลเฉพาะเมื่อ p เป็นจริง", "สมมูลเฉพาะเมื่อ q เป็นเท็จ"], correct: 0 },
+          { q: "รูปแบบใดสมมูลกับนิเสธของ ~p ∨ q?", a: ["p ∧ ~q", "~p ∧ q", "~p ∨ ~q", "p ∨ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ↔ ~p เป็นสัจนิรันดร์หรือไม่?", a: ["ไม่เป็นสัจนิรันดร์ (เป็นเท็จทุกกรณี)", "เป็นสัจนิรันดร์", "เป็นจริงบางกรณี", "เป็นสัจนิรันดร์เมื่อ p เป็นจริง"], correct: 0 },
+          { q: "รูปแบบใดสมมูลกับ p → ~q?", a: ["~p ∨ ~q", "p ∧ q", "~p ∧ ~q", "q → ~p"], correct: 0 },
+          { q: "รูปแบบประพจน์ (p ∨ q) → q เป็นสัจนิรันดร์หรือไม่?", a: ["ไม่เป็นสัจนิรันดร์ (เป็นเท็จได้กรณี p=T, q=F)", "เป็นสัจนิรันดร์", "เป็นเท็จทุกกรณี", "เป็นสัจนิรันดร์เมื่อ q เป็นจริง"], correct: 0 },
+          { q: "รูปแบบประพจน์ True → p สมมูลกับข้อใด?", a: ["p", "~p", "จริง (True)", "เท็จ (False)"], correct: 0 }
+        ]
+      },
+      {
+        id: "real-1",
+        grade: "real",
+        title: "แก้สมการพหุนามดีกรีสูง",
+        quiz: [
+          { q: "จงหาคำตอบของสมการพหุนามดีกรีสองต่อไปนี้: x² - 5x + 6 = 0?", a: ["x = 2, 3", "x = -2, -3", "x = 1, 6", "x = -1, -6"], correct: 0 },
+          { q: "จงหาผลเฉลยของสมการ x² - 4 = 0?", a: ["x = 2, -2", "x = 4, -4", "x = 2 เท่านั้น", "ไม่มีคำตอบเป็นจำนวนจริง"], correct: 0 },
+          { q: "จงหาคำตอบของสมการ x² + 6x + 9 = 0?", a: ["x = -3", "x = 3", "x = 3, -3", "x = 0"], correct: 0 },
+          { q: "จงแยกตัวประกอบของพหุนามกำลังสอง x² - 9?", a: ["(x - 3)(x + 3)", "(x - 3)(x - 3)", "(x - 9)(x + 1)", "(x + 3)(x + 3)"], correct: 0 },
+          { q: "เศษที่ได้จากการหารพหุนาม x² - 3x + 5 ด้วย x - 1 เท่ากับเท่าใด?", a: ["3", "5", "1", "0"], correct: 0 },
+          { q: "เศษที่ได้จากการหารพหุนาม x² + 5x + 6 ด้วย x - 2 เท่ากับเท่าใด?", a: ["20", "6", "0", "12"], correct: 0 },
+          { q: "จงหาผลเฉลยของสมการกำลังสอง 2x² - 5x + 2 = 0?", a: ["x = 2, 1/2", "x = -2, -1/2", "x = 1, 4", "x = 2, -1/2"], correct: 0 },
+          { q: "ข้อใดคือการแยกตัวประกอบของ x² + 5x + 4 ที่ถูกต้อง?", a: ["(x + 1)(x + 4)", "(x + 2)(x + 2)", "(x - 1)(x - 4)", "(x - 2)(x - 2)"], correct: 0 },
+          { q: "ถ้า x - 2 เป็นตัวประกอบของ x² + kx - 6 = 0 จงหาค่าสัมประสิทธิ์ k?", a: ["k = 1", "k = -1", "k = 2", "k = -2"], correct: 0 },
+          { q: "จงหาผลเฉลยคำตอบทั้งหมดของสมการ x³ - x = 0?", a: ["x = 0, 1, -1", "x = 1, -1", "x = 0, 1", "x = 0, -1"], correct: 0 },
+          { q: "จงแก้สมการหาค่าของ x จาก x² - 7x + 12 = 0?", a: ["x = 3, 4", "x = -3, -4", "x = 2, 6", "x = 1, 12"], correct: 0 },
+          { q: "เศษที่ได้จากการหารพหุนาม x³ - 2 ด้วย x - 2 มีค่าเท่าใด?", a: ["6", "8", "0", "-2"], correct: 0 },
+          { q: "ถ้ากำหนดให้พหุนาม P(x) = x³ - 3x² + 2x - 5 ข้อใดคือค่าของ P(2)?", a: ["-5", "-9", "3", "0"], correct: 0 },
+          { q: "จงหาคำตอบของสมการกำลังสองต่อไปนี้ x² + 4x = 0?", a: ["x = 0, -4", "x = 0, 4", "x = 2, -2", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "จงหาผลคำตอบของสมการ x² - 3x - 10 = 0?", a: ["x = 5, -2", "x = -5, 2", "x = 10, -1", "x = 5, 2"], correct: 0 },
+          { q: "เศษของการหาร x² - 1 ด้วยพหุนาม x + 1 มีค่าเท่าใด?", a: ["0 (หารลงตัว)", "1", "-1", "2"], correct: 0 },
+          { q: "สมการ x(x - 3)(x + 2) = 0 มีเซตคำตอบตรงกับข้อใด?", a: ["{0, 3, -2}", "{3, -2}", "{0, -3, 2}", "{0, 1, 2}"], correct: 0 },
+          { q: "ข้อใดคือการแยกตัวประกอบของ x² + 2x - 8 ที่ถูกต้อง?", a: ["(x + 4)(x - 2)", "(x - 4)(x + 2)", "(x + 8)(x - 1)", "(x - 8)(x + 1)"], correct: 0 },
+          { q: "จงแก้สมการเพื่อหาค่า x จาก x³ - 2x² = 0?", a: ["x = 0, 2", "x = 2", "x = 0, -2", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "จงหาคำตอบของสมการ x² - 2x + 1 = 0?", a: ["x = 1", "x = -1", "x = 1, -1", "ไม่มีคำตอบ"], correct: 0 }
+        ]
+      },
+      {
+        id: "real-2",
+        grade: "real",
+        title: "อสมการและค่าสัมบูรณ์",
+        quiz: [
+          { q: "จงหาเซตคำตอบของอสมการเชิงเส้นต่อไปนี้: 2x - 4 > 6?", a: ["x > 5", "x < 5", "x > 1", "x < 1"], correct: 0 },
+          { q: "จงหาเซตคำตอบของอสมการเชิงเส้นต่อไปนี้: 3x + 2 ≤ 8?", a: ["x ≤ 2", "x ≥ 2", "x ≤ 3", "x ≥ 3"], correct: 0 },
+          { q: "ช่วงคำตอบของอสมการกำลังสอง (x - 2)(x - 3) < 0 สอดคล้องกับข้อใด?", a: ["(2, 3)", "[-∞, 2) ∪ (3, ∞]", "[2, 3]", "(-∞, 2) ∪ (3, ∞)"], correct: 0 },
+          { q: "ช่วงคำตอบของอสมการกำลังสอง (x - 1)(x - 4) > 0 สอดคล้องกับข้อใด?", a: ["(-∞, 1) ∪ (4, ∞)", "(1, 4)", "[-∞, 1] ∪ [4, ∞]", "[1, 4]"], correct: 0 },
+          { q: "ข้อความอสมการในรูปช่วงใดสมมูลกับอสมการค่าสัมบูรณ์ต่อไปนี้: |x| < 3?", a: ["-3 < x < 3", "x < 3", "x > -3", "x < -3 หรือ x > 3"], correct: 0 },
+          { q: "ข้อความอสมการในรูปช่วงใดสมมูลกับอสมการค่าสัมบูรณ์ต่อไปนี้: |x| > 5?", a: ["x < -5 หรือ x > 5", "-5 < x < 5", "x > 5", "x < -5"], correct: 0 },
+          { q: "จงแก้สมการค่าสัมบูรณ์ต่อไปนี้เพื่อหาค่า x: |x - 2| = 3?", a: ["x = 5, -1", "x = 5", "x = -1", "x = 3, -3"], correct: 0 },
+          { q: "จงแก้สมการค่าสัมบูรณ์ต่อไปนี้เพื่อหาค่า x: |x + 1| = 4?", a: ["x = 3, -5", "x = 3", "x = -5", "x = 4, -4"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการเชิงเส้นเชิงลบ: 5 - x > 2?", a: ["x < 3", "x > 3", "x < -3", "x > -3"], correct: 0 },
+          { q: "เซตคำตอบของอสมการกำลังสอง x² - 9 ≤ 0 สอดคล้องกับช่วงคำตอบข้อใด?", a: ["[-3, 3]", "(-3, 3)", "(-∞, -3] ∪ [3, ∞)", "(-∞, -3) ∪ (3, ∞)"], correct: 0 },
+          { q: "เซตคำตอบของอสมการกำลังสอง x² - 16 > 0 สอดคล้องกับช่วงคำตอบข้อใด?", a: ["(-∞, -4) ∪ (4, ∞)", "[-4, 4]", "(-4, 4)", "(-∞, -4] ∪ [4, ∞)"], correct: 0 },
+          { q: "สมการค่าสัมบูรณ์ |x| = -2 มีคำตอบที่เป็นจำนวนจริงใดบ้าง?", a: ["ไม่มีจำนวนจริงใดเป็นคำตอบ (ค่าสัมบูรณ์ต้องเป็นบวกเสมอ)", "x = -2", "x = 2, -2", "x = 0"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการค่าสัมบูรณ์ต่อไปนี้: |x - 3| < 2?", a: ["1 < x < 5", "-2 < x < 2", "x < 5", "x > 1"], correct: 0 },
+          { q: "จงแก้หาช่วงคำตอบของอสมการเชิงเส้น 4x - 7 ≥ 5?", a: ["x ≥ 3", "x ≤ 3", "x ≥ 1/2", "x ≤ -3"], correct: 0 },
+          { q: "ช่วงคำตอบของอสมการเชิงเส้นติดลบ -2x < 6 ตรงกับข้อใด? (อย่าลืมกลับเครื่องหมายเมื่อหารด้วยจำนวนลบ)", a: ["x > -3", "x < -3", "x > 3", "x < 3"], correct: 0 },
+          { q: "คำตอบของสมการค่าสัมบูรณ์ |2x| = 6 ตรงกับข้อใด?", a: ["x = 3, -3", "x = 3", "x = 6, -6", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "จงหาเซตคำตอบของอสมการค่าสัมบูรณ์ต่อไปนี้: |x| ≤ 0?", a: ["x = 0", "เซตว่าง (∅)", "ไม่มีคำตอบ", "จำนวนจริงทุกจำนวน"], correct: 0 },
+          { q: "จงแก้อสมการเชิงเส้นต่อไปนี้: x - 3 < 2x?", a: ["x > -3", "x < -3", "x > 3", "x < 3"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการพหุนามกำลังสองที่ยกกำลังสองสมบูรณ์: (x - 5)² ≤ 0?", a: ["x = 5", "เซตว่าง (∅)", "x ≤ 5", "จำนวนจริงทั้งหมด"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการกำลังสอง x² + 1 < 0 ในฐานะจำนวนจริง?", a: ["ไม่มีจำนวนจริงใดเป็นคำตอบ", "x < -1", "x = -1, 1", "จำนวนจริงทั้งหมด"], correct: 0 }
+        ]
+      },
+      {
+        id: "func-1",
+        grade: "function",
+        title: "ความสัมพันธ์และโดเมนกับเรนจ์",
+        quiz: [
+          { q: "กำหนดความสัมพันธ์ r = {(1, 2), (2, 3), (3, 4)} ข้อใดคือโดเมน (Domain) ของ r?", a: ["{1, 2, 3}", "{2, 3, 4}", "{1, 2, 3, 4}", "{(1, 2), (2, 3)}"], correct: 0 },
+          { q: "กำหนดความสัมพันธ์ r = {(1, 2), (2, 3), (3, 4)} ข้อใดคือเรนจ์ (Range) ของ r?", a: ["{2, 3, 4}", "{1, 2, 3}", "{1, 2, 3, 4}", "{(2, 3), (3, 4)}"], correct: 0 },
+          { q: "กำหนดให้เซต A = {1, 2} และ B = {3, 4} เซตผลคูณคาร์ทีเซียน A × B จะมีจำนวนสมาชิกทั้งหมดกี่ตัว?", a: ["4 ตัว", "2 ตัว", "5 ตัว", "3 ตัว"], correct: 0 },
+          { q: "กำหนดให้เซต A = {a} และ B = {1, 2} ข้อใดคือสมาชิกของผลคูณคาร์ทีเซียน A × B ที่ถูกต้อง?", a: ["{ (a, 1), (a, 2) }", "{ (1, a), (2, a) }", "{ a, 1, 2 }", "{ (a, 1, 2) }"], correct: 0 },
+          { q: "ถ้าต้องการหาโดเมนของความสัมพันธ์รูปสมการ y = 1 / (x - 3) ค่า x ห้ามเป็นจำนวนใด?", a: ["x = 3", "x = -3", "x = 0", "x = 1"], correct: 0 },
+          { q: "หากต้องการหาโดเมนของความสัมพันธ์ที่ติดราก y = √(x - 2) ข้อใดคือโดเมนที่สอดคล้องกับเงื่อนไขในรูท (x - 2 ≥ 0)?", a: ["x ≥ 2", "x > 2", "x ≤ 2", "R (จำนวนจริงทั้งหมด)"], correct: 0 },
+          { q: "จงหาเรนจ์ (Range) ของความสัมพันธ์กำลังสองปกติ y = x²?", a: ["[0, ∞)", "R (จำนวนจริงทั้งหมด)", "(-∞, 0]", "[1, ∞)"], correct: 0 },
+          { q: "จงหาเรนจ์ (Range) ของความสัมพันธ์ในรูปค่าสัมบูรณ์ y = |x|?", a: ["[0, ∞)", "R (จำนวนจริงทั้งหมด)", "(-∞, 0]", "R - {0}"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ที่เป็นสมการเส้นตรง y = 2x + 5 คือข้อใด?", a: ["R (จำนวนจริงทั้งหมด)", "R - {2}", "x ≥ 0", "R - {5}"], correct: 0 },
+          { q: "เรนจ์ของความสัมพันธ์ y = x² + 1 ตรงกับข้อใด?", a: ["[1, ∞)", "[0, ∞)", "R (จำนวนจริงทั้งหมด)", "[-1, 1]"], correct: 0 },
+          { q: "กำหนดให้เซต A = {1} และ B = {2, 3} ข้อใดคือสมาชิกของผลคูณคาร์ทีเซียน B × A?", a: ["{ (2, 1), (3, 1) }", "{ (1, 2), (1, 3) }", "{ (1, 2, 3) }", "{ 2, 3, 1 }"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = 2 / x ห้าม x เป็นเลขใด?", a: ["x = 0", "x = 2", "x = -2", "x = 1"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = √x คือข้อใด?", a: ["x ≥ 0", "x > 0", "R", "x ≤ 0"], correct: 0 },
+          { q: "กำหนด r = {(2, a), (3, b)} ข้อใดคือเซตโดเมน D_r?", a: ["{2, 3}", "{a, b}", "{2, 3, a, b}", "{(2, a)}"], correct: 0 },
+          { q: "จงหาเรนจ์ (Range) ของความสัมพันธ์ y = -|x|?", a: ["(-∞, 0]", "[0, ∞)", "R", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = 5 / (x + 2) ห้าม x เป็นจำนวนใด?", a: ["x = -2", "x = 2", "x = 0", "x = -5"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = √(3 - x) สอดคล้องกับข้อใด?", a: ["x ≤ 3", "x ≥ 3", "x < 3", "R"], correct: 0 },
+          { q: "เรนจ์ของความสัมพันธ์ y = x² - 3 สอดคล้องกับข้อใด?", a: ["[-3, ∞)", "[3, ∞)", "[0, ∞)", "R"], correct: 0 },
+          { q: "ถ้า n(A) = 3 และ n(B) = 4 จงหาจำนวนสมาชิกทั้งหมดของ A × B?", a: ["12 ตัว", "7 ตัว", "9 ตัว", "16 ตัว"], correct: 0 },
+          { q: "กำหนดความสัมพันธ์ r = {(1, a), (1, b)} ข้อใดคือเรนจ์ R_r?", a: ["{a, b}", "{1}", "{1, a, b}", "{(1, a)}"], correct: 0 }
+        ]
+      },
+      {
+        id: "func-2",
+        grade: "function",
+        title: "ฟังก์ชัน และประเภทฟังก์ชัน",
+        quiz: [
+          { q: "ความสัมพันธ์ในข้อใดต่อไปนี้มีคุณลักษณะของความเป็น 'ฟังก์ชัน'?", a: ["{ (1, a), (2, b), (3, c) }", "{ (1, a), (1, b) }", "{ (2, 5), (2, 6) }", "{ (a, 1), (a, 2) }"], correct: 0 },
+          { q: "ความสัมพันธ์ในข้อใดต่อไปนี้ ไม่เป็น ฟังก์ชัน?", a: ["{ (1, a), (1, b) }", "{ (1, a), (2, b), (3, a) }", "{ (2, 2), (3, 3) }", "{ (a, 1), (b, 2) }"], correct: 0 },
+          { q: "กำหนดให้ f(x) = 2x + 3 จงคำนวณหาค่าของ f(4)?", a: ["11", "9", "14", "8"], correct: 0 },
+          { q: "กำหนดให้ f(x) = x² - 1 จงคำนวณหาค่าของ f(-2)?", a: ["3", "-3", "5", "-5"], correct: 0 },
+          { q: "กำหนดให้ f(x) = x + 1 และ g(x) = 2x จงคำนวณหาค่าฟังก์ชันประกอบ (f ∘ g)(3)?", a: ["7", "8", "6", "12"], correct: 0 },
+          { q: "กำหนดให้ f(x) = x + 1 และ g(x) = 2x จงคำนวณหาค่าฟังก์ชันประกอบ (g ∘ f)(3)?", a: ["8", "7", "6", "10"], correct: 0 },
+          { q: "จงหาอินเวอร์สฟังก์ชัน (ฟังก์ชันผกผัน) f⁻¹(x) ของ f(x) = x + 2?", a: ["x - 2", "2x", "x / 2", "2 - x"], correct: 0 },
+          { q: "จงหาอินเวอร์สฟังก์ชัน f⁻¹(x) ของ f(x) = 3x?", a: ["x / 3", "3x", "x - 3", "3 - x"], correct: 0 },
+          { q: "ในการทดสอบกราฟความสัมพันธ์ด้วยการลากเส้นตรงในแนวตั้งขนานแกน Y ตัดผ่านกราฟ 2 จุด สรุปได้ว่าอย่างไร?", a: ["กราฟความสัมพันธ์นี้ ไม่เป็นฟังก์ชัน", "กราฟความสัมพันธ์นี้ เป็นฟังก์ชัน", "กราฟไม่มีจุดวิกฤต", "ไม่สามารถระบุได้"], correct: 0 },
+          { q: "กำหนดฟังก์ชันคงตัว f(x) = 5 ข้อใดคือค่าของ f(10)?", a: ["5", "10", "50", "0"], correct: 0 },
+          { q: "กำหนด f(x) = |x| - 3 จงหาค่า f(-5)?", a: ["2", "-2", "8", "-8"], correct: 0 },
+          { q: "กราฟความสัมพันธ์ปกติในข้อใดเป็นฟังก์ชัน?", a: ["กราฟพาราโบลาหงาย (y = x²)", "กราฟรูปวงกลม", "กราฟรูปวงรี", "กราฟพาราโบลาตะแคงขวา"], correct: 0 },
+          { q: "กำหนด f(x) = 2x - 1 จงหาค่า f(0)?", a: ["-1", "0", "1", "-2"], correct: 0 },
+          { q: "ฟังก์ชันในข้อใดต่อไปนี้จัดว่าเป็นฟังก์ชันแบบ 1 to 1 (ฟังก์ชันหนึ่งต่อหนึ่ง)?", a: ["f(x) = 3x + 1", "f(x) = x²", "f(x) = |x|", "f(x) = 5"], correct: 0 },
+          { q: "กำหนด f(x) = x + 3 จงหาค่าของ f(f(1))?", a: ["7", "4", "6", "5"], correct: 0 },
+          { q: "จงหาฟังก์ชันผกผัน f⁻¹(x) ของ f(x) = x - 5?", a: ["x + 5", "5x", "x / 5", "5 - x"], correct: 0 },
+          { q: "กำหนด f(x) = 2x จงหาค่า x เมื่อกำหนดให้ f(x) = 10?", a: ["x = 5", "x = 2", "x = 20", "x = 8"], correct: 0 },
+          { q: "กำหนด f(x) = x² + 5 จงหาค่า f(1)?", a: ["6", "5", "7", "1"], correct: 0 },
+          { q: "การตรวจสอบความเป็นฟังก์ชันแบบหนึ่งต่อหนึ่ง (1 to 1) ด้วยการลากเส้นขนานแกน X (Horizontal Line Test) เส้นตรงนั้นต้องตัดผ่านกราฟอย่างมากกี่จุด?", a: ["1 จุด", "2 จุด", "ไม่จำกัดจุด", "ไม่มีจุดตัดเลย"], correct: 0 },
+          { q: "กำหนด f(x) = 3 ข้อใดคือค่าของ f(f(f(2)))?", a: ["3", "2", "9", "27"], correct: 0 }
+        ]
+      }
+    ];
+
+    // ==========================================
+    //  EXAM CORE LOGICS
+    // ==========================================
+    let examRoom = "";
+    let examNo = "";
+    let examName = "";
+    let selectedChapterKey = "";
+    let selectedChapterLabel = "";
+    let activeExamList = []; // stores the 10 selected shuffled questions
+    let selectedExamAnswers = {}; // stores { questionIdx: optionIdx }
+    let isExamActive = false;
+    let countdownTimer = null;
+    let timeLeft = 40 * 60; // 20 minutes in seconds
+
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.warn('Wake Lock request failed:', err.message);
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock !== null) {
+        wakeLock.release().then(() => {
+          wakeLock = null;
+        });
+      }
+    }
+
+    // Helper: Fisher-Yates shuffle
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function selectChapter(chapterKey) {
+      selectedChapterKey = chapterKey;
+      
+      const buttons = {
+        'set': 'btn-chapter-set',
+        'logic': 'btn-chapter-logic',
+        'real': 'btn-chapter-real',
+        'function': 'btn-chapter-function'
+      };
+
+      const labels = {
+        'set': 'บทที่ 1: เซต',
+        'logic': 'บทที่ 2: ตรรกศาสตร์',
+        'real': 'บทที่ 3: ระบบจำนวนจริง',
+        'function': 'บทที่ 4: ความสัมพันธ์และฟังก์ชัน'
+      };
+
+      selectedChapterLabel = labels[chapterKey];
+
+      Object.keys(buttons).forEach(k => {
+        const btn = document.getElementById(buttons[k]);
+        if (k === chapterKey) {
+          btn.className = "chapter-btn p-3 rounded-xl border border-accentred bg-accentred/10 text-left text-xs text-white transition-all flex items-center justify-between";
+        } else {
+          btn.className = "chapter-btn p-3 rounded-xl border border-white/10 text-left text-xs hover:bg-white/5 transition-all flex items-center justify-between";
+        }
+      });
+    }
+
+    // Start Exam Setup
+    function startExam() {
+      examRoom = document.getElementById('exam-room').value;
+      examNo = document.getElementById('exam-no').value.trim();
+      examName = document.getElementById('exam-name').value.trim();
+      const errMsg = document.getElementById('setup-error-msg');
+
+      if (!examNo || !examName) {
+        errMsg.innerText = "⚠️ กรุณากรอกข้อมูลเลขที่และชื่อ-นามสกุลจริงให้ครบถ้วน";
+        errMsg.classList.remove('hidden');
+        return;
+      }
+      if (!selectedChapterKey) {
+        errMsg.innerText = "⚠️ กรุณาคลิกเลือกหัวข้อบทเรียนที่ต้องการสอบ";
+        errMsg.classList.remove('hidden');
+        return;
+      }
+
+      errMsg.classList.add('hidden');
+      setupQuestionsForExam();
+
+      // Show Exam Screen, Hide setup screen
+      document.getElementById('setup-screen').classList.add('hidden');
+      document.getElementById('back-btn').classList.add('hidden'); // Hide back button during exam to prevent easy leave
+      document.getElementById('exam-screen').classList.remove('hidden');
+
+      // Set Info
+      document.getElementById('info-room').innerText = examRoom;
+      document.getElementById('info-no').innerText = examNo;
+      document.getElementById('info-name').innerText = examName;
+      document.getElementById('info-subject').innerText = selectedChapterLabel;
+
+      // Start timer
+      isExamActive = true;
+      timeLeft = 40 * 60; // 20 minutes
+      startTimer();
+      requestWakeLock();
+    }
+
+    // Setup 10 Shuffled questions from the chapter pool of 20
+    function setupQuestionsForExam() {
+      // Find all lessons for the selected chapter
+      const chapterLessons = originalLessonsData.filter(l => l.grade === selectedChapterKey);
+      
+      // Combine all quizzes in these lessons into a single pool (should be 20 questions)
+      let combinedPool = [];
+      chapterLessons.forEach(l => {
+        combinedPool = combinedPool.concat(l.quiz);
+      });
+
+      // Clone pool
+      let poolCopy = JSON.parse(JSON.stringify(combinedPool));
+
+      // Shuffle pool
+      shuffle(poolCopy);
+
+      // Select first 10
+      let selected = poolCopy.slice(0, 20);
+
+      // Shuffle options for each selected question
+      selected.forEach(qObj => {
+        let optionsMetadata = qObj.a.map((optText, index) => {
+          return { text: optText, isCorrect: (index === qObj.correct) };
+        });
+
+        shuffle(optionsMetadata);
+
+        qObj.a = optionsMetadata.map(o => o.text);
+        qObj.correct = optionsMetadata.findIndex(o => o.isCorrect);
+      });
+
+      activeExamList = selected;
+      selectedExamAnswers = {};
+
+      renderExamQuestions();
+    }
+
+    // Render 10 questions in page
+    function renderExamQuestions() {
+      const container = document.getElementById('exam-questions-container');
+      container.innerHTML = '';
+
+      activeExamList.forEach((quiz, qIdx) => {
+        const card = document.createElement('div');
+        card.className = 'glass-card p-6 rounded-2xl border border-white/5 space-y-4';
+        
+        card.innerHTML = `
+          <h4 class="text-xs sm:text-sm font-semibold text-white leading-relaxed">
+            <span class="text-accentred font-outfit font-bold mr-1">ข้อที่ ${qIdx + 1}</span> — ${quiz.q}
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5" id="exam-options-q-${qIdx}">
+            <!-- Options injected -->
+          </div>
+        `;
+        container.appendChild(card);
+
+        const optionsContainer = document.getElementById(`exam-options-q-${qIdx}`);
+        quiz.a.forEach((optText, oIdx) => {
+          const btn = document.createElement('button');
+          btn.id = `exam-opt-${qIdx}-${oIdx}`;
+          btn.className = 'option-btn text-left p-3.5 rounded-xl text-xs text-textlight/80 flex items-center gap-2.5';
+          btn.onclick = () => selectExamOption(qIdx, oIdx);
+          btn.innerHTML = `
+            <span class="w-5 h-5 rounded-full border border-white/20 flex items-center justify-center text-[10px] font-bold shrink-0 font-outfit">
+              ${oIdx + 1}
+            </span>
+            <span>${optText}</span>
+          `;
+          optionsContainer.appendChild(btn);
+        });
+      });
+    }
+
+    function selectExamOption(qIdx, oIdx) {
+      if (!isExamActive) return;
+
+      selectedExamAnswers[qIdx] = oIdx;
+
+      // Clear selection style
+      activeExamList[qIdx].a.forEach((_, idx) => {
+        document.getElementById(`exam-opt-${qIdx}-${idx}`).classList.remove('selected');
+      });
+
+      // Highlight selected
+      document.getElementById(`exam-opt-${qIdx}-${oIdx}`).classList.add('selected');
+    }
+
+    // Anti-Cheating Reset Handler
+    function triggerAntiCheating() {
+      if (!isExamActive) return;
+
+      // Stop exam immediately
+      isExamActive = false;
+      if (countdownTimer) clearInterval(countdownTimer);
+      releaseWakeLock();
+
+      // Show Cheat alert screen
+      document.getElementById('cheat-modal').classList.remove('hidden');
+      document.getElementById('cheat-modal').classList.add('flex');
+    }
+
+    // Restart exam after cheating modal action
+    function restartExamAfterCheat() {
+      // Hide modal
+      document.getElementById('cheat-modal').classList.add('hidden');
+      document.getElementById('cheat-modal').classList.remove('flex');
+
+      // Reset and start new exam
+      setupQuestionsForExam();
+      isExamActive = true;
+      timeLeft = 40 * 60; // Reset timer
+      startTimer();
+      requestWakeLock();
+    }
+
+    // Listen to Browser tab/window blur and visibility events
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        triggerAntiCheating();
+      }
+    });
+
+    window.addEventListener('blur', () => {
+      triggerAntiCheating();
+    });
+
+    // Countdown Timer logic
+    function startTimer() {
+      if (countdownTimer) clearInterval(countdownTimer);
+      
+      const timerDisplay = document.getElementById('exam-timer');
+      
+      countdownTimer = setInterval(() => {
+        if (!isExamActive) {
+          clearInterval(countdownTimer);
+          return;
+        }
+
+        timeLeft--;
+        if (timeLeft <= 0) {
+          timeLeft = 0;
+          clearInterval(countdownTimer);
+          timerDisplay.innerText = "00:00";
+          timerDisplay.className = "font-outfit text-sm font-bold text-accentred tracking-widest";
+          isExamActive = false;
+          alert("⏰ หมดเวลาทำข้อสอบแล้ว! ระบบจะทำการส่งข้อสอบของคุณโดยอัตโนมัติ");
+          submitExamScores();
+        } else {
+          const min = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+          const sec = String(timeLeft % 60).padStart(2, '0');
+          timerDisplay.innerText = `${min}:${sec}`;
+          
+          if (timeLeft < 60) {
+            timerDisplay.className = "font-outfit text-sm font-bold text-accentred tracking-widest animate-pulse";
+          } else {
+            timerDisplay.className = "font-outfit text-sm font-bold text-white tracking-widest";
+          }
+        }
+      }, 1000);
+    }
+
+    // Submit trigger confirmation
+    function confirmSubmitExam() {
+      if (!isExamActive) return;
+
+      // Check if all 10 questions are answered
+      let unanswered = false;
+      for (let i = 0; i < 20; i++) {
+        if (selectedExamAnswers[i] === undefined) {
+          unanswered = true;
+          break;
+        }
+      }
+
+      const feedback = document.getElementById('exam-feedback');
+      if (unanswered) {
+        feedback.innerText = "⚠️ คุณตอบคำถามไม่ครบ 20 ข้อ กรุณาตอบข้อสอบให้ครบทุกข้อก่อนกดส่ง";
+        return;
+      }
+
+      feedback.innerText = "";
+      
+      if (confirm("คุณแน่ใจหรือไม่ว่าต้องการส่งกระดาษคำตอบวิชาสอบนี้? (หลังจากส่งแล้วจะไม่สามารถแก้ไขคำตอบได้อีก)")) {
+        isExamActive = false;
+        if (countdownTimer) clearInterval(countdownTimer);
+        submitExamScores();
+      }
+    }
+
+    // Calculate score & send via HTTP to Spreadsheet
+    function submitExamScores() {
+      let score = 0;
+      activeExamList.forEach((quiz, idx) => {
+        const chosen = selectedExamAnswers[idx];
+        if (chosen === quiz.correct) {
+          score++;
+        }
+      });
+
+      // Show sending state
+      const feedback = document.getElementById('exam-feedback');
+      feedback.className = "text-xs font-semibold text-accentamber";
+      feedback.innerText = "⏳ กำลังส่งประวัติและคะแนนสอบของคุณเข้าระบบ...";
+
+      // Disable all buttons in UI
+      activeExamList.forEach((quiz, qIdx) => {
+        quiz.a.forEach((_, oIdx) => {
+          const btn = document.getElementById(`exam-opt-${qIdx}-${oIdx}`);
+          if (btn) btn.disabled = true;
+        });
+      });
+
+      // Apps script endpoint
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbw3eNbBuhg-P-dLxBeZkYIggp0FW9GM1TdL1wVd1XeyxvwRTzw4BcMNiPBEyyWH1le-/exec';
+      
+      const params = {
+        action: 'exam_save',
+        room: examRoom,
+        no: examNo,
+        name: examName,
+        subject: selectedChapterLabel,
+        score: score.toString(),
+        total: "20"
+      };
+
+      const url = scriptUrl + '?' + new URLSearchParams(params).toString();
+
+      fetch(url, { mode: 'no-cors' })
+        .then(() => {
+          releaseWakeLock();
+          // Show Screen 3
+          document.getElementById('exam-screen').classList.add('hidden');
+          document.getElementById('result-screen').classList.remove('hidden');
+
+          // Score is hidden from student, and directly saved to Sheets
+          console.log("Exam score submitted successfully: " + score + "/20");
+        })
+        .catch(err => {
+          console.error(err);
+          feedback.className = "text-xs font-semibold text-accentred";
+          feedback.innerText = "❌ เกิดข้อผิดพลาดทางเทคนิคในการส่งข้อมูล กรุณาถ่ายภาพหน้าจอคะแนนแล้วแจ้งคุณครูโดยตรง";
+        });
+    }
+
+  </script>
+</body>
+</html>

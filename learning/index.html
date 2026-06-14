@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📐 คลังคณิตศาสตร์เพิ่มเติม ม.4 - ครูนิวตรอน.com</title>
+  <meta name="description" content="คลังเรียนรู้ออนไลน์วิชาคณิตศาสตร์เพิ่มเติม ชั้นมัธยมศึกษาปีที่ 4 เรียนรู้ทบทวนบทเรียน ทำแบบฝึกหัด และเก็บสถิติการเรียน">
+
+  <!-- Google Fonts - Kanit, Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Outfit:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            darkbg: '#0C0C0C',
+            textlight: '#D7E2EA',
+            accentpurple: '#8b5cf6',
+            accentblue: '#3b82f6',
+            accentpink: '#ec4899',
+            accentemerald: '#10b981',
+            accentamber: '#f59e0b',
+            accentred: '#f43f5e',
+            accentteal: '#2dd4bf',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Base Resets */
+    html, body {
+      background-color: #0C0C0C;
+      color: #D7E2EA;
+      font-family: 'Kanit', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0C0C0C;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2A2A2A;
+      border-radius: 99px;
+    }
+
+    /* Heading gradient text */
+    .hero-heading {
+      background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Glassmorphism Cards */
+    .glass-card {
+      background: rgba(17, 24, 39, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @media (min-width: 1024px) {
+      .glass-card {
+        background: rgba(17, 24, 39, 0.45);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+    }
+
+    /* Lesson content rendering styles */
+    .lesson-rich-content h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      border-left: 4px solid #3b82f6;
+      padding-left: 0.75rem;
+      margin-top: 1.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .lesson-rich-content h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #F3F4F6;
+      margin-top: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .lesson-rich-content p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #BBCCD7;
+      margin-bottom: 1.25rem;
+    }
+    .lesson-rich-content ul, .lesson-rich-content ol {
+      list-style-position: inside;
+      margin-bottom: 1.25rem;
+      padding-left: 0.5rem;
+      color: #BBCCD7;
+      font-size: 0.95rem;
+    }
+    .lesson-rich-content ul {
+      list-style-type: disc;
+    }
+    .lesson-rich-content ol {
+      list-style-type: decimal;
+    }
+    .lesson-rich-content li {
+      margin-bottom: 0.5rem;
+      line-height: 1.6;
+    }
+    .lesson-rich-content li b, .lesson-rich-content p b {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+    .lesson-rich-content pre {
+      background-color: #050505;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+    .lesson-rich-content code {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.875rem;
+      color: #f43f5e;
+    }
+    .lesson-rich-content pre code {
+      color: #D7E2EA;
+    }
+    .lesson-rich-content .math-block {
+      background: rgba(59, 130, 246, 0.05);
+      border: 1px dashed rgba(59, 130, 246, 0.2);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #60a5fa;
+      font-family: 'Outfit', sans-serif;
+      margin-bottom: 1.25rem;
+    }
+    .lesson-rich-content .example-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-left: 4px solid #10b981;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .lesson-rich-content .example-box h4 {
+      font-weight: 700;
+      color: #10b981;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Option button states */
+    .option-btn {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.2s ease;
+    }
+    .option-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .option-btn.selected {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: #3b82f6;
+      color: #FFFFFF;
+    }
+    .option-btn.correct-highlight {
+      background: rgba(16, 185, 129, 0.15) !important;
+      border-color: #10b981 !important;
+      color: #FFFFFF !important;
+    }
+    .option-btn.wrong-highlight {
+      background: rgba(244, 63, 94, 0.15) !important;
+      border-color: #f43f5e !important;
+      color: #FFFFFF !important;
+    }
+  </style>
+</head>
+<body class="bg-darkbg text-textlight select-none">
+
+  <!-- Background elements -->
+  <canvas id="starfield" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+  <div class="hidden lg:block absolute top-[10%] left-[20%] w-[35vw] h-[35vw] rounded-full bg-accentblue/3 blur-[140px] pointer-events-none z-0"></div>
+  <div class="hidden lg:block absolute bottom-[15%] right-[10%] w-[25vw] h-[25vw] rounded-full bg-accentpurple/3 blur-[140px] pointer-events-none z-0"></div>
+
+  <!-- Main Container -->
+  <div class="w-full min-h-screen z-10 relative flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="w-full max-w-7xl mx-auto px-6 pt-6 pb-4 flex justify-between items-center border-b border-white/5">
+      <a href="../index.html" class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-textlight/70 hover:text-white transition-colors duration-300 group">
+        <svg class="w-4 h-4 transition-transform duration-300 group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        ⬅️ กลับสู่ระบบหลัก
+      </a>
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-accentblue to-accentteal flex items-center justify-center">
+          <svg class="w-4 h-4 fill-none stroke-white stroke-[2.5]" viewBox="0 0 24 24">
+            <line x1="4" y1="9" x2="20" y2="9"></line>
+            <line x1="4" y1="15" x2="20" y2="15"></line>
+            <line x1="10" y1="3" x2="14" y2="21"></line>
+          </svg>
+        </div>
+        <span class="font-bold text-xs sm:text-sm tracking-widest text-white font-kanit">
+          KRUNEWTRON<span class="text-accentblue">.COM</span>
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="w-full max-w-7xl mx-auto px-6 py-8 flex-1 flex flex-col lg:flex-row gap-8">
+      
+      <!-- LEFT SIDEBAR: PROFILE, PROGRESS & ACHIEVEMENTS -->
+      <section class="w-full lg:w-[32%] xl:w-[28%] flex flex-col gap-6">
+        
+        <!-- Welcome & Global Progress -->
+        <div class="glass-card p-6 rounded-3xl border border-white/5">
+          <div class="flex items-center gap-4 mb-4">
+            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-black/40 border border-white/10 flex items-center justify-center p-1 shadow-inner">
+              <img src="../images/mascot.png" alt="Mascot Avatar" class="w-full h-full object-contain">
+            </div>
+            <div>
+              <div class="text-[10px] font-semibold text-accentblue tracking-wider uppercase font-kanit">คลังความรู้คณิตศาสตร์</div>
+              <h2 class="text-base font-bold text-white leading-tight font-kanit">คณิตศาสตร์เพิ่มเติม ม.4</h2>
+            </div>
+          </div>
+          
+          <div class="border-t border-white/5 pt-4">
+            <div class="flex justify-between items-center text-xs font-semibold mb-2">
+              <span class="text-textlight/55 font-kanit">ความก้าวหน้าสะสม</span>
+              <span id="global-progress-txt" class="text-accentblue font-outfit">0%</span>
+            </div>
+            <div class="w-full h-2 rounded-full bg-white/[0.03] overflow-hidden border border-white/5">
+              <div id="global-progress-bar" class="h-full bg-gradient-to-r from-accentblue to-accentteal rounded-full transition-all duration-500 ease-out" style="width: 0%;"></div>
+            </div>
+            <div class="text-[10px] text-textlight/40 font-light mt-1.5 text-right font-kanit">
+              ผ่านแล้ว <span id="global-progress-count" class="font-semibold text-textlight/60">0</span> จาก 8 บทเรียน
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges Earned Card -->
+        <div class="glass-card p-6 rounded-3xl border border-white/5 flex-1">
+          <h3 class="font-bold text-sm text-white tracking-wide mb-4 flex items-center gap-2 font-kanit">
+            🏆 เหรียญรางวัลเกียรติยศ
+          </h3>
+          <div class="flex flex-col gap-3.5" id="badge-container">
+            <!-- Badge 1: Sets -->
+            <div id="badge-set" class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.01] border border-white/5 opacity-30 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-accentblue/10 flex items-center justify-center text-xl shrink-0 border border-accentblue/10 shadow-lg shadow-accentblue/5">🔵</div>
+              <div>
+                <h4 class="text-xs font-bold text-white font-kanit">ผู้เชี่ยวชาญเรื่องเซต</h4>
+                <p class="text-[9px] text-textlight/50 mt-0.5 font-kanit">ผ่านบทเรียนเรื่องเซตครบทั้งหมด</p>
+              </div>
+            </div>
+
+            <!-- Badge 2: Logic -->
+            <div id="badge-logic" class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.01] border border-white/5 opacity-30 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-accentpurple/10 flex items-center justify-center text-xl shrink-0 border border-accentpurple/10 shadow-lg shadow-accentpurple/5">🧠</div>
+              <div>
+                <h4 class="text-xs font-bold text-white font-kanit">นักตรรกศาสตร์รุ่นเยาว์</h4>
+                <p class="text-[9px] text-textlight/50 mt-0.5 font-kanit">ผ่านบทเรียนตรรกศาสตร์ครบทั้งหมด</p>
+              </div>
+            </div>
+
+            <!-- Badge 3: Real Numbers -->
+            <div id="badge-real" class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.01] border border-white/5 opacity-30 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-accentpink/10 flex items-center justify-center text-xl shrink-0 border border-accentpink/10 shadow-lg shadow-accentpink/5">⚡</div>
+              <div>
+                <h4 class="text-xs font-bold text-white font-kanit">ผู้พิทักษ์จำนวนจริง</h4>
+                <p class="text-[9px] text-textlight/50 mt-0.5 font-kanit">ผ่านบทเรียนระบบจำนวนจริงครบทั้งหมด</p>
+              </div>
+            </div>
+
+            <!-- Badge 4: Functions -->
+            <div id="badge-function" class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.01] border border-white/5 opacity-30 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-accentteal/10 flex items-center justify-center text-xl shrink-0 border border-accentteal/10 shadow-lg shadow-accentteal/5">📐</div>
+              <div>
+                <h4 class="text-xs font-bold text-white font-kanit">เซียนวิเคราะห์ฟังก์ชัน</h4>
+                <p class="text-[9px] text-textlight/50 mt-0.5 font-kanit">ผ่านบทเรียนเรื่องฟังก์ชันครบทั้งหมด</p>
+              </div>
+            </div>
+
+            <!-- Grand Badge -->
+            <div id="badge-grand" class="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.01] border border-white/5 opacity-30 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-accentamber/10 flex items-center justify-center text-xl shrink-0 border border-accentamber/10 shadow-lg shadow-accentamber/5">⚛️</div>
+              <div>
+                <h4 class="text-xs font-bold text-white font-kanit">ยอดอัจฉริยะคณิตศาสตร์ ม.4</h4>
+                <p class="text-[9px] text-textlight/50 mt-0.5 font-kanit">ทบทวนและทำควิซผ่านครบ 100%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- RIGHT PANEL: LESSON FILTER & CONTENT GRID -->
+      <section class="flex-1 flex flex-col gap-6">
+        
+        <!-- Filters (Search bar + Tab Bar) -->
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+          <!-- Grade Tab Selectors -->
+          <div class="flex bg-black/40 border border-white/5 rounded-2xl p-1 w-full md:w-auto shrink-0 font-kanit">
+            <button onclick="switchTab('all')" id="tab-all" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 bg-accentblue text-white shadow-md shadow-accentblue/10">ทั้งหมด</button>
+            <button onclick="switchTab('set')" id="tab-set" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 text-textlight/60 hover:text-white">เซต</button>
+            <button onclick="switchTab('logic')" id="tab-logic" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 text-textlight/60 hover:text-white">ตรรกศาสตร์</button>
+            <button onclick="switchTab('real')" id="tab-real" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 text-textlight/60 hover:text-white">จำนวนจริง</button>
+            <button onclick="switchTab('function')" id="tab-function" class="flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 text-textlight/60 hover:text-white">ฟังก์ชัน</button>
+          </div>
+
+          <!-- Live Search Bar -->
+          <div class="relative w-full md:max-w-xs font-kanit">
+            <input 
+              type="text" 
+              id="search-input"
+              oninput="handleSearch(this.value)"
+              placeholder="🔍 ค้นหาบทเรียน เช่น เซต, นิเสธ, อสมการ..." 
+              class="w-full bg-black/40 border border-white/5 rounded-2xl px-4 py-2 text-xs text-textlight placeholder-textlight/30 outline-none focus:border-accentblue/40 transition-colors duration-300"
+            >
+          </div>
+        </div>
+
+        <!-- Lessons Grid -->
+        <div id="lessons-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Dynamic cards injected here -->
+        </div>
+
+        <!-- Empty state -->
+        <div id="empty-state" class="hidden glass-card p-12 rounded-3xl border border-white/5 text-center flex-col items-center justify-center gap-4">
+          <div class="text-4xl">📐</div>
+          <div>
+            <h4 class="font-bold text-white text-sm font-kanit">ไม่พบหัวข้อวิชาที่คุณต้องการค้นหา</h4>
+            <p class="text-xs text-textlight/50 mt-1 font-kanit">ทดลองค้นหาโดยใช้หัวข้อคณิตศาสตร์อื่น เช่น Venn, ประพจน์, ค่าสัมบูรณ์, โดเมน</p>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full max-w-7xl mx-auto px-6 border-t border-white/5 py-6 mt-12 flex flex-col sm:flex-row justify-between items-center text-[10px] sm:text-xs text-textlight/30 gap-4">
+      <div class="flex items-center gap-3">
+        <p>© 2026 ครูนิวตรอน.com. All rights reserved.</p>
+        <span>•</span>
+        <a href="https://github.com/kunewnew/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">GitHub: kunewnew</a>
+      </div>
+      <p class="font-kanit">คลังศึกษาความรู้นวัตกรรมและวิทยาศาสตร์คณิตศาสตร์เพิ่มเติม ⚛️</p>
+    </footer>
+
+  </div>
+
+  <!-- IMMERSIVE LESSON VIEW MODAL (FULL SCREEN) -->
+  <div id="lesson-modal" class="fixed inset-0 w-full h-full z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+    <div class="w-full max-w-4xl h-[90vh] bg-[#0E0E10] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden relative">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-white/5 flex justify-between items-center bg-black/25">
+        <div class="flex items-center gap-2.5">
+          <span id="modal-badge" class="text-[9px] font-bold px-2 py-0.5 rounded-md">CHAPTER</span>
+          <h2 id="modal-title" class="font-bold text-sm sm:text-base text-white tracking-wide">หัวข้อบทเรียน</h2>
+        </div>
+        <button onclick="closeLesson()" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white flex items-center justify-center transition-colors duration-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable Content) -->
+      <div class="flex-1 overflow-y-auto px-6 sm:px-8 py-6 sm:py-8 space-y-8 font-kanit">
+        
+        <!-- Lesson Content -->
+        <article id="modal-content" class="lesson-rich-content text-left border-b border-white/5 pb-8">
+          <!-- Text and illustrations injected here -->
+        </article>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="text-left space-y-6 pb-12">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-lg">✍️</span>
+            <div>
+              <h3 class="font-bold text-base text-white font-kanit">แบบประเมินทบทวนความเข้าใจ (5 ข้อ)</h3>
+              <p class="text-xs text-textlight/50 font-kanit">ตอบคำถามให้ถูกต้องครบทั้ง 5 ข้อเพื่อบันทึกและส่งรับคะแนนพิเศษจากคุณครู</p>
+            </div>
+          </div>
+
+          <div id="quiz-questions-container" class="space-y-6">
+            <!-- Questions dynamically generated here -->
+          </div>
+
+          <!-- Action bar -->
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/5">
+            <div id="quiz-feedback" class="text-xs font-semibold text-textlight/50 font-kanit"></div>
+            <div class="flex gap-3 w-full sm:w-auto">
+              <button id="quiz-retry-btn" onclick="retryQuiz()" class="hidden px-5 py-2.5 text-xs font-bold rounded-xl border border-white/10 hover:bg-white/5 text-textlight transition-all w-full sm:w-auto font-kanit">
+                🔄 ทำแบบทดสอบใหม่
+              </button>
+              <button id="quiz-submit-btn" onclick="submitQuiz()" class="px-6 py-2.5 text-xs font-bold rounded-xl bg-accentblue text-white hover:bg-accentblue/90 shadow-md shadow-accentblue/15 transition-all w-full sm:w-auto font-kanit">
+                💾 ส่งคำตอบและตรวจคำถาม
+              </button>
+            </div>
+          </div>
+
+          <!-- Student submission form (Hidden by default, shown upon 5/5 score) -->
+          <div id="score-submit-card" class="mt-6 p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4 max-w-md hidden">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🧑‍🏫</span>
+              <h4 class="text-xs sm:text-sm font-bold text-white font-kanit">ส่งคะแนนเพื่อสะสมคะแนนพิเศษกับคุณครูนิวตรอน</h4>
+            </div>
+            <p class="text-[10px] text-textlight/55 leading-relaxed font-kanit">
+              คะแนนของคุณจะถูกบันทึกส่งตรงเข้า Google Sheets ของคุณครูนิวตรอนโดยอัตโนมัติ เพื่อนำไปกรอกรวมเป็นคะแนนเก็บพิเศษครับ
+            </p>
+            
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[10px] text-textlight/40 font-semibold mb-1 font-kanit">ระดับชั้น / ห้องเรียน</label>
+                <select id="submit-room" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-textlight outline-none focus:border-accentblue font-kanit">
+                  <option value="ม.4/1">ม.4/1</option>
+                  <option value="ม.4/2">ม.4/2</option>
+                  <option value="ม.4/3">ม.4/3</option>
+                  <option value="ม.4/4">ม.4/4</option>
+                  <option value="ม.4/5">ม.4/5</option>
+                  <option value="ม.4/6">ม.4/6</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[10px] text-textlight/40 font-semibold mb-1 font-kanit">เลขที่ประจำตัว</label>
+                <input type="number" id="submit-no" min="1" max="60" placeholder="เช่น 15" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-textlight outline-none focus:border-accentblue font-kanit">
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-[10px] text-textlight/40 font-semibold mb-1 font-kanit">ชื่อ - นามสกุลจริง</label>
+              <input type="text" id="submit-name" placeholder="เช่น นายวิทยา รักดี" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-textlight outline-none focus:border-accentblue font-kanit">
+            </div>
+            
+            <div id="submit-status-msg" class="text-[10px] font-semibold text-accentemerald hidden font-kanit"></div>
+            
+            <button id="send-score-btn" onclick="sendScoreToSheet()" class="w-full py-2.5 rounded-xl bg-accentblue hover:bg-accentblue/90 text-white font-bold text-xs shadow-md shadow-accentblue/10 transition-all flex items-center justify-center gap-1.5 font-kanit">
+              <span>💾 ยืนยันบันทึกส่งคะแนนพิเศษ</span>
+            </button>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Logics -->
+  <script>
+    // ==========================================
+    //  Starfield Background Canvas Animation
+    // ==========================================
+    (function() {
+      const canvas = document.getElementById('starfield');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let animationFrameId;
+      
+      let currentWidth = window.innerWidth;
+      let currentHeight = window.innerHeight;
+      const resizeCanvas = () => {
+        currentWidth = window.innerWidth;
+        currentHeight = window.innerHeight;
+        canvas.width = currentWidth;
+        canvas.height = currentHeight;
+      };
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      
+      const stars = [];
+      const numStars = 100;
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: Math.random() * 1.5 + 0.3,
+          speed: Math.random() * 0.04 + 0.01,
+          alpha: Math.random(),
+          fade: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+      
+      const render = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(star => {
+          ctx.fillStyle = `rgba(215, 226, 234, ${star.alpha})`;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fill();
+          
+          star.y -= star.speed;
+          if (star.y < 0) {
+            star.y = canvas.height;
+            star.x = Math.random() * canvas.width;
+          }
+          
+          star.alpha += 0.007 * star.fade;
+          if (star.alpha > 1) {
+            star.alpha = 1;
+            star.fade = -1;
+          } else if (star.alpha < 0.1) {
+            star.alpha = 0.1;
+            star.fade = 1;
+          }
+        });
+        animationFrameId = requestAnimationFrame(render);
+      };
+      render();
+    })();
+
+    // ==========================================
+    //  LESSON DATABASE DEFINITION (ADDITIONAL MATHEMATICS M.4 - DETAILED & EXAMPLES)
+    // ==========================================
+    const lessonsData = [
+      // CHAPTER: SETS
+      {
+        id: "set-1",
+        grade: "set",
+        gradeLabel: "บทที่ 1: เซต",
+        title: "การดำเนินการของเซตและทฤษฎีเซตเบื้องต้น",
+        desc: "นิยามประเภทเซต, สับเซต, เพาเวอร์เซต และการดำเนินการทางเซต (Union, Intersection, Difference, Complement) พร้อมตัวอย่างโจทย์และการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "เริ่มต้น",
+        duration: "20 นาที",
+        tags: ["Sets", "Power Set", "Subsets"],
+        content: `
+          <h3>🔵 ทฤษฎีเซตเบื้องต้น (Introduction to Set Theory)</h3>
+          <p>ในวิชาคณิตศาสตร์เพิ่มเติม ม.4 **เซต (Set)** คือกลุ่มของสิ่งต่างๆ ที่เราสามารถระบุสมาชิกได้อย่างแน่ชัด โดยสิ่งที่อยู่ภายในเซตเรียกว่า **สมาชิก (Members/Elements)** เขียนแทนด้วยสัญลักษณ์ $\\in$ (เป็นสมาชิก) หรือ $\\notin$ (ไม่เป็นสมาชิก)</p>
+          
+          <h4>1. การเขียนเซต มี 2 รูปแบบหลัก:</h4>
+          <ul>
+            <li><b>การเขียนแบบแจกแจงสมาชิก:</b> เขียนสมาชิกทุกตัวในเครื่องหมายปีกกาและคั่นด้วยจุลภาค เช่น $A = \\{2, 4, 6, 8\\}$</li>
+            <li><b>การเขียนแบบบอกเงื่อนไขของสมาชิก:</b> ใช้ตัวแปรแทนสมาชิกและระบุเงื่อนไข เช่น $B = \\{x \\in \\mathbb{N} \\mid x \\text{ เป็นจำนวนคู่ที่น้อยกว่า } 10\\}$</li>
+          </ul>
+
+          <h4>2. ประเภทของเซต:</h4>
+          <ul>
+            <li><b>เซตจำกัด (Finite Set):</b> เซตที่สามารถระบุจำนวนสมาชิกเป็นจำนวนเต็มบวกหรือศูนย์ได้ เช่น $C = \\{1, 2, 3\\}$ (มีสมาชิก 3 ตัว) และ **เซตว่าง ($\\emptyset$ หรือ $\\{\\}$)** ถือเป็นเซตจำกัดที่มีสมาชิก 0 ตัว</li>
+            <li><b>เซตอนันต์ (Infinite Set):</b> เซตที่ไม่ใช่เซตจำกัด ไม่สามารถนับจำนวนสมาชิกสิ้นสุดได้ เช่น เซตของจำนวนเต็ม $\\mathbb{Z} = \\{..., -2, -1, 0, 1, 2, ...\\}$</li>
+            <li><b>เซตที่เท่ากัน ($A = B$):</b> เซตที่มีสมาชิกเหมือนกันทุกตัวโดยไม่สนใจลำดับ เช่น $\\{1, 2\\} = \\{2, 1\\}$</li>
+          </ul>
+
+          <h4>3. สับเซต (Subset: $\\subset$) และเพาเวอร์เซต (Power Set: $P(A)$):</h4>
+          <ul>
+            <li><b>สับเซต ($\\subset$):</b> เซต $A$ เป็นสับเซตของ $B$ ก็ต่อเมื่อสมาชิกทุกตัวของ $A$ เป็นสมาชิกของ $B$
+              <br>- จำนวนสับเซตทั้งหมดของเซต $A$ เท่ากับ $2^{n(A)}$ สับเซต (โดยที่ $n(A)$ คือจำนวนสมาชิกของ $A$)
+              <br>- **เซตว่าง ($\\emptyset$)** เป็นสับเซตของทุกเซตเสมอ ($\\emptyset \\subset A$) และเซตทุกเซตเป็นสับเซตของตัวมันเองเสมอ ($A \\subset A$)
+              <br>- สับเซตแท้ (Proper Subset) คือสับเซตทั้งหมดที่ไม่ใช่เซตตัวเอง มีจำนวน $2^{n(A)} - 1$ สับเซต
+            </li>
+            <li><b>เพาเวอร์เซต ($P(A)$):</b> คือเซตของสับเซตทั้งหมดของ $A$
+              <br>- สมบัติสำคัญ: $n(P(A)) = 2^{n(A)}$ และ $\\emptyset \\in P(A)$ เสมอ เพราะเซตว่างเป็นสับเซตของ $A$
+            </li>
+          </ul>
+
+          <h3>⚡ การดำเนินการทางเซต (Set Operations)</h3>
+          <p>มี 4 การดำเนินการพื้นฐานที่ใช้ในการสร้างเซตใหม่จากเซตเดิมภายใต้ขอบเขตของ **เอกภพสัมพัทธ์ (Relative Universe: $U$)**:</p>
+          <ol>
+            <li><b>ยูเนียน (Union: $A \\cup B$):</b> สมาชิกที่อยู่ใน $A$ หรือใน $B$ (รวมสมาชิกทั้งหมดเข้าด้วยกัน)
+              <br><code class="text-xs">A ∪ B = { x | x ∈ A หรือ x ∈ B }</code>
+            </li>
+            <li><b>อินเตอร์เซกชัน (Intersection: $A \\cap B$):</b> สมาชิกที่อยู่ทั้งใน $A$ และใน $B$ (เอาเฉพาะสมาชิกที่ซ้ำกัน)
+              <br><code class="text-xs">A ∩ B = { x | x ∈ A และ x ∈ B }</code>
+            </li>
+            <li><b>ผลต่างระหว่างเซต (Difference: $A - B$):</b> สมาชิกที่อยู่ใน $A$ แต่ไม่อยู่ใน $B$ (ตั้งด้วย A แล้วตัดตัวที่ซ้ำกับ B ออก)
+              <br><code class="text-xs">A - B = { x | x ∈ A และ x ∉ B }</code>
+            </li>
+            <li><b>คอมพลีเมนต์ (Complement: $A'$ หรือ $A^c$):</b> สมาชิกใน $U$ ที่ไม่อยู่ใน $A$
+              <br><code class="text-xs">A' = { x | x ∈ U และ x ∉ A }</code>
+            </li>
+          </ol>
+
+          <div class="my-6 flex justify-center">
+            <img src="../images/venn_diagram.png" alt="แผนภาพเวนน์-ออยเลอร์ (Venn-Euler Diagram)" class="max-w-md w-full h-auto rounded-2xl border border-white/10 shadow-lg shadow-black/40">
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การคำนวณเซตแบบทีละสเต็ป</h4>
+            <p>กำหนดให้ $U = \\{1, 2, 3, 4, 5, 6, 7, 8\\}$, $A = \\{1, 3, 5, 7\\}$ และ $B = \\{3, 4, 5, 6\\}$</p>
+            <ul>
+              <li><b>$A \\cup B$:</b> รวมสมาชิกได้ $\\{1, 3, 4, 5, 6, 7\\}$</li>
+              <li><b>$A \\cap B$:</b> หาตัวซ้ำได้ $\\{3, 5\\}$</li>
+              <li><b>$A - B$:</b> เอาสมาชิก $A$ ตั้ง หักตัวที่ซ้ำกับ $B$ คือ $\\{3, 5\\}$ ออก เหลือ $\\{1, 7\\}$</li>
+              <li><b>$B - A$:</b> เอาสมาชิก $B$ ตั้ง หักตัวที่ซ้ำกับ $A$ ออก เหลือ $\\{4, 6\\}$</li>
+              <li><b>$A'$:</b> สมาชิกใน $U$ ที่ไม่อยู่ใน $A$ คือ $\\{2, 4, 6, 8\\}$</li>
+            </ul>
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 2: การหาเพาเวอร์เซตของเซตที่มีสมาชิกซ้อนเซต</h4>
+            <p>กำหนดให้ $A = \\{\\emptyset, 1\\}$ จงหา $P(A)$</p>
+            <p><b>วิธีทำ:</b></p>
+            <p>1. จำนวนสมาชิก $n(A) = 2$ (ได้แก่ สมาชิกตัวแรกคือเซตว่าง $\\emptyset$ และตัวที่สองคือตัวเลข 1)</p>
+            <p>2. เขียนสับเซตทั้งหมดของ $A$ (ต้องมี $2^2 = 4$ สับเซต):
+               <br>- สับเซตที่มีสมาชิก 0 ตัว: $\\emptyset$
+               <br>- สับเซตที่มีสมาชิก 1 ตัว: $\\{\\emptyset\\}$, $\\{1\\}$
+               <br>- สับเซตที่มีสมาชิก 2 ตัว: $\\{\\emptyset, 1\\}$ (เซต $A$ เอง)
+            </p>
+            <p>3. เขียนครอบวงเล็บปีกกาทำเป็นเพาเวอร์เซต: 
+               <br><b>$P(A) = \\{ \\emptyset, \\{\\emptyset\\}, \\{1\\}, \\{\\emptyset, 1\\} \\}$</b>
+            </p>
+          </div>
+        `,
+        quiz: [
+          { q: "กำหนดให้ A = {1, 2, 3} และ B = {3, 4, 5} ข้อใดคือผลลัพธ์ของ A ∩ B?", a: ["{3}", "{1, 2, 3, 4, 5}", "{1, 2}", "{4, 5}"], correct: 0 },
+          { q: "กำหนดให้ A = {1, 2, 3} และ B = {3, 4, 5} ข้อใดคือผลลัพธ์ของ A ∪ B?", a: ["{1, 2, 3, 4, 5}", "{3}", "{1, 2}", "{4, 5}"], correct: 0 },
+          { q: "กำหนดให้ A = {1, 2, 3} และ B = {3, 4, 5} ข้อใดคือผลลัพธ์ของ A - B?", a: ["{1, 2}", "{3}", "{4, 5}", "{1, 2, 3, 4, 5}"], correct: 0 },
+          { q: "กำหนด U = {1, 2, 3, 4, 5} และ A = {1, 3, 5} ข้อใดคือค่าของคอมพลีเมนต์ A'?", a: ["{2, 4}", "{1, 3, 5}", "{1, 2, 3, 4, 5}", "{ }"], correct: 0 },
+          { q: "กำหนดให้เซต A = {a, b} เซต A จะมีสับเซตทั้งหมดกี่สับเซต?", a: ["4 สับเซต", "2 สับเซต", "8 สับเซต", "ไม่มีสับเซต"], correct: 0 },
+          { q: "เซตใดต่อไปนี้ที่เป็นสับเซตของทุกเซตเสมอ?", a: ["เซตว่าง (∅)", "เอกภพสัมพัทธ์ (U)", "เซตของจำนวนจริง", "เซตตัวมันเอง"], correct: 0 },
+          { q: "กำหนด A = {1, {2}} ข้อความใดต่อไปนี้เป็นจริง?", a: ["{2} ∈ A", "2 ∈ A", "{2} ⊂ A", "{{2}} ∈ A"], correct: 0 },
+          { q: "กำหนด A = {1, 2} ข้อใดคือเพาเวอร์เซต P(A) ที่ถูกต้อง?", a: ["{ ∅, {1}, {2}, {1, 2} }", "{ {1}, {2} }", "{ ∅, 1, 2 }", "{ {1}, {2}, {1, 2} }"], correct: 0 },
+          { q: "กำหนด A = {x ∈ N | x < 5} (เมื่อ N คือเซตของจำนวนนับ) เซต A มีจำนวนสมาชิกกี่ตัว?", a: ["4 ตัว", "5 ตัว", "3 ตัว", "จำนวนอนันต์"], correct: 0 },
+          { q: "กำหนด A = {2, 4, 6} เซตในข้อใดต่อไปนี้ ไม่เป็น สับเซตของ A?", a: ["{2, 3}", "{2}", "{4, 6}", "{2, 4, 6}"], correct: 0 },
+          { q: "กำหนด A = {5, 10} และ B = {10, 15} ข้อใดคือค่าของ B - A?", a: ["{15}", "{5}", "{10}", "{5, 15}"], correct: 0 },
+          { q: "หากเซต A มีจำนวนสมาชิก n(A) = 3 จะมีสับเซตทั้งหมดกี่สับเซต?", a: ["8 สับเซต", "6 สับเซต", "9 สับเซต", "3 สับเซต"], correct: 0 },
+          { q: "กำหนด A = {x ∈ Z | x เป็นจำนวนเฉพาะที่เป็นคู่} ข้อใดคือเซต A?", a: ["{2}", "{2, 4, 6}", "{ }", "{2, 3, 5}"], correct: 0 },
+          { q: "กำหนด U = {1, 2, 3, 4, 5}, A = {1, 2, 3} และ B = {2, 3, 4} ข้อใดคือ (A ∩ B)'?", a: ["{1, 4, 5}", "{2, 3}", "{1, 5}", "{4, 5}"], correct: 0 },
+          { q: "กำหนด A = {0} จงหาจำนวนสมาชิกของเพาเวอร์เซต n(P(A))?", a: ["2 ตัว", "1 ตัว", "4 ตัว", "0 ตัว"], correct: 0 },
+          { q: "กำหนด A = {a, b, c} และ B = {b, c, d} ข้อใดคือ A - B?", a: ["{a}", "{d}", "{b, c}", "{a, d}"], correct: 0 },
+          { q: "เซตในข้อใดต่อไปนี้เป็น เซตจำกัด?", a: ["{x | x เป็นจำนวนเฉพาะที่น้อยกว่า 10}", "{x | x เป็นจำนวนเต็มคี่}", "{x | x เป็นจำนวนจริง}", "{1, 2, 3, ...}"], correct: 0 },
+          { q: "ถ้า A ⊂ B แล้ว ข้อสรุปใดถูกต้องเสมอ?", a: ["A ∩ B = A", "A ∪ B = A", "A - B = B", "B - A = ∅"], correct: 0 },
+          { q: "กำหนด A = {1, 2, 3} จำนวนสับเซตแท้ (สับเซตที่ไม่ใช่ตัวเอง) ของ A มีกี่สับเซต?", a: ["7 สับเซต", "8 สับเซต", "6 สับเซต", "15 สับเซต"], correct: 0 },
+          { q: "กำหนด A = {∅} เซต A มีจำนวนสมาชิกกี่ตัว?", a: ["1 ตัว", "0 ตัว", "2 ตัว", "ไม่มีสมาชิกเลย"], correct: 0 }
+        ]
+      },
+      {
+        id: "set-2",
+        grade: "set",
+        gradeLabel: "บทที่ 1: เซต",
+        title: "แผนภาพเวนน์-ออยเลอร์ และการคำนวณจำนวนสมาชิก",
+        desc: "ศึกษาการแทนเซตด้วยแผนภาพเวนน์-ออยเลอร์ 2 และ 3 วง พร้อมสูตรคำนวณจำนวนสมาชิกเพื่อแก้โจทย์ปัญหาประยุกต์ และการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "ปานกลาง",
+        duration: "25 นาที",
+        tags: ["Venn Diagram", "Counting", "Word Problems"],
+        content: `
+          <h3>📊 แผนภาพเวนน์-ออยเลอร์ (Venn-Euler Diagram)</h3>
+          <p>แผนภาพเวนน์-ออยเลอร์ช่วยสร้างภาพแทนเซตและความสัมพันธ์ระหว่างเซต โดยมักแทนเอกภพสัมพัทธ์ $U$ ด้วยกรอบสี่เหลี่ยมผืนผ้า และแทนเซตย่อยต่างๆ ด้วยวงกลมหรือวงรี</p>
+          <p>เมื่อมีเซตหลายเซต พื้นที่ในแผนภาพจะถูกแบ่งออกเป็นส่วนย่อยๆ ซึ่งมีความหมายเฉพาะตัว:</p>
+          <ul>
+            <li><b>พื้นที่ตรงกลางที่วงกลมซ้อนกัน ($A \\cap B$):</b> แทนกลุ่มของสมาชิกที่เป็นของทั้งสองเซต</li>
+            <li><b>พื้นที่ในวงกลม $A$ ที่ไม่ทับซ้อนกับ $B$ ($A - B$):</b> แทนสมาชิกที่เป็นของเซต $A$ เพียงเซตเดียวเท่านั้น</li>
+            <li><b>พื้นที่ภายนอกวงกลมทั้งหมดภายในกรอบ:</b> แทนสมาชิกของเอกภพสัมพัทธ์ $U$ ที่ไม่อยู่ในเซตใดเลย ($(A \\cup B)'$)</li>
+          </ul>
+
+          <h3>📐 สูตรจำนวนสมาชิกของเซตจำกัด (Cardinality Formulas)</h3>
+          <p>เมื่อต้องการนับจำนวนสมาชิกของการดำเนินการระหว่างเซตจำกัด เราจะใช้สูตรดังต่อไปนี้เพื่อป้องกันการนับซ้ำในบริเวณที่เซตซ้อนทับกัน:</p>
+          <div class="math-block">สูตรสำหรับ 2 เซต: n(A ∪ B) = n(A) + n(B) - n(A ∩ B)</div>
+          <div class="math-block">สูตรสำหรับ 3 เซต: n(A ∪ B ∪ C) = n(A) + n(B) + n(C) - n(A ∩ B) - n(A ∩ C) - n(B ∩ C) + n(A ∩ B ∩ C)</div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การแก้โจทย์ปัญหา 2 เซต (นักเรียนและวิชาเรียน)</h4>
+            <p><b>โจทย์:</b> โรงเรียนแห่งหนึ่งมีนักเรียนชั้น ม.4 ทั้งหมด 100 คน ชอบเรียนวิชาคณิตศาสตร์ 60 คน ชอบฟิสิกส์ 50 คน และชอบเรียนทั้งสองวิชา 20 คน จงหาว่ามีนักเรียนกี่คนที่ไม่ชอบเรียนทั้งสองวิชานี้เลย?</p>
+            <p><b>วิธีคิดทีละขั้นตอน:</b></p>
+            <p>1. กำหนดให้ $U$ แทนนักเรียนทั้งหมด $\\rightarrow n(U) = 100$</p>
+            <p>2. ให้ $A$ แทนกลุ่มชอบคณิตศาสตร์ $\\rightarrow n(A) = 60$</p>
+            <p>3. ให้ $B$ แทนกลุ่มชอบฟิสิกส์ $\\rightarrow n(B) = 50$</p>
+            <p>4. กลุ่มชอบเรียนทั้งสองวิชาคือ $A \\cap B \\rightarrow n(A \\cap B) = 20$</p>
+            <p>5. ใช้สูตรหาจำนวนนักเรียนที่ชอบอย่างน้อยหนึ่งวิชา ($n(A \\cup B)$):
+               <br>$n(A \\cup B) = n(A) + n(B) - n(A \\cap B)$
+               <br>$n(A \\cup B) = 60 + 50 - 20 = 90$ คน
+            </p>
+            <p>6. นักเรียนที่ไม่ชอบเรียนวิชาใดเลยคือส่วนที่อยู่ด้านนอกวงกลมทั้งคู่:
+               <br>$n((A \\cup B)') = n(U) - n(A \\cup B)$
+               <br>$n((A \\cup B)') = 100 - 90 = 10$ คน
+            </p>
+            <p><b>คำตอบคือ:</b> มีนักเรียน 10 คนที่ไม่ชอบทั้งคณิตศาสตร์และฟิสิกส์</p>
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 2: โจทย์ปัญหา 3 เซต (กิจกรรมชมรม)</h4>
+            <p><b>โจทย์:</b> ในการสำรวจสมาชิกชมรมกีฬา 3 ชนิด ได้แก่ ฟุตบอล ($A$), บาสเกตบอล ($B$), และวอลเลย์บอล ($C$) ของนักเรียน 60 คน พบว่า:
+               <br>- เล่นฟุตบอล 25 คน, เล่นบาสเกตบอล 23 คน, เล่นวอลเลย์บอล 20 คน
+               <br>- เล่นทั้งฟุตบอลและบาสเกตบอล 8 คน, เล่นฟุตบอลและวอลเลย์บอล 7 คน, เล่นบาสเกตบอลและวอลเลย์บอล 6 คน
+               <br>- เล่นกีฬาทั้งสามชนิด 3 คน
+               <br>จงหาจำนวนนักเรียนที่เล่นกีฬาอย่างน้อยหนึ่งชนิด?
+            </p>
+            <p><b>วิธีทำโดยสูตร:</b></p>
+            <p>แทนค่าลงในสูตร 3 เซต:</p>
+            <p>$n(A \\cup B \\cup C) = n(A) + n(B) + n(C) - n(A \\cap B) - n(A \\cap C) - n(B \\cap C) + n(A \\cap B \\cap C)$</p>
+            <p>$n(A \\cup B \\cup C) = 25 + 23 + 20 - 8 - 7 - 6 + 3 = 68 - 21 + 3 = 50$ คน</p>
+            <p><b>คำตอบคือ:</b> มีนักเรียนเล่นกีฬาอย่างน้อยหนึ่งชนิดจำนวน 50 คน (และเหลือนักเรียนไม่เล่นกีฬาเลย $60 - 50 = 10$ คน)</p>
+          </div>
+        `,
+        quiz: [
+          { q: "กำหนด n(A) = 10, n(B) = 15 และ n(A ∩ B) = 3 จงหาค่าของ n(A ∪ B)?", a: ["22", "25", "28", "12"], correct: 0 },
+          { q: "กำหนด n(A) = 20, n(B) = 25 และ n(A ∪ B) = 40 จงหาค่าของ n(A ∩ B)?", a: ["5", "15", "10", "20"], correct: 0 },
+          { q: "นักเรียนห้องหนึ่งมี 40 คน ชอบคณิตศาสตร์ 25 คน ชอบวิทยาศาสตร์ 20 คน ชอบทั้งสองวิชา 10 คน มีนักเรียนกี่คนที่ชอบอย่างน้อยหนึ่งวิชา?", a: ["35 คน", "45 คน", "30 คน", "25 คน"], correct: 0 },
+          { q: "นักเรียน 50 คน ทุกคนชอบเล่นกีฬาอย่างน้อยหนึ่งชนิด ชอบฟุตบอล 30 คน ชอบบาสเกตบอล 25 คน มีกี่คนที่ชอบทั้งสองอย่าง?", a: ["5 คน", "10 คน", "15 คน", "20 คน"], correct: 0 },
+          { q: "กำหนด n(U) = 100 และ n(A) = 60 จงหาค่าของ n(A')?", a: ["40", "60", "100", "0"], correct: 0 },
+          { q: "กำหนด n(A) = 12 และ n(A ∩ B) = 4 จงหาจำนวนสมาชิกของ n(A - B)?", a: ["8", "16", "4", "12"], correct: 0 },
+          { q: "ถ้าเซต A และ B ไม่มีสมาชิกร่วมกันเลย (A ∩ B = ∅) โดย n(A) = 8 และ n(B) = 7 จงหา n(A ∪ B)?", a: ["15", "8", "7", "1"], correct: 0 },
+          { q: "ในแผนภาพเวนน์ของ 2 เซต พื้นที่ส่วนที่อยู่ในวงกลม A แต่ไม่อยู่ในวงกลม B แทนด้วยการดำเนินการใด?", a: ["A - B", "B - A", "A ∩ B", "A ∪ B"], correct: 0 },
+          { q: "กำหนด n(U) = 50, n(A) = 20, n(B) = 25 และ n(A ∩ B) = 8 จงหา n((A ∪ B)')?", a: ["13", "37", "5", "23"], correct: 0 },
+          { q: "นักเรียนห้องหนึ่งมี 30 คน ชอบเรียนอังกฤษ 18 คน ชอบเรียนฝรั่งเศส 12 คน โดยไม่มีใครชอบทั้งสองวิชาเลย มีนักเรียนกี่คนที่ไม่ชอบทั้งสองวิชานี้เลย?", a: ["0 คน", "6 คน", "10 คน", "12 คน"], correct: 0 },
+          { q: "กำหนด n(A) = 15, n(B) = 20 และ n(A - B) = 10 จงคำนวณหาค่า n(A ∩ B)?", a: ["5", "10", "15", "25"], correct: 0 },
+          { q: "จากการสำรวจคน 80 คน พบว่าชอบเลี้ยงแมว 50 คน ชอบเลี้ยงสุนัข 40 คน ชอบเลี้ยงทั้งสองชนิด 20 คน มีกี่คนที่ชอบเลี้ยงเฉพาะแมวเพียงอย่างเดียว?", a: ["30 คน", "50 คน", "20 คน", "10 คน"], correct: 0 },
+          { q: "ถ้า A ⊂ B โดย n(A) = 5 และ n(B) = 12 จงหาค่า n(A ∪ B)?", a: ["12", "5", "17", "7"], correct: 0 },
+          { q: "ถ้า A ⊂ B โดย n(A) = 5 และ n(B) = 12 จงหาค่า n(A - B)?", a: ["0", "5", "7", "12"], correct: 0 },
+          { q: "กำหนดให้ n(A) = 30, n(B) = 25 และ n(A ∪ B) = 45 จงหาจำนวนสมาชิกของ n(B - A)?", a: ["15", "25", "20", "10"], correct: 0 },
+          { q: "ในการสำรวจคน 100 คน ชอบดื่มกาแฟ 70 คน ชอบดื่มชา 40 คน และไม่ชอบดื่มทั้งสองอย่างเลย 10 คน มีคนชอบดื่มทั้งกาแฟและชากี่คน?", a: ["20 คน", "10 คน", "30 คน", "40 คน"], correct: 0 },
+          { q: "ห้องเรียน 30 คน มีคนชอบสีแดง 15 คน ชอบสีฟ้า 12 คน ชอบทั้งสองสี 5 คน มีนักเรียนกี่คนที่ไม่ชอบสีแดงและสีฟ้าเลย?", a: ["8 คน", "5 คน", "13 คน", "3 คน"], correct: 0 },
+          { q: "กำหนด n(U) = 60, n(A) = 30, n(B) = 20 และ n(A ∩ B) = 10 จงหา n(A' ∩ B')?", a: ["20", "40", "10", "30"], correct: 0 },
+          { q: "ถ้า A ∩ B = ∅ แล้ว การดำเนินการ n(A - B) จะมีค่าเท่ากับข้อใด?", a: ["n(A)", "n(B)", "0", "n(A) - n(B)"], correct: 0 },
+          { q: "คนกลุ่มหนึ่ง 40 คน ทุกคนชอบดื่มนมหรือดื่มน้ำหวาน ชอบดื่มนม 28 คน ชอบดื่มน้ำหวาน 22 คน มีกี่คนที่ชอบดื่มทั้งสองอย่าง?", a: ["10 คน", "18 คน", "12 คน", "6 คน"], correct: 0 }
+        ]
+      },
+      
+      // CHAPTER: LOGIC
+      {
+        id: "logic-1",
+        grade: "logic",
+        gradeLabel: "บทที่ 2: ตรรกศาสตร์",
+        title: "ประพจน์และตารางค่าความจริงของตัวเชื่อมประพจน์",
+        desc: "วิเคราะห์ประโยคที่เป็นประพจน์และตัวเชื่อมเชิงตรรกศาสตร์พื้นฐาน (และ, หรือ, ถ้า...แล้ว, ก็ต่อเมื่อ, นิเสธ) และการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "เริ่มต้น",
+        duration: "20 นาที",
+        tags: ["Logic", "Propositions", "Truth Tables"],
+        content: `
+          <h3>🧠 ประพจน์ (Proposition) คืออะไร?</h3>
+          <p>ในวิชาตรรกศาสตร์คณิตศาสตร์เพิ่มเติม **ประพจน์** คือ ประโยคบอกเล่าหรือประโยคปฏิเสธที่เป็น **จริง (True - T)** หรือเป็น **เท็จ (False - F)** อย่างใดอย่างหนึ่งเท่านั้น</p>
+          <p>ประโยคประเภทอื่นๆ เช่น ประโยคคำสั่ง ประโยคคำถาม ขอร้อง คำอุทาน หรือประโยคที่มีตัวแปรแต่ระบุค่าความจริงไม่ได้ (เรียกว่าประโยคเปิด) **ไม่จัดว่าเป็นประพจน์**</p>
+          
+          <h4>ตัวอย่างเปรียบเทียบ:</h4>
+          <ul>
+            <li><b>ประโยคที่เป็นประพจน์:</b>
+               <br>- "$2 + 3 = 5$" (มีค่าความจริงเป็น **จริง**)
+               <br>- "เชียงใหม่เป็นเมืองหลวงของไทย" (มีค่าความจริงเป็น **เท็จ**)
+            </li>
+            <li><b>ประโยคที่ไม่เป็นประพจน์:</b>
+               <br>- "อย่าส่งเสียงดัง!" (ประโยคคำสั่ง)
+               <br>- "เธอชอบกินส้มไหม?" (ประโยคคำถาม)
+               <br>- "$x + 5 = 10$" (ประโยคเปิด เพราะยังไม่ระบุว่า $x$ คือตัวเลขใด)
+            </li>
+          </ul>
+
+          <h3>🔌 ตัวเชื่อมประพจน์หลัก 4 ประเภท (Logical Connectives)</h3>
+          <p>เรานิยมใช้ตัวอักษรภาษาอังกฤษตัวเล็ก เช่น $p, q, r, s$ แทนประพจน์ และนำมาเชื่อมต่อกันเป็นประพจน์เชิงประกอบโดยมีตัวเชื่อมหลักดังนี้:</p>
+          <ol>
+            <li><b>ตัวเชื่อม \"และ\" (Conjunction: $\\land$):</b> จะมีค่าความจริงเป็นจริง **กรณีเดียว** คือ **จริงทั้งคู่** ($T \\land T \\equiv T$) นอกนั้นเป็นเท็จเสมอ</li>
+            <li><b>ตัวเชื่อม \"หรือ\" (Disjunction: $\\lor$):</b> จะมีค่าความจริงเป็นเท็จ **กรณีเดียว** คือ **เท็จทั้งคู่** ($F \\lor F \\equiv F$) นอกนั้นเป็นจริงเสมอ</li>
+            <li><b>ตัวเชื่อม \"ถ้า...แล้ว...\" (Conditional: $\\rightarrow$):</b> จะมีค่าความจริงเป็นเท็จ **กรณีเดียว** คือ **หน้าจริง หลังเท็จ** ($T \\rightarrow F \\equiv F$) นอกนั้นเป็นจริงเสมอ</li>
+            <li><b>ตัวเชื่อม \"ก็ต่อเมื่อ\" (Biconditional: $\\leftrightarrow$):</b> จะมีค่าความจริงเป็นจริงเมื่อ **ค่าความจริงสองฝั่งเหมือนกัน** ($T \\leftrightarrow T \\equiv T$ และ $F \\leftrightarrow F \\equiv T$) หากต่างกันจะเป็นเท็จ</li>
+            <li><b>นิเสธ (Negation: $\\sim$):</b> สลับค่าความจริงให้ตรงข้าม เช่น $\\sim T \\equiv F$ และ $\\sim F \\equiv T$</li>
+          </ol>
+
+          <div class="my-6 flex justify-center">
+            <img src="../images/logic_diagram.png" alt="สัญลักษณ์ตัวเชื่อมและตารางค่าความจริง (Logic Connectives)" class="max-w-md w-full h-auto rounded-2xl border border-white/10 shadow-lg shadow-black/40">
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การหาค่าความจริงของประพจน์เชิงประกอบ</h4>
+            <p>กำหนดให้ประพจน์ $p$ เป็นจริง ($T$), $q$ เป็นเท็จ ($F$) และ $r$ เป็นเท็จ ($F$)
+               <br>จงหาค่าความจริงของประพจน์ประกอบ: <b>$(p \\land \\sim q) \\rightarrow (q \\lor r)$</b>
+            </p>
+            <p><b>วิธีทำทีละสเต็ป:</b></p>
+            <p>1. คำนวณฝั่งซ้ายสุดในวงเล็บ $(p \\land \\sim q)$:
+               <br>- หาค่านิเสธ $q$: $\\sim q \\equiv \\sim F \\equiv T$
+               <br>- นำไปเชื่อม $p \\land \\sim q$: $T \\land T \\equiv T$ (ได้ฝั่งซ้ายเป็นจริง)
+            </p>
+            <p>2. คำนวณฝั่งขวาสุดในวงเล็บ $(q \\lor r)$:
+               <br>- แทนค่าแล้วเชื่อมด้วย OR: $F \\lor F \\equiv F$ (ได้ฝั่งขวาเป็นเท็จ)
+            </p>
+            <p>3. นำผลลัพธ์มาเชื่อมด้วย \"ถ้า...แล้ว...\" (ซ้าย $\\rightarrow$ ขวา):
+               <br>- แทนค่าได้: $T \\rightarrow F \\equiv F$ (เท็จ)
+            </p>
+            <p><b>คำตอบคือ:</b> ประพจน์นี้มีค่าความจริงรวมเป็น **เท็จ (False)**</p>
+          </div>
+        `,
+        quiz: [
+          { q: "ประโยคใดต่อไปนี้จัดว่าเป็น 'ประพจน์'?", a: ["10 เป็นจำนวนคู่", "ห้ามส่งเสียงดังในห้องสมุด", "กรุณาปิดประตูให้สนิท", "คุณชอบทานผลไม้ไหม"], correct: 0 },
+          { q: "ประโยคในข้อใดต่อไปนี้ ไม่เป็น ประพจน์?", a: ["ช่วยหยิบดินสอให้หน่อย", "2 เป็นจำนวนคี่", "กรุงเทพฯ เป็นเมืองหลวงของไทย", "3 + 5 = 8"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ∧ q?", a: ["เท็จ (False)", "จริง (True)", "เป็นจริงบ้างเท็จบ้าง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ∨ q?", a: ["จริง (True)", "เท็จ (False)", "เป็นจริงบ้างเท็จบ้าง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p → q?", a: ["เท็จ (False)", "จริง (True)", "เป็นจริงกึ่งหนึ่ง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นจริง (T) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ↔ q?", a: ["เท็จ (False)", "จริง (True)", "เป็นสัจนิรันดร์", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ข้อใดคือค่าความจริงของนิเสธของประพจน์ที่เป็นเท็จ (~False)?", a: ["จริง (True)", "เท็จ (False)", "อาจเป็นจริงหรือเท็จก็ได้", "เป็นนิเสธสมบูรณ์"], correct: 0 },
+          { q: "จงหาค่าความจริงของประพจน์เชื่อมต่อไปนี้: (True ∧ False) → True?", a: ["จริง (True)", "เท็จ (False)", "เป็นเท็จเสมอ", "หาค่าความจริงไม่ได้"], correct: 0 },
+          { q: "จงหาค่าความจริงของประพจน์เชื่อมต่อไปนี้: (True ∨ False) ∧ False?", a: ["เท็จ (False)", "จริง (True)", "เป็นสัจนิรันดร์", "หาค่าไม่ได้"], correct: 0 },
+          { q: "นิเสธของข้อความ '5 > 3' ตรงกับข้อใด?", a: ["5 ≤ 3", "5 < 3", "5 ≠ 3", "5 = 3"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นเท็จ (F) และ q เป็นจริง (T) ข้อใดคือค่าความจริงของ p → q?", a: ["จริง (True)", "เท็จ (False)", "มีค่าความจริงสลับกัน", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p เป็นเท็จ (F) และ q เป็นเท็จ (F) ข้อใดคือค่าความจริงของ p ∨ q?", a: ["เท็จ (False)", "จริง (True)", "เป็นจริงกึ่งหนึ่ง", "หาค่าไม่ได้"], correct: 0 },
+          { q: "ถ้าประพจน์ p ∧ q มีค่าความจริงเป็น 'จริง' ข้อใดสรุปได้ถูกต้อง?", a: ["ทั้ง p และ q ต้องเป็นจริงทั้งคู่", "p เป็นจริง หรือ q เป็นจริง", "ทั้ง p และ q ต้องเป็นเท็จทั้งคู่", "p เป็นเท็จ q เป็นจริง"], correct: 0 },
+          { q: "ถ้าประพจน์ p ∨ q มีค่าความจริงเป็น 'เท็จ' ข้อใดสรุปได้ถูกต้อง?", a: ["ทั้ง p และ q ต้องเป็นเท็จทั้งคู่", "p เป็นจริง q เป็นเท็จ", "p เป็นเท็จ q เป็นจริง", "p และ q เป็นจริงอย่างน้อยหนึ่งตัว"], correct: 0 },
+          { q: "ถ้าประพจน์เชื่อม p → q มีค่าความจริงเป็น 'เท็จ' ค่าความจริงของ p และ q ตามลำดับคือข้อใด?", a: ["จริง (T) และ เท็จ (F)", "จริง (T) และ จริง (T)", "เท็จ (F) และ เท็จ (F)", "เท็จ (F) และ จริง (T)"], correct: 0 },
+          { q: "นิเสธของข้อความ 'ฝนตก และ แดดออก' ตรงกับข้อใด?", a: ["ฝนไม่ตก หรือ แดดไม่ออก", "ฝนไม่ตก และ แดดไม่ออก", "ถ้าฝนไม่ตก แล้วแดดจะไม่ออก", "ฝนตก หรือ แดดไม่ออก"], correct: 0 },
+          { q: "ถ้ากำหนดให้ประพจน์ p เป็น 'จริง' แล้ว ค่าความจริงของ p ∨ q จะเป็นอย่างไร?", a: ["เป็นจริงเสมอ โดยไม่ต้องสนใจค่าของ q", "เป็นเท็จเสมอ", "ขึ้นอยู่กับว่า q เป็นจริงหรือเท็จ", "เป็นจริงเฉพาะเมื่อ q เป็นจริง"], correct: 0 },
+          { q: "ถ้ากำหนดให้ประพจน์ p เป็น 'เท็จ' แล้ว ค่าความจริงของ p ∧ q จะเป็นอย่างไร?", a: ["เป็นเท็จเสมอ โดยไม่ต้องสนใจค่าของ q", "เป็นจริงเสมอ", "ขึ้นอยู่กับว่า q เป็นจริงหรือเท็จ", "เป็นจริงเฉพาะเมื่อ q เป็นเท็จ"], correct: 0 },
+          { q: "จงหาค่าความจริงของประพจน์ (False ↔ False) ∨ True?", a: ["จริง (True)", "เท็จ (False)", "เป็นทั้งจริงและเท็จ", "หาไม่ได้"], correct: 0 },
+          { q: "นิเสธของข้อความ 'x = 3' ตรงกับข้อใด?", a: ["x ≠ 3", "x > 3", "x < 3", "x ≤ 3"], correct: 0 }
+        ]
+      },
+      {
+        id: "logic-2",
+        grade: "logic",
+        gradeLabel: "บทที่ 2: ตรรกศาสตร์",
+        title: "สัจนิรันดร์และรูปแบบประพจน์ที่สมมูลกัน",
+        desc: "ตรวจสอบรูปแบบประพจน์ที่ให้ค่าจริงในทุกกรณี (สัจนิรันดร์) สูตรสมมูลที่สำคัญเพื่อจัดรูปประพจน์ และการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "ยาก",
+        duration: "25 นาที",
+        tags: ["Logic", "Tautology", "Equivalence"],
+        content: `
+          <h3>♾️ สัจนิรันดร์ (Tautology)</h3>
+          <p><b>สัจนิรันดร์</b> คือ รูปแบบประพจน์เชิงประกอบที่มีค่าความจริงเป็น **จริง (True) เสมอในทุกๆ กรณี** ไม่ว่าประพจน์ย่อยข้างในจะมีค่าความจริงเป็นจริงหรือเท็จก็ตาม</p>
+          
+          <h4>วิธีการตรวจสอบหลักๆ:</h4>
+          <ol>
+            <li><b>การสร้างตารางค่าความจริง (Truth Table):</b> เขียนแจกแจงทุกกรณีที่เป็นไปได้ หากช่องสุดท้ายเป็น $T$ ทั้งหมด สรุปว่าเป็นสัจนิรันดร์ (วิธีนี้ชัวร์แต่ช้าเมื่อมีตัวแปรเยอะ)</li>
+            <li><b>การสมมติให้เป็นเท็จเพื่อหาข้อขัดแย้ง (Proof by Contradiction):</b>
+               <br>- มุ่งเป้าตรวจสอบตัวเชื่อมหลักที่เป็น **ถ้า...แล้ว ($\rightarrow$)** หรือ **หรือ ($\lor$)**
+               <br>- สมมติให้ประพจน์รวมเป็น **เท็จ (F)** จากนั้นย้อนกลับไปหาค่าของตัวแปรย่อย
+               <br>- หากเกิด **ข้อขัดแย้ง (Contradiction)** เช่น $p$ ต้องเป็นทั้ง $T$ และ $F$ พร้อมกัน แสดงว่าสมมติฐานที่ให้เป็นเท็จเป็นไปไม่ได้ $\rightarrow$ สรุปทันทีว่าเป็น **สัจนิรันดร์**
+               <br>- หากไม่มีข้อขัดแย้งเลย แสดงว่าสามารถทำเป็นเท็จได้ $\rightarrow$ สรุปว่า **ไม่เป็นสัจนิรันดร์**
+            </li>
+          </ol>
+
+          <h3>🔄 รูปแบบประพจน์ที่สมมูลกัน (Equivalence: $\equiv$)</h3>
+          <p>ประพจน์สองประพจน์จะ **สมมูลกัน** ก็ต่อเมื่อมีค่าความจริงเหมือนกันแบบแถวต่อแถวในตารางค่าความจริง สูตรการสมมูลที่จำเป็นในการจัดรูปข้อสอบเค้นสมอง:</p>
+          <ul>
+            <li><b>สมมูลเปลี่ยนรูปตัวเชื่อมถ้า...แล้ว:</b>
+              <br><code class="text-white">p → q ≡ ~p ∨ q</code>
+            </li>
+            <li><b>สมมูลของการแย้งสลับที่ (Contrapositive):</b>
+              <br><code class="text-white">p → q ≡ ~q → ~p</code>
+            </li>
+            <li><b>กฎของเดอมอร์แกน (De Morgan's Laws):</b>
+              <br><code class="text-white">~(p ∧ q) ≡ ~p ∨ ~q</code>
+              <br><code class="text-white">~(p ∨ q) ≡ ~p ∧ ~q</code>
+            </li>
+            <li><b>สมมูลของก็ต่อเมื่อ:</b>
+              <br><code class="text-white">p ↔ q ≡ (p → q) ∧ (q → p)</code>
+            </li>
+          </ul>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การตรวจสอบสัจนิรันดร์โดยวิธีหาข้อขัดแย้ง</h4>
+            <p><b>โจทย์:</b> ตรวจสอบว่าประพจน์ <b>$[(p \rightarrow q) \land p] \rightarrow q$</b> เป็นสัจนิรันดร์หรือไม่?</p>
+            <p><b>สเต็ปขั้นตอน:</b></p>
+            <p>1. ตั้งให้ผลลัพธ์หลักเป็น **เท็จ (F)**:
+               <br>$[(p \rightarrow q) \land p] \rightarrow q \equiv F$
+            </p>
+            <p>2. แกะเงื่อนไขของตัวเชื่อมหลัก \"$\rightarrow$\": หน้าจริง หลังเท็จ
+               <br>- ฝั่งหน้า: $(p \rightarrow q) \land p \equiv T$
+               <br>- ฝั่งหลัง: $q \equiv F$
+            </p>
+            <p>3. แกะฝั่งหน้าต่อเชื่อมด้วย \"$\land$\" ต้องจริงทั้งคู่:
+               <br>- ได้ว่า: $p \equiv T$
+               <br>- ได้ว่า: $p \rightarrow q \equiv T$
+            </p>
+            <p>4. ตรวจสอบข้อขัดแย้งโดยนำค่า $p = T$ และ $q = F$ แทนลงในเงื่อนไข $p \rightarrow q \equiv T$:
+               <br>- แทนค่าจะได้ $T \rightarrow F$ ซึ่งผลจริงต้องเท่ากับ <b>F (เท็จ)</b>
+               <br>- แต่เงื่อนไขในขั้นที่ 3 บังคับว่าต้องได้ค่าเป็น <b>T (จริง)</b>
+               <br>- เกิด **ข้อขัดแย้งกันอย่างชัดเจน** ของค่าความจริง
+            </p>
+            <p><b>สรุป:</b> เนื่องจากไม่สามารถหาผลลัพธ์เป็นเท็จได้ (ขัดแย้งเสมอ) รูปแบบประพจน์นี้จึงเป็น <b>สัจนิรันดร์</b></p>
+          </div>
+        `,
+        quiz: [
+          { q: "รูปแบบประพจน์ในข้อใดสมมูลกับ p → q?", a: ["~p ∨ q", "p ∧ ~q", "~p → ~q", "q → p"], correct: 0 },
+          { q: "รูปแบบประพจน์ในข้อใดสมมูลกับ ~p → ~q?", a: ["q → p", "p → q", "~q → ~p", "p ∨ ~q"], correct: 0 },
+          { q: "ตามกฎเดอมอร์แกน (De Morgan's Laws) รูปแบบประพจน์ ~(p ∧ q) สมมูลกับข้อใด?", a: ["~p ∨ ~q", "~p ∧ ~q", "p ∨ q", "~p → q"], correct: 0 },
+          { q: "รูปแบบประพจน์ ~(p ∨ q) สมมูลกับข้อใด?", a: ["~p ∧ ~q", "~p ∨ ~q", "p ∧ q", "~p → ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ∨ ~p มีค่าความจริงเป็นจริงในทุกกรณีหรือไม่? (เรียกว่าเป็นสัจนิรันดร์หรือไม่)", a: ["เป็นสัจนิรันดร์ (จริงทุกกรณี)", "ไม่เป็นสัจนิรันดร์ (เป็นเท็จบางกรณี)", "เป็นเท็จทุกกรณี", "สรุปไม่ได้ขึ้นอยู่กับตัวแปร"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ∧ ~p เป็นสัจนิรันดร์หรือไม่?", a: ["ไม่เป็นสัจนิรันดร์ (เป็นเท็จทุกกรณี)", "เป็นสัจนิรันดร์", "เป็นจริงบางกรณี", "สรุปไม่ได้"], correct: 0 },
+          { q: "รูปแบบประพจน์ใดสมมูลกับ p ↔ q?", a: ["(p → q) ∧ (q → p)", "(p → q) ∨ (q → p)", "~p ↔ ~q", "p ∨ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ ~(~p) มีค่าความจริงสมมูลกับข้อใด?", a: ["p", "~p", "จริง (T)", "เท็จ (F)"], correct: 0 },
+          { q: "นิเสธของรูปแบบประพจน์ p → q สมมูลกับรูปแบบข้อใด?", a: ["p ∧ ~q", "~p ∨ q", "~p ∧ q", "p ∨ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ (p ∧ q) → p เป็นสัจนิรันดร์หรือไม่?", a: ["เป็นสัจนิรันดร์ (จริงทุกกรณี)", "ไม่เป็นสัจนิรันดร์", "เป็นเท็จทุกกรณี", "เป็นจริงเฉพาะเมื่อ q เป็นจริง"], correct: 0 },
+          { q: "ข้อความใดสมมูลกับ 'ถ้าฝนตก แล้วถนนเปียก'?", a: ["ฝนไม่ตก หรือ ถนนเปียก", "ถ้าฝนไม่ตก แล้วถนนไม่เปียก", "ฝนตก และถนนไม่เปียก", "ถนนเปียก ก็ต่อเมื่อ ฝนตก"], correct: 0 },
+          { q: "ข้อความใดสมมูลกับประโยค 'ถ้าฉันสอบผ่าน พ่อจะซื้อจักรยานให้'?", a: ["ถ้าพ่อไม่ซื้อจักรยานให้ แสดงว่าฉันสอบไม่ผ่าน", "ถ้าฉันสอบตก พ่อจะไม่ซื้อจักรยานให้", "ถ้าพ่อซื้อจักรยานให้ แสดงว่าฉันสอบผ่าน", "ฉันสอบผ่าน และพ่อไม่ซื้อจักรยานให้"], correct: 0 },
+          { q: "รูปแบบใดสมมูลกับ ~(p ∨ ~q)?", a: ["~p ∧ q", "~p ∨ q", "p ∧ ~q", "~p ∧ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p → (p ∨ q) เป็นสัจนิรันดร์หรือไม่?", a: ["เป็นสัจนิรันดร์ (จริงทุกกรณี)", "ไม่เป็นสัจนิรันดร์", "เป็นเท็จทุกกรณี", "ขึ้นอยู่กับค่าของ q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ∧ q สมมูลกับ q ∧ p หรือไม่?", a: ["สมมูลกัน (สลับที่ตัวเชื่อมและได้)", "ไม่สมมูลกัน", "สมมูลเฉพาะเมื่อ p เป็นจริง", "สมมูลเฉพาะเมื่อ q เป็นเท็จ"], correct: 0 },
+          { q: "รูปแบบใดสมมูลกับนิเสธของ ~p ∨ q?", a: ["p ∧ ~q", "~p ∧ q", "~p ∨ ~q", "p ∨ ~q"], correct: 0 },
+          { q: "รูปแบบประพจน์ p ↔ ~p เป็นสัจนิรันดร์หรือไม่?", a: ["ไม่เป็นสัจนิรันดร์ (เป็นเท็จทุกกรณี)", "เป็นสัจนิรันดร์", "เป็นจริงบางกรณี", "เป็นสัจนิรันดร์เมื่อ p เป็นจริง"], correct: 0 },
+          { q: "รูปแบบใดสมมูลกับ p → ~q?", a: ["~p ∨ ~q", "p ∧ q", "~p ∧ ~q", "q → ~p"], correct: 0 },
+          { q: "รูปแบบประพจน์ (p ∨ q) → q เป็นสัจนิรันดร์หรือไม่?", a: ["ไม่เป็นสัจนิรันดร์ (เป็นเท็จได้กรณี p=T, q=F)", "เป็นสัจนิรันดร์", "เป็นเท็จทุกกรณี", "เป็นสัจนิรันดร์เมื่อ q เป็นจริง"], correct: 0 },
+          { q: "รูปแบบประพจน์ True → p สมมูลกับข้อใด?", a: ["p", "~p", "จริง (True)", "เท็จ (False)"], correct: 0 }
+        ]
+      },
+      
+      // CHAPTER: REAL NUMBER SYSTEM
+      {
+        id: "real-1",
+        grade: "real",
+        gradeLabel: "บทที่ 3: ระบบจำนวนจริง",
+        title: "การแก้สมการพหุนามกำลังสองและดีกรีสูง",
+        desc: "โครงสร้างจำนวนจริง ทฤษฎีบทเศษเหลือ (Remainder Theorem) และขั้นตอนแก้สมการดีกรีสูงด้วยวิธีหารสังเคราะห์ (Synthetic Division) และการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "ปานกลาง",
+        duration: "25 นาที",
+        tags: ["Equations", "Factoring", "Synthetic Division"],
+        content: `
+          <h3>📐 โครงสร้างของระบบจำนวนจริง (Structure of Real Number System)</h3>
+          <p>ระบบจำนวนจริง ($\\mathbb{R}$) ประกอบด้วยโครงสร้างแยกออกเป็น 2 กลุ่มย่อยที่สำคัญ:</p>
+          <ul>
+            <li><b>จำนวนตรรกยะ ($\\mathbb{Q}$):</b> จำนวนที่เขียนเป็นเศษส่วนได้ เช่น จำนวนเต็ม ทศนิยมซ้ำ หรือเศษส่วนปกติ</li>
+            <li><b>จำนวนอตรรกยะ ($\\mathbb{Q}'$):</b> จำนวนที่ไม่สามารถเขียนเป็นเศษส่วนได้ เช่น ค่าพาย $\\pi$, ค่า e หรือรากที่สองที่ถอดไม่ลงตัว เช่น $\\sqrt{2}, \\sqrt{3}$</li>
+          </ul>
+
+          <h3>⚡ การแก้สมการพหุนามกำลังสอง (Quadratic Equations)</h3>
+          <p>พหุนามดีกรีสองในรูป $ax^2 + bx + c = 0$ สามารถหาคำตอบได้โดยการแยกตัวประกอบ หรือใช้สูตรลัด:</p>
+          <div class="math-block">สูตรคำตอบสมการ: x = [ -b ± √(b² - 4ac) ] / 2a</div>
+          <p>วิเคราะห์คำตอบผ่านค่า <b>Discriminant ($D = b^2 - 4ac$)</b>:</p>
+          <ul>
+            <li>$D > 0$: มีคำตอบเป็นจำนวนจริง 2 คำตอบที่แตกต่างกัน</li>
+            <li>$D = 0$: มีคำตอบเป็นจำนวนจริงเพียง 1 คำตอบ (คำตอบซ้ำ)</li>
+            <li>$D < 0$: ไม่มีคำตอบที่เป็นจำนวนจริง (คำตอบอยู่ในรูปจำนวนเชิงซ้อน)</li>
+          </ul>
+
+          <h3>🧬 ทฤษฎีเศษเหลือและการหารสังเคราะห์ (Synthetic Division)</h3>
+          <p>การแก้พหุนามดีกรีสูงกว่าสองต้องการขั้นตอนพิเศษเพื่อลดรูปดีกรีลง:</p>
+          <ul>
+            <li><b>ทฤษฎีบทเศษเหลือ (Remainder Theorem):</b> เมื่อหารพหุนาม $P(x)$ ด้วย $x - c$ เศษที่ได้จากการหารจะเท่ากับค่าของ $P(c)$ เสมอ และหากเศษ $P(c) = 0$ จะถือว่า $(x - c)$ เป็นตัวประกอบตัวหนึ่งของ $P(x)$</li>
+            <li><b>การหารสังเคราะห์:</b> เป็นวิธีลัดในการหาผลหารโดยใช้เพียงตัวเลขสัมประสิทธิ์มาบวกและคูณกัน</li>
+          </ul>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: ขั้นตอนแก้สมการกำลังสามอย่างละเอียด</h4>
+            <p><b>โจทย์:</b> หาเซตคำตอบของสมการ $x^3 - 6x^2 + 11x - 6 = 0$</p>
+            <p><b>ขั้นตอนการคำนวณทีละสเต็ป:</b></p>
+            <p>1. สังเกตตัวประกอบของตัวเลขตัวท้ายคือ -6: จะได้เลขที่เป็นไปได้คือ $\\pm 1, \\pm 2, \\pm 3, \\pm 6$</p>
+            <p>2. ลองสุ่มแทนค่า $x = 1$ ลงในพหุนามเพื่อเช็คเศษตามทฤษฎีบทเศษเหลือ:
+               <br>$P(1) = (1)^3 - 6(1)^2 + 11(1) - 6 = 1 - 6 + 11 - 6 = 0$
+               <br>เนื่องจากเศษเท่ากับ 0 แสดงว่า **$(x - 1)$ คือตัวประกอบแรก**
+            </p>
+            <p>3. ดึงสัมประสิทธิ์หน้าตัวแปร $[1, -6, 11, -6]$ มาตั้งหารสังเคราะห์ด้วยรากตัวแรกคือ 1:</p>
+            <pre><code class="text-white">  1 |   1    -6    11    -6
+    |         1    -5     6
+    -----------------------
+        1    -5     6     0  (ผลหารคือพหุนามกำลังสอง x² - 5x + 6 และเศษคือ 0)</code></pre>
+            <p>4. เขียนรูปแบบพหุนามที่เหลือ: $(x - 1)(x^2 - 5x + 6) = 0$</p>
+            <p>5. แยกตัวประกอบสมการกำลังสองในวงเล็บหลังต่อ: $(x - 1)(x - 2)(x - 3) = 0$</p>
+            <p><b>เซตคำตอบของสมการคือ:</b> $\{1, 2, 3\}$</p>
+          </div>
+        `,
+        quiz: [
+          { q: "จงหาคำตอบของสมการพหุนามดีกรีสองต่อไปนี้: x² - 5x + 6 = 0?", a: ["x = 2, 3", "x = -2, -3", "x = 1, 6", "x = -1, -6"], correct: 0 },
+          { q: "จงหาผลเฉลยของสมการ x² - 4 = 0?", a: ["x = 2, -2", "x = 4, -4", "x = 2 เท่านั้น", "ไม่มีคำตอบเป็นจำนวนจริง"], correct: 0 },
+          { q: "จงหาคำตอบของสมการ x² + 6x + 9 = 0?", a: ["x = -3", "x = 3", "x = 3, -3", "x = 0"], correct: 0 },
+          { q: "จงแยกตัวประกอบของพหุนามกำลังสอง x² - 9?", a: ["(x - 3)(x + 3)", "(x - 3)(x - 3)", "(x - 9)(x + 1)", "(x + 3)(x + 3)"], correct: 0 },
+          { q: "เศษที่ได้จากการหารพหุนาม x² - 3x + 5 ด้วย x - 1 เท่ากับเท่าใด?", a: ["3", "5", "1", "0"], correct: 0 },
+          { q: "เศษที่ได้จากการหารพหุนาม x² + 5x + 6 ด้วย x - 2 เท่ากับเท่าใด?", a: ["20", "6", "0", "12"], correct: 0 },
+          { q: "จงหาผลเฉลยของสมการกำลังสอง 2x² - 5x + 2 = 0?", a: ["x = 2, 1/2", "x = -2, -1/2", "x = 1, 4", "x = 2, -1/2"], correct: 0 },
+          { q: "ข้อใดคือการแยกตัวประกอบของ x² + 5x + 4 ที่ถูกต้อง?", a: ["(x + 1)(x + 4)", "(x + 2)(x + 2)", "(x - 1)(x - 4)", "(x - 2)(x - 2)"], correct: 0 },
+          { q: "ถ้า x - 2 เป็นตัวประกอบของ x² + kx - 6 = 0 จงหาค่าสัมประสิทธิ์ k?", a: ["k = 1", "k = -1", "k = 2", "k = -2"], correct: 0 },
+          { q: "จงหาผลเฉลยคำตอบทั้งหมดของสมการ x³ - x = 0?", a: ["x = 0, 1, -1", "x = 1, -1", "x = 0, 1", "x = 0, -1"], correct: 0 },
+          { q: "จงแก้สมการหาค่าของ x จาก x² - 7x + 12 = 0?", a: ["x = 3, 4", "x = -3, -4", "x = 2, 6", "x = 1, 12"], correct: 0 },
+          { q: "เศษที่ได้จากการหารพหุนาม x³ - 2 ด้วย x - 2 มีค่าเท่าใด?", a: ["6", "8", "0", "-2"], correct: 0 },
+          { q: "ถ้ากำหนดให้พหุนาม P(x) = x³ - 3x² + 2x - 5 ข้อใดคือค่าของ P(2)?", a: ["-5", "-9", "3", "0"], correct: 0 },
+          { q: "จงหาคำตอบของสมการกำลังสองต่อไปนี้ x² + 4x = 0?", a: ["x = 0, -4", "x = 0, 4", "x = 2, -2", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "จงหาผลคำตอบของสมการ x² - 3x - 10 = 0?", a: ["x = 5, -2", "x = -5, 2", "x = 10, -1", "x = 5, 2"], correct: 0 },
+          { q: "เศษของการหาร x² - 1 ด้วยพหุนาม x + 1 มีค่าเท่าใด?", a: ["0 (หารลงตัว)", "1", "-1", "2"], correct: 0 },
+          { q: "สมการ x(x - 3)(x + 2) = 0 มีเซตคำตอบตรงกับข้อใด?", a: ["{0, 3, -2}", "{3, -2}", "{0, -3, 2}", "{0, 1, 2}"], correct: 0 },
+          { q: "ข้อใดคือการแยกตัวประกอบของ x² + 2x - 8 ที่ถูกต้อง?", a: ["(x + 4)(x - 2)", "(x - 4)(x + 2)", "(x + 8)(x - 1)", "(x - 8)(x + 1)"], correct: 0 },
+          { q: "จงแก้สมการเพื่อหาค่า x จาก x³ - 2x² = 0?", a: ["x = 0, 2", "x = 2", "x = 0, -2", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "จงหาคำตอบของสมการ x² - 2x + 1 = 0?", a: ["x = 1", "x = -1", "x = 1, -1", "ไม่มีคำตอบ"], correct: 0 }
+        ]
+      },
+      {
+        id: "real-2",
+        grade: "real",
+        gradeLabel: "บทที่ 3: ระบบจำนวนจริง",
+        title: "การแก้อสมการพหุนามและอสมการค่าสัมบูรณ์",
+        desc: "การหาคำตอบอสมการเชิงเส้นและพหุนามดีกรีสองขึ้นไปบนเส้นจำนวน ช่วง และอสมการค่าสัมบูรณ์ พร้อมการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "ยาก",
+        duration: "30 นาที",
+        tags: ["Inequalities", "Intervals", "Absolute Value"],
+        content: `
+          <h3>📈 การแก้อสมการพหุนามตัวแปรเดียว (Polynomial Inequalities)</h3>
+          <p>การแก้อสมการดีกรีตั้งแต่สองขึ้นไป จะหาขอบเขตช่วงค่าโดยใช้ **วิธีพล็อตจุดวิกฤตบนเส้นจำนวน (Number Line Method)**:</p>
+          <ol>
+            <li>จัดรูปสมการให้ฝั่งขวาเป็นศูนย์ และทำการแยกตัวประกอบฝั่งซ้ายให้อยู่ในรูปตัวคูณเชิงเส้น</li>
+            <li>หา <b>จุดวิกฤต (Critical Points)</b> โดยตั้งให้วงเล็บตัวประกอบแต่ละอันเท่ากับ 0</li>
+            <li>นำจุดวิกฤตพล็อตเรียงจากน้อยไปหามากบนเส้นจำนวน</li>
+            <li>แบ่งช่วงสวมเครื่องหมายช่วง โดยเริ่มระบายสัญลักษณ์ **บวก (+)** จากฝั่งขวาสุด และสลับมาทางซ้ายเป็น **ลบ (-)** และ **บวก (+)** สลับช่วงกันไป</li>
+            <li>การตัดสินใจเลือกช่วงคำตอบ:
+               <br>- หากเครื่องหมายเป็นมากกว่า ($>$) หรือมากกว่าเท่ากับ ($\\ge$): เลือกช่วง **บวก (+)**
+               <br>- หากเครื่องหมายเป็นน้อยกว่า ($<$) หรือน้อยกว่าเท่ากับ ($\\le$): เลือกช่วง **ลบ (-)**
+               <br>- ใช้ **จุดโปร่ง** สำหรับเครื่องหมายเคร่งครัด ($>, <$) และ **จุดทึบ** สำหรับเครื่องหมายที่ยอมให้เท่ากับ ($\\ge, \\le$)
+            </li>
+          </ol>
+
+          <div class="my-6 flex justify-center">
+            <img src="../images/number_line.png" alt="เส้นจำนวนและช่วงอสมการ (Number Line & Intervals)" class="max-w-md w-full h-auto rounded-2xl border border-white/10 shadow-lg shadow-black/40">
+          </div>
+
+          <h3>⚡ การแก้สมการและอสมการค่าสัมบูรณ์ (Absolute Value)</h3>
+          <p>ค่าสัมบูรณ์ $|x|$ หมายถึงระยะทางจาก 0 ถึง $x$ บนเส้นจำนวนซึ่งต้องมีค่าไม่ติดลบ การปลดเครื่องหมายอสมการมีกฎดังนี้:</p>
+          <ul>
+            <li><b>ปลดกล่องสมการ $|x| = a$ :</b> จะได้คำตอบ $x = a$ หรือ $x = -a$</li>
+            <li><b>ปลดกล่องช่วงหดเข้า $|x| \\le a$ :</b> จะได้อสมการควบ $-a \\le x \\le a$</li>
+            <li><b>ปลดกล่องช่วงแยกออก $|x| \\ge a$ :</b> จะได้อสมการแยก $x \\le -a$ หรือ $x \\ge a$</li>
+          </ul>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การแก้อสมการพหุนามดีกรีสอง</h4>
+            <p><b>โจทย์:</b> หาช่วงคำตอบของอสมการ $x^2 - 7x + 10 \\le 0$</p>
+            <p>1. แยกตัวประกอบของพหุนามกำลังสองได้: $(x - 2)(x - 5) \\le 0$</p>
+            <p>2. หาจุดวิกฤตจะได้: $x = 2$ และ $x = 5$</p>
+            <p>3. วาดเส้นจำนวนระบุช่วง: ขวาสุดบวก (+), กลางลบ (-), ซ้ายสุดบวก (+)</p>
+            <p>4. เนื่องจากเครื่องหมายเป็น $\\le$ (น้อยกว่าหรือเท่ากับ) เราจึงเลือกช่วง **ลบ (-)** และเป็น **จุดทึบ**</p>
+            <p><b>คำตอบในรูปช่วงคือ:</b> ช่วงปิด <b>$[2, 5]$</b></p>
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 2: อสมการเศษส่วนพหุนามที่ห้ามส่วนเป็นศูนย์</h4>
+            <p><b>โจทย์:</b> แก้อสมการ $\\frac{x - 3}{x - 1} \\le 0$</p>
+            <p>1. จุดวิกฤตของตัวเศษคือ $x = 3$ และของตัวส่วนคือ $x = 1$</p>
+            <p>2. นำไปตั้งเส้นจำนวนแบ่งช่วง $+ - +$</p>
+            <p>3. เนื่องจากเครื่องหมายคือ $\\le$ ให้เลือกช่วงลบ (-) แต่มีข้อจำกัดทางคณิตศาสตร์ว่า **ตัวหารห้ามเป็น 0** ดังนั้นจุดวิกฤตที่ $x = 1$ ต้องเป็น **จุดโปร่ง** เสมอ ส่วนตัวเศษที่ $x = 3$ เป็น **จุดทึบ** ได้ปกติ</p>
+            <p><b>คำตอบคือ:</b> ช่วงครึ่งเปิดครึ่งปิด <b>$(1, 3]$</b></p>
+          </div>
+        `,
+        quiz: [
+          { q: "จงหาเซตคำตอบของอสมการเชิงเส้นต่อไปนี้: 2x - 4 > 6?", a: ["x > 5", "x < 5", "x > 1", "x < 1"], correct: 0 },
+          { q: "จงหาเซตคำตอบของอสมการเชิงเส้นต่อไปนี้: 3x + 2 ≤ 8?", a: ["x ≤ 2", "x ≥ 2", "x ≤ 3", "x ≥ 3"], correct: 0 },
+          { q: "ช่วงคำตอบของอสมการกำลังสอง (x - 2)(x - 3) < 0 สอดคล้องกับข้อใด?", a: ["(2, 3)", "[-∞, 2) ∪ (3, ∞]", "[2, 3]", "(-∞, 2) ∪ (3, ∞)"], correct: 0 },
+          { q: "ช่วงคำตอบของอสมการกำลังสอง (x - 1)(x - 4) > 0 สอดคล้องกับข้อใด?", a: ["(-∞, 1) ∪ (4, ∞)", "(1, 4)", "[-∞, 1] ∪ [4, ∞]", "[1, 4]"], correct: 0 },
+          { q: "ข้อความอสมการในรูปช่วงใดสมมูลกับอสมการค่าสัมบูรณ์ต่อไปนี้: |x| < 3?", a: ["-3 < x < 3", "x < 3", "x > -3", "x < -3 หรือ x > 3"], correct: 0 },
+          { q: "ข้อความอสมการในรูปช่วงใดสมมูลกับอสมการค่าสัมบูรณ์ต่อไปนี้: |x| > 5?", a: ["x < -5 หรือ x > 5", "-5 < x < 5", "x > 5", "x < -5"], correct: 0 },
+          { q: "จงแก้สมการค่าสัมบูรณ์ต่อไปนี้เพื่อหาค่า x: |x - 2| = 3?", a: ["x = 5, -1", "x = 5", "x = -1", "x = 3, -3"], correct: 0 },
+          { q: "จงแก้สมการค่าสัมบูรณ์ต่อไปนี้เพื่อหาค่า x: |x + 1| = 4?", a: ["x = 3, -5", "x = 3", "x = -5", "x = 4, -4"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการเชิงเส้นเชิงลบ: 5 - x > 2?", a: ["x < 3", "x > 3", "x < -3", "x > -3"], correct: 0 },
+          { q: "เซตคำตอบของอสมการกำลังสอง x² - 9 ≤ 0 สอดคล้องกับช่วงคำตอบข้อใด?", a: ["[-3, 3]", "(-3, 3)", "(-∞, -3] ∪ [3, ∞)", "(-∞, -3) ∪ (3, ∞)"], correct: 0 },
+          { q: "เซตคำตอบของอสมการกำลังสอง x² - 16 > 0 สอดคล้องกับช่วงคำตอบข้อใด?", a: ["(-∞, -4) ∪ (4, ∞)", "[-4, 4]", "(-4, 4)", "(-∞, -4] ∪ [4, ∞)"], correct: 0 },
+          { q: "สมการค่าสัมบูรณ์ |x| = -2 มีคำตอบที่เป็นจำนวนจริงใดบ้าง?", a: ["ไม่มีจำนวนจริงใดเป็นคำตอบ (ค่าสัมบูรณ์ต้องเป็นบวกเสมอ)", "x = -2", "x = 2, -2", "x = 0"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการค่าสัมบูรณ์ต่อไปนี้: |x - 3| < 2?", a: ["1 < x < 5", "-2 < x < 2", "x < 5", "x > 1"], correct: 0 },
+          { q: "จงแก้หาช่วงคำตอบของอสมการเชิงเส้น 4x - 7 ≥ 5?", a: ["x ≥ 3", "x ≤ 3", "x ≥ 1/2", "x ≤ -3"], correct: 0 },
+          { q: "ช่วงคำตอบของอสมการเชิงเส้นติดลบ -2x < 6 ตรงกับข้อใด? (อย่าลืมกลับเครื่องหมายเมื่อหารด้วยจำนวนลบ)", a: ["x > -3", "x < -3", "x > 3", "x < 3"], correct: 0 },
+          { q: "คำตอบของสมการค่าสัมบูรณ์ |2x| = 6 ตรงกับข้อใด?", a: ["x = 3, -3", "x = 3", "x = 6, -6", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "จงหาเซตคำตอบของอสมการค่าสัมบูรณ์ต่อไปนี้: |x| ≤ 0?", a: ["x = 0", "เซตว่าง (∅)", "ไม่มีคำตอบ", "จำนวนจริงทุกจำนวน"], correct: 0 },
+          { q: "จงแก้อสมการเชิงเส้นต่อไปนี้: x - 3 < 2x?", a: ["x > -3", "x < -3", "x > 3", "x < 3"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการพหุนามกำลังสองที่ยกกำลังสองสมบูรณ์: (x - 5)² ≤ 0?", a: ["x = 5", "เซตว่าง (∅)", "x ≤ 5", "จำนวนจริงทั้งหมด"], correct: 0 },
+          { q: "จงหาคำตอบของอสมการกำลังสอง x² + 1 < 0 ในฐานะจำนวนจริง?", a: ["ไม่มีจำนวนจริงใดเป็นคำตอบ", "x < -1", "x = -1, 1", "จำนวนจริงทั้งหมด"], correct: 0 }
+        ]
+      },
+      
+      // CHAPTER: RELATIONS & FUNCTIONS
+      {
+        id: "func-1",
+        grade: "function",
+        gradeLabel: "บทที่ 4: ความสัมพันธ์และฟังก์ชัน",
+        title: "ผลคูณคาร์ทีเซียน ความสัมพันธ์ และโดเมนกับเรนจ์",
+        desc: "ทำความเข้าใจคู่อันดับ ผลคูณคาร์ทีเซียน นิยามความสัมพันธ์ และเทคนิคการหาโดเมนและเรนจ์ตามข้อจำกัด และการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "ปานกลาง",
+        duration: "25 นาที",
+        tags: ["Relations", "Domain", "Range", "Cartesian Product"],
+        content: `
+          <h3>🌐 ผลคูณคาร์ทีเซียนและความสัมพันธ์ (Cartesian Product & Relations)</h3>
+          <ul>
+            <li><b>ผลคูณคาร์ทีเซียน ($A \\times B$):</b> เซตของคู่อันดับ $(x, y)$ ทั้งหมดโดยที่สมาชิกตัวหน้า $x$ ต้องมาจากเซต $A$ และสมาชิกตัวหลัง $y$ ต้องมาจากเซต $B$
+               <br>- จำนวนสมาชิก: $n(A \\times B) = n(A) \\times n(B)$
+            </li>
+            <li><b>ความสัมพันธ์ ($r$):</b> คือสับเซตของผลคูณคาร์ทีเซียน $A \\times B$ (นั่นคือ $r \\subset A \\times B$)</li>
+          </ul>
+
+          <h3>📐 นิยามของโดเมนและเรนจ์</h3>
+          <ul>
+            <li><b>โดเมน (Domain - $D_r$):</b> เซตของสมาชิกตัวหน้า (แกน $X$) ของคู่อันดับทั้งหมดในความสัมพันธ์</li>
+            <li><b>เรนจ์ (Range - $R_r$):</b> เซตของสมาชิกตัวหลัง (แกน $Y$) ของคู่อันดับทั้งหมดในความสัมพันธ์</li>
+          </ul>
+
+          <h3>⚡ เทคนิคคำนวณหาช่วงข้อจำกัดโดเมนและเรนจ์ทางพีชคณิต</h3>
+          <p>เมื่อโจทย์กำหนดความสัมพันธ์เป็นรูปแบบสมการในระบบจำนวนจริง เราต้องนำข้อห้ามทางคณิตศาสตร์ 2 ประการมาตั้งเป็นอสมการเงื่อนไข:</p>
+          <ol>
+            <li><b>รูปแบบเศษส่วน $\\frac{1}{A}$ :</b> ตัวส่วนห้ามมีค่าเป็นศูนย์เด็ดขาด เงื่อนไขคือ <b>$A \\ne 0$</b></li>
+            <li><b>รูปแบบรากคู่ $\\sqrt{A}$ :</b> ค่าภายใต้สแควรูทห้ามติดลบ เงื่อนไขคือ <b>$A \\ge 0$</b></li>
+          </ol>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การหาโดเมนและเรนจ์ของฟังก์ชันเศษส่วน</h4>
+            <p><b>โจทย์:</b> หาโดเมนและเรนจ์ของความสัมพันธ์จากสมการ $y = \\frac{4}{x - 3}$</p>
+            <p><b>หาโดเมน ($D_r$):</b></p>
+            <p>สมการจัดรูปเป็น $y$ ในเทอม $x$ เรียบร้อยแล้ว ตัวแปร $x$ อยู่ที่ตัวหาร ดังนั้นตามกฎข้อห้ามตัวส่วนห้ามเป็นศูนย์จะได้:
+               <br>$x - 3 \\ne 0 \\rightarrow x \\ne 3$
+               <br><b>ดังนั้น:</b> $D_r = \\mathbb{R} - \\{3\\}$ (จำนวนจริงทั้งหมด ยกเว้น 3)
+            </p>
+            <p><b>หาเรนจ์ ($R_r$):</b></p>
+            <p>จัดรูปสมการใหม่ให้อยู่ในรูป $x$ ในเทอม $y$:
+               <br>$y(x - 3) = 4 \\rightarrow x - 3 = \\frac{4}{y} \\rightarrow x = \\frac{4}{y} + 3$
+               <br>พิจารณาสมการนี้ ตัวหารคือ $y$ ดังนั้นเงื่อนไขคือ $y \\ne 0$
+               <br><b>ดังนั้น:</b> $R_r = \\mathbb{R} - \\{0\\}$ (จำนวนจริงทั้งหมด ยกเว้น 0)
+            </p>
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 2: โดเมนของสมการติดรากที่สอง</h4>
+            <p><b>โจทย์:</b> หาโดเมนของสมการ $y = \\sqrt{9 - x^2}$</p>
+            <p>1. กฎคณิตศาสตร์ระบุว่าค่าในสแควรูทต้องมากกว่าหรือเท่ากับศูนย์เสมอ:</p>
+            <p>$9 - x^2 \\ge 0$</p>
+            <p>2. คูณลบตลอดและกลับทิศทางเครื่องหมายอสมการ: $x^2 - 9 \\le 0$</p>
+            <p>3. แยกตัวประกอบผลต่างกำลังสอง: $(x - 3)(x + 3) \\le 0$</p>
+            <p>4. พล็อตลงเส้นจำนวนและเลือกช่วงลบ: จะได้ช่วงปิดตั้งแต่ -3 ถึง 3</p>
+            <p><b>โดเมนคือ:</b> $D_r = [-3, 3]$</p>
+          </div>
+        `,
+        quiz: [
+          { q: "กำหนดความสัมพันธ์ r = {(1, 2), (2, 3), (3, 4)} ข้อใดคือโดเมน (Domain) ของ r?", a: ["{1, 2, 3}", "{2, 3, 4}", "{1, 2, 3, 4}", "{(1, 2), (2, 3)}"], correct: 0 },
+          { q: "กำหนดความสัมพันธ์ r = {(1, 2), (2, 3), (3, 4)} ข้อใดคือเรนจ์ (Range) ของ r?", a: ["{2, 3, 4}", "{1, 2, 3}", "{1, 2, 3, 4}", "{(2, 3), (3, 4)}"], correct: 0 },
+          { q: "กำหนดให้เซต A = {1, 2} และ B = {3, 4} เซตผลคูณคาร์ทีเซียน A × B จะมีจำนวนสมาชิกทั้งหมดกี่ตัว?", a: ["4 ตัว", "2 ตัว", "5 ตัว", "3 ตัว"], correct: 0 },
+          { q: "กำหนดให้เซต A = {a} และ B = {1, 2} ข้อใดคือสมาชิกของผลคูณคาร์ทีเซียน A × B ที่ถูกต้อง?", a: ["{ (a, 1), (a, 2) }", "{ (1, a), (2, a) }", "{ a, 1, 2 }", "{ (a, 1, 2) }"], correct: 0 },
+          { q: "ถ้าต้องการหาโดเมนของความสัมพันธ์รูปสมการ y = 1 / (x - 3) ค่า x ห้ามเป็นจำนวนใด?", a: ["x = 3", "x = -3", "x = 0", "x = 1"], correct: 0 },
+          { q: "หากต้องการหาโดเมนของความสัมพันธ์ที่ติดราก y = √(x - 2) ข้อใดคือโดเมนที่สอดคล้องกับเงื่อนไขในรูท (x - 2 ≥ 0)?", a: ["x ≥ 2", "x > 2", "x ≤ 2", "R (จำนวนจริงทั้งหมด)"], correct: 0 },
+          { q: "จงหาเรนจ์ (Range) ของความสัมพันธ์กำลังสองปกติ y = x²?", a: ["[0, ∞)", "R (จำนวนจริงทั้งหมด)", "(-∞, 0]", "[1, ∞)"], correct: 0 },
+          { q: "จงหาเรนจ์ (Range) ของความสัมพันธ์ในรูปค่าสัมบูรณ์ y = |x|?", a: ["[0, ∞)", "R (จำนวนจริงทั้งหมด)", "(-∞, 0]", "R - {0}"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ที่เป็นสมการเส้นตรง y = 2x + 5 คือข้อใด?", a: ["R (จำนวนจริงทั้งหมด)", "R - {2}", "x ≥ 0", "R - {5}"], correct: 0 },
+          { q: "เรนจ์ของความสัมพันธ์ y = x² + 1 ตรงกับข้อใด?", a: ["[1, ∞)", "[0, ∞)", "R (จำนวนจริงทั้งหมด)", "[-1, 1]"], correct: 0 },
+          { q: "กำหนดให้เซต A = {1} และ B = {2, 3} ข้อใดคือสมาชิกของผลคูณคาร์ทีเซียน B × A?", a: ["{ (2, 1), (3, 1) }", "{ (1, 2), (1, 3) }", "{ (1, 2, 3) }", "{ 2, 3, 1 }"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = 2 / x ห้าม x เป็นเลขใด?", a: ["x = 0", "x = 2", "x = -2", "x = 1"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = √x คือข้อใด?", a: ["x ≥ 0", "x > 0", "R", "x ≤ 0"], correct: 0 },
+          { q: "กำหนด r = {(2, a), (3, b)} ข้อใดคือเซตโดเมน D_r?", a: ["{2, 3}", "{a, b}", "{2, 3, a, b}", "{(2, a)}"], correct: 0 },
+          { q: "จงหาเรนจ์ (Range) ของความสัมพันธ์ y = -|x|?", a: ["(-∞, 0]", "[0, ∞)", "R", "ไม่มีคำตอบ"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = 5 / (x + 2) ห้าม x เป็นจำนวนใด?", a: ["x = -2", "x = 2", "x = 0", "x = -5"], correct: 0 },
+          { q: "โดเมนของความสัมพันธ์ y = √(3 - x) สอดคล้องกับข้อใด?", a: ["x ≤ 3", "x ≥ 3", "x < 3", "R"], correct: 0 },
+          { q: "เรนจ์ของความสัมพันธ์ y = x² - 3 สอดคล้องกับข้อใด?", a: ["[-3, ∞)", "[3, ∞)", "[0, ∞)", "R"], correct: 0 },
+          { q: "ถ้า n(A) = 3 และ n(B) = 4 จงหาจำนวนสมาชิกทั้งหมดของ A × B?", a: ["12 ตัว", "7 ตัว", "9 ตัว", "16 ตัว"], correct: 0 },
+          { q: "กำหนดความสัมพันธ์ r = {(1, a), (1, b)} ข้อใดคือเรนจ์ R_r?", a: ["{a, b}", "{1}", "{1, a, b}", "{(1, a)}"], correct: 0 }
+        ]
+      },
+      {
+        id: "func-2",
+        grade: "function",
+        gradeLabel: "บทที่ 4: ความสัมพันธ์และฟังก์ชัน",
+        title: "ฟังก์ชัน การตรวจสอบกราฟิก และฟังก์ชันประกอบ/อินเวอร์ส",
+        desc: "นิยามของฟังก์ชัน, วิธีตรวจสอบด้วยเส้นแนวดิ่ง, ฟังก์ชันประกอบ (Composite: fog), และฟังก์ชันผกผัน (Inverse: f^-1) พร้อมการสุ่มข้อสอบ 5 ข้อ",
+        difficulty: "ยาก",
+        duration: "30 นาที",
+        tags: ["Functions", "Graphs", "Composite Function", "Inverse Function"],
+        content: `
+          <h3>📈 นิยามของฟังก์ชัน (Definition of Function)</h3>
+          <p>ฟังก์ชันคือความสัมพันธ์ชนิดพิเศษซึ่งสมาชิกแต่ละตัวในโดเมน (แกน $X$) จะต้องจับคู่กับสมาชิกในเรนจ์ (แกน $Y$) **เพียงตัวเดียวเท่านั้น** (หรือกล่าวสั้นๆ คือ ค่า $x$ หนึ่งค่า ห้ามให้ค่า $y$ แตกต่างกัน 2 ค่า)</p>
+
+          <h3>📊 วิธีทดสอบความเป็นฟังก์ชันจากกราฟ (Vertical Line Test)</h3>
+          <p>เมื่อโจทย์ให้ความสัมพันธ์มาเป็นกราฟบนแกนพิกัดฉาก $X-Y$:</p>
+          <ul>
+            <li>ให้ลากเส้นตรงสมมติขนานแกน $Y$ (ลากดิ่งลงมา) ผ่านกราฟ</li>
+            <li>ถ้าเส้นตรงแนวดิ่งตัดกราฟ **ไม่เกิน 1 จุดเสมอ** ในทุกกรณี $\rightarrow$ **เป็นฟังก์ชัน**</li>
+            <li>ถ้ามีเส้นตรงแนวดิ่งใดที่ตัดกราฟ **ตั้งแต่ 2 จุดขึ้นไป** $\rightarrow$ **ไม่เป็นฟังก์ชัน**</li>
+          </ul>
+
+          <div class="my-6 flex justify-center">
+            <img src="../images/vertical_line_test.png" alt="การทดสอบด้วยเส้นแนวดิ่ง (Vertical Line Test)" class="max-w-md w-full h-auto rounded-2xl border border-white/10 shadow-lg shadow-black/40">
+          </div>
+
+          <h3>🔄 ฟังก์ชันประกอบ (Composite Function) และฟังก์ชันผกผัน (Inverse Function)</h3>
+          <ul>
+            <li><b>ฟังก์ชันประกอบ ($(g \\circ f)(x)$ หรือ $g(f(x))$):</b> ฟังก์ชันที่เอาค่าผลลัพธ์ของฟังก์ชัน $f$ ไปเป็นอินพุตประมวลผลต่อในฟังก์ชัน $g$</li>
+            <li><b>ฟังก์ชันผกผัน ($f^{-1}(x)$):</b> ฟังก์ชันที่ดำเนินการตรงกันข้าม โดยการสลับที่ระหว่างโดเมนและเรนจ์ วิธีการหาคือให้สลับสมการจาก $y = f(x)$ เป็น $x = f(y)$ แล้วแก้หาค่า $y$ ใหม่</li>
+          </ul>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 1: การคำนวณฟังก์ชันประกอบ (Composite Function)</h4>
+            <p>กำหนดให้ $f(x) = 2x - 1$ และ $g(x) = x^2$
+               <br>จงหาค่าของ $(g \\circ f)(3)$ และ $(f \\circ g)(3)$
+            </p>
+            <p><b>หา $(g \\circ f)(3)$:</b></p>
+            <p>1. จากความหมาย $(g \\circ f)(3) = g(f(3))$</p>
+            <p>2. คำนวณหาชั้นใน $f(3) = 2(3) - 1 = 5$</p>
+            <p>3. แทนค่าเข้าไปใน $g(5) = (5)^2 = 25$
+               <br><b>ดังนั้น:</b> $(g \\circ f)(3) = 25$
+            </p>
+            <p><b>หา $(f \\circ g)(3)$:</b></p>
+            <p>1. จากความหมาย $(f \\circ g)(3) = f(g(3))$</p>
+            <p>2. คำนวณหาชั้นใน $g(3) = (3)^2 = 9$</p>
+            <p>3. แทนค่าเข้าไปใน $f(9) = 2(9) - 1 = 17$
+               <br><b>ดังนั้น:</b> $(f \\circ g)(3) = 17$
+            </p>
+          </div>
+
+          <div class="example-box">
+            <h4>💡 ตัวอย่างที่ 2: การหาฟังก์ชันผกผัน (Inverse Function)</h4>
+            <p><b>โจทย์:</b> หาฟังก์ชันอินเวอร์ส $f^{-1}(x)$ ของฟังก์ชันเชิงเส้น $f(x) = 2x + 3$</p>
+            <p>1. เขียนฟังก์ชันเดิมในรูปตัวแปร $y$: $y = 2x + 3$</p>
+            <p>2. สลับตำแหน่งตัวแปร $x$ และ $y$: $x = 2y + 3$</p>
+            <p>3. จัดรูปสมการใหม่เพื่อแก้ตัวแปร $y$:
+               <br>$2y = x - 3 \\rightarrow y = \\frac{x - 3}{2}$
+            </p>
+            <p><b>ดังนั้น ฟังก์ชันผกผันคือ:</b> $f^{-1}(x) = \\frac{x - 3}{2}$</p>
+          </div>
+        `,
+        quiz: [
+          { q: "ความสัมพันธ์ในข้อใดต่อไปนี้มีคุณลักษณะของความเป็น 'ฟังก์ชัน'?", a: ["{ (1, a), (2, b), (3, c) }", "{ (1, a), (1, b) }", "{ (2, 5), (2, 6) }", "{ (a, 1), (a, 2) }"], correct: 0 },
+          { q: "ความสัมพันธ์ในข้อใดต่อไปนี้ ไม่เป็น ฟังก์ชัน?", a: ["{ (1, a), (1, b) }", "{ (1, a), (2, b), (3, a) }", "{ (2, 2), (3, 3) }", "{ (a, 1), (b, 2) }"], correct: 0 },
+          { q: "กำหนดให้ f(x) = 2x + 3 จงคำนวณหาค่าของ f(4)?", a: ["11", "9", "14", "8"], correct: 0 },
+          { q: "กำหนดให้ f(x) = x² - 1 จงคำนวณหาค่าของ f(-2)?", a: ["3", "-3", "5", "-5"], correct: 0 },
+          { q: "กำหนดให้ f(x) = x + 1 และ g(x) = 2x จงคำนวณหาค่าฟังก์ชันประกอบ (f ∘ g)(3)?", a: ["7", "8", "6", "12"], correct: 0 },
+          { q: "กำหนดให้ f(x) = x + 1 และ g(x) = 2x จงคำนวณหาค่าฟังก์ชันประกอบ (g ∘ f)(3)?", a: ["8", "7", "6", "10"], correct: 0 },
+          { q: "จงหาอินเวอร์สฟังก์ชัน (ฟังก์ชันผกผัน) f⁻¹(x) ของ f(x) = x + 2?", a: ["x - 2", "2x", "x / 2", "2 - x"], correct: 0 },
+          { q: "จงหาอินเวอร์สฟังก์ชัน f⁻¹(x) ของ f(x) = 3x?", a: ["x / 3", "3x", "x - 3", "3 - x"], correct: 0 },
+          { q: "ในการทดสอบกราฟความสัมพันธ์ด้วยการลากเส้นตรงในแนวตั้งขนานแกน Y ตัดผ่านกราฟ 2 จุด สรุปได้ว่าอย่างไร?", a: ["กราฟความสัมพันธ์นี้ ไม่เป็นฟังก์ชัน", "กราฟความสัมพันธ์นี้ เป็นฟังก์ชัน", "กราฟไม่มีจุดวิกฤต", "ไม่สามารถระบุได้"], correct: 0 },
+          { q: "กำหนดฟังก์ชันคงตัว f(x) = 5 ข้อใดคือค่าของ f(10)?", a: ["5", "10", "50", "0"], correct: 0 },
+          { q: "กำหนด f(x) = |x| - 3 จงหาค่า f(-5)?", a: ["2", "-2", "8", "-8"], correct: 0 },
+          { q: "กราฟความสัมพันธ์ปกติในข้อใดเป็นฟังก์ชัน?", a: ["กราฟพาราโบลาหงาย (y = x²)", "กราฟรูปวงกลม", "กราฟรูปวงรี", "กราฟพาราโบลาตะแคงขวา"], correct: 0 },
+          { q: "กำหนด f(x) = 2x - 1 จงหาค่า f(0)?", a: ["-1", "0", "1", "-2"], correct: 0 },
+          { q: "ฟังก์ชันในข้อใดต่อไปนี้จัดว่าเป็นฟังก์ชันแบบ 1 to 1 (ฟังก์ชันหนึ่งต่อหนึ่ง)?", a: ["f(x) = 3x + 1", "f(x) = x²", "f(x) = |x|", "f(x) = 5"], correct: 0 },
+          { q: "กำหนด f(x) = x + 3 จงหาค่าของ f(f(1))?", a: ["7", "4", "6", "5"], correct: 0 },
+          { q: "จงหาฟังก์ชันผกผัน f⁻¹(x) ของ f(x) = x - 5?", a: ["x + 5", "5x", "x / 5", "5 - x"], correct: 0 },
+          { q: "กำหนด f(x) = 2x จงหาค่า x เมื่อกำหนดให้ f(x) = 10?", a: ["x = 5", "x = 2", "x = 20", "x = 8"], correct: 0 },
+          { q: "กำหนด f(x) = x² + 5 จงหาค่า f(1)?", a: ["6", "5", "7", "1"], correct: 0 },
+          { q: "การตรวจสอบความเป็นฟังก์ชันแบบหนึ่งต่อหนึ่ง (1 to 1) ด้วยการลากเส้นขนานแกน X (Horizontal Line Test) เส้นตรงนั้นต้องตัดผ่านกราฟอย่างมากกี่จุด?", a: ["1 จุด", "2 จุด", "ไม่จำกัดจุด", "ไม่มีจุดตัดเลย"], correct: 0 },
+          { q: "กำหนด f(x) = 3 ข้อใดคือค่าของ f(f(f(2)))?", a: ["3", "2", "9", "27"], correct: 0 }
+        ]
+      }
+    ];
+
+    // ==========================================
+    //  PROGRESS & LOCALSTORAGE ENGINE
+    // ==========================================
+    let progressData = {};
+    const PROGRESS_STORAGE_KEY = 'att6_1_learning_progress';
+
+    // Load progress from localStorage
+    function loadProgress() {
+      const stored = localStorage.getItem(PROGRESS_STORAGE_KEY);
+      if (stored) {
+        try {
+          progressData = JSON.parse(stored);
+        } catch(e) {
+          progressData = {};
+        }
+      } else {
+        progressData = {};
+      }
+      updateProgressUI();
+    }
+
+    // Save progress to localStorage
+    function saveProgress() {
+      localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(progressData));
+      updateProgressUI();
+    }
+
+    // Update the progress bar, text and badges
+    function updateProgressUI() {
+      const totalLessons = lessonsData.length;
+      let completedCount = 0;
+      
+      // Check status of each lesson
+      lessonsData.forEach(lesson => {
+        if (progressData[lesson.id]) {
+          completedCount++;
+        }
+      });
+
+      // Calculate percentage
+      const percent = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+      
+      // Update UI elements
+      document.getElementById('global-progress-txt').innerText = percent + '%';
+      document.getElementById('global-progress-bar').style.width = percent + '%';
+      document.getElementById('global-progress-count').innerText = completedCount;
+
+      // Badge logic based on math chapters
+      const setCompleted = lessonsData.filter(l => l.grade === 'set').every(l => progressData[l.id]);
+      const logicCompleted = lessonsData.filter(l => l.grade === 'logic').every(l => progressData[l.id]);
+      const realCompleted = lessonsData.filter(l => l.grade === 'real').every(l => progressData[l.id]);
+      const funcCompleted = lessonsData.filter(l => l.grade === 'function').every(l => progressData[l.id]);
+      const grandCompleted = (completedCount === totalLessons);
+
+      const updateBadgeStyle = (elId, isCompleted) => {
+        const el = document.getElementById(elId);
+        if (isCompleted) {
+          el.classList.remove('opacity-30');
+          el.classList.add('opacity-100', 'border-accentemerald/30', 'bg-accentemerald/[0.04]');
+        } else {
+          el.classList.remove('opacity-100', 'border-accentemerald/30', 'bg-accentemerald/[0.04]');
+          el.classList.add('opacity-30');
+        }
+      };
+
+      updateBadgeStyle('badge-set', setCompleted);
+      updateBadgeStyle('badge-logic', logicCompleted);
+      updateBadgeStyle('badge-real', realCompleted);
+      updateBadgeStyle('badge-function', funcCompleted);
+      updateBadgeStyle('badge-grand', grandCompleted);
+
+      // Re-render lesson cards to reflect checkmarks
+      renderLessonCards();
+    }
+
+    // ==========================================
+    //  TAB & SEARCH VIEW ROUTER
+    // ==========================================
+    let currentTab = 'all';
+    let searchQuery = '';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      // Style active tab
+      const tabs = ['all', 'set', 'logic', 'real', 'function'];
+      tabs.forEach(t => {
+        const el = document.getElementById('tab-' + t);
+        if (t === tab) {
+          el.className = "flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 bg-accentblue text-white shadow-md shadow-accentblue/10";
+        } else {
+          el.className = "flex-1 md:flex-initial px-4 py-2 text-xs font-semibold rounded-xl transition-all duration-300 text-textlight/60 hover:text-white";
+        }
+      });
+      
+      renderLessonCards();
+    }
+
+    function handleSearch(query) {
+      searchQuery = query.toLowerCase().trim();
+      renderLessonCards();
+    }
+
+    // Render cards to Grid
+    function renderLessonCards() {
+      const grid = document.getElementById('lessons-grid');
+      const emptyState = document.getElementById('empty-state');
+      grid.innerHTML = '';
+      
+      // Filter list
+      const filtered = lessonsData.filter(lesson => {
+        // Tab filter
+        if (currentTab !== 'all' && lesson.grade !== currentTab) return false;
+        // Search filter
+        if (searchQuery) {
+          const matchTitle = lesson.title.toLowerCase().includes(searchQuery);
+          const matchDesc = lesson.desc.toLowerCase().includes(searchQuery);
+          const matchTags = lesson.tags.some(tag => tag.toLowerCase().includes(searchQuery));
+          if (!matchTitle && !matchDesc && !matchTags) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        grid.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        emptyState.classList.add('flex');
+        return;
+      } else {
+        grid.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        emptyState.classList.remove('flex');
+      }
+
+      // Generate Card HTML
+      filtered.forEach(lesson => {
+        const isDone = progressData[lesson.id];
+        const card = document.createElement('div');
+        
+        // Pick card border hover colors
+        let hoverColor = 'hover:border-accentblue hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]';
+        let gradeBadgeStyle = 'color: #3b82f6; border-color: #3b82f6; background: rgba(59, 130, 246, 0.08);'; // default
+        if (lesson.grade === 'set') {
+          gradeBadgeStyle = 'color: #3b82f6; border-color: #3b82f6; background: rgba(59, 130, 246, 0.06);';
+          hoverColor = 'hover:border-accentblue hover:shadow-[0_0_20px_rgba(59,130,246,0.1)]';
+        } else if (lesson.grade === 'logic') {
+          gradeBadgeStyle = 'color: #8b5cf6; border-color: #8b5cf6; background: rgba(139, 92, 246, 0.06);';
+          hoverColor = 'hover:border-accentpurple hover:shadow-[0_0_20px_rgba(139,92,246,0.1)]';
+        } else if (lesson.grade === 'real') {
+          gradeBadgeStyle = 'color: #ec4899; border-color: #ec4899; background: rgba(236, 72, 153, 0.06);';
+          hoverColor = 'hover:border-accentpink hover:shadow-[0_0_20px_rgba(236,72,153,0.1)]';
+        } else if (lesson.grade === 'function') {
+          gradeBadgeStyle = 'color: #2dd4bf; border-color: #2dd4bf; background: rgba(45, 212, 191, 0.06);';
+          hoverColor = 'hover:border-accentteal hover:shadow-[0_0_20px_rgba(45, 212, 191, 0.1)]';
+        }
+
+        card.className = `glass-card p-5 rounded-2xl flex flex-col justify-between min-h-[190px] cursor-pointer group ${hoverColor}`;
+        card.onclick = () => openLesson(lesson.id);
+        
+        // Tags markup
+        const tagsMarkup = lesson.tags.map(t => `<span class="bg-white/5 border border-white/5 text-[9px] text-textlight/40 px-2 py-0.5 rounded">${t}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start mb-3">
+              <span class="text-[9px] font-bold px-2 py-0.5 rounded border font-kanit" style="${gradeBadgeStyle}">
+                ${lesson.gradeLabel}
+              </span>
+              <div class="flex items-center gap-1.5">
+                ${isDone ? '<span class="text-xs bg-accentemerald/10 text-accentemerald border border-accentemerald/20 px-2 py-0.5 rounded-full font-semibold flex items-center gap-1">✅ ผ่านแล้ว</span>' : '<span class="text-[10px] text-textlight/30">⏳ ยังไม่ผ่าน</span>'}
+              </div>
+            </div>
+            
+            <h3 class="font-bold text-sm sm:text-base text-white tracking-wide group-hover:text-white transition-colors">
+              ${lesson.title}
+            </h3>
+            
+            <p class="text-[11px] sm:text-xs text-textlight/55 font-light mt-1.5 leading-relaxed">
+              ${lesson.desc}
+            </p>
+          </div>
+
+          <div class="flex justify-between items-center mt-5 pt-3 border-t border-white/5">
+            <div class="flex gap-1">
+              ${tagsMarkup}
+            </div>
+            <span class="text-[10px] text-textlight/40 font-semibold font-outfit">
+              ⏱️ ${lesson.duration}
+            </span>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    //  MODAL VIEWER & QUIZ CORE LOGIC
+    // ==========================================
+    let activeLessonId = null;
+    let selectedAnswers = {}; // stores { questionIndex: optionIndex }
+    let activeQuizList = []; // stores the currently loaded 5 randomized questions
+
+    // Helper: Fisher-Yates shuffle algorithm
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    // Helper: prepare randomized quiz from the pool of 10
+    function prepareRandomizedQuiz(originalQuizPool) {
+      // Clone the pool so we do not mutate the original database
+      let poolCopy = JSON.parse(JSON.stringify(originalQuizPool));
+      
+      // Shuffle the entire pool
+      shuffleArray(poolCopy);
+      
+      // Take the first 5 questions
+      let selected = poolCopy.slice(0, 5);
+      
+      // Shuffle options for each selected question
+      selected.forEach(qObj => {
+        let optionsWithMetadata = qObj.a.map((optText, index) => {
+          return { text: optText, isCorrect: (index === qObj.correct) };
+        });
+        
+        shuffleArray(optionsWithMetadata);
+        
+        qObj.a = optionsWithMetadata.map(o => o.text);
+        qObj.correct = optionsWithMetadata.findIndex(o => o.isCorrect);
+      });
+      
+      activeQuizList = selected;
+    }
+
+    function openLesson(id) {
+      const lesson = lessonsData.find(l => l.id === id);
+      if (!lesson) return;
+      
+      activeLessonId = id;
+      selectedAnswers = {}; // reset selections
+      
+      // Setup elements
+      document.getElementById('modal-title').innerText = lesson.title;
+      const modalBadge = document.getElementById('modal-badge');
+      modalBadge.innerText = lesson.gradeLabel;
+      
+      // Hide score submit card
+      document.getElementById('score-submit-card').classList.add('hidden');
+      
+      // Styling badge based on grade
+      if (lesson.grade === 'set') {
+        modalBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-md bg-accentblue/20 text-accentblue border border-accentblue/30';
+      } else if (lesson.grade === 'logic') {
+        modalBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-md bg-accentpurple/20 text-accentpurple border border-accentpurple/30';
+      } else if (lesson.grade === 'real') {
+        modalBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-md bg-accentpink/20 text-accentpink border border-accentpink/30';
+      } else if (lesson.grade === 'function') {
+        modalBadge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-md bg-accentteal/20 text-accentteal border border-accentteal/30';
+      }
+
+      document.getElementById('modal-content').innerHTML = lesson.content;
+      
+      // Check if already completed
+      const isDone = progressData[id];
+
+      // Prepare quiz: shuffle & randomize
+      prepareRandomizedQuiz(lesson.quiz);
+      
+      // Build Quiz
+      buildQuiz(activeQuizList, isDone);
+      
+      // Show Modal
+      const modal = document.getElementById('lesson-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        modal.classList.add('opacity-100');
+      }, 10);
+    }
+
+    function closeLesson() {
+      const modal = document.getElementById('lesson-modal');
+      modal.classList.remove('opacity-100');
+      modal.classList.add('opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }, 300);
+      activeLessonId = null;
+    }
+
+    // Construct quiz inside modal
+    function buildQuiz(quizList, isCompleted) {
+      const container = document.getElementById('quiz-questions-container');
+      const feedback = document.getElementById('quiz-feedback');
+      const submitBtn = document.getElementById('quiz-submit-btn');
+      const retryBtn = document.getElementById('quiz-retry-btn');
+      
+      container.innerHTML = '';
+      feedback.innerText = '';
+      submitBtn.classList.remove('hidden');
+      retryBtn.classList.add('hidden');
+
+      quizList.forEach((quiz, qIdx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'space-y-2.5';
+        
+        qDiv.innerHTML = `
+          <h4 class="text-xs sm:text-sm font-semibold text-white leading-relaxed">
+            Q${qIdx + 1}: ${quiz.q}
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="options-q-${qIdx}">
+            <!-- Options added here -->
+          </div>
+        `;
+        container.appendChild(qDiv);
+
+        const optionsContainer = document.getElementById(`options-q-${qIdx}`);
+        
+        quiz.a.forEach((opt, oIdx) => {
+          const btn = document.createElement('button');
+          btn.id = `opt-${qIdx}-${oIdx}`;
+          btn.className = 'option-btn text-left p-3 rounded-xl text-xs text-textlight/80 flex items-center gap-2';
+          btn.onclick = () => selectOption(qIdx, oIdx, isCompleted);
+          btn.innerHTML = `
+            <span class="w-4 h-4 rounded-full border border-white/20 flex items-center justify-center text-[9px] font-bold shrink-0 font-outfit">
+              ${oIdx + 1}
+            </span>
+            <span>${opt}</span>
+          `;
+          optionsContainer.appendChild(btn);
+
+          // If already completed, highlight correct answer
+          if (isCompleted) {
+            btn.disabled = true;
+            if (oIdx === quiz.correct) {
+              btn.classList.add('correct-highlight');
+            }
+          }
+        });
+      });
+
+      if (isCompleted) {
+        feedback.className = 'text-xs font-semibold text-accentemerald';
+        feedback.innerText = `🎉 แบบฝึกหัดบทนี้ผ่านแล้ว! คุณตอบคำถามถูกต้องครบถ้วน ${quizList.length}/${quizList.length} ข้อ`;
+        submitBtn.classList.add('hidden');
+        showScoreSubmitCard();
+      }
+    }
+
+    function selectOption(qIdx, oIdx, isCompleted) {
+      if (isCompleted) return; // quiz locked if passed
+      
+      // Save choice
+      selectedAnswers[qIdx] = oIdx;
+      
+      // Reset all buttons in this question
+      activeQuizList[qIdx].a.forEach((_, idx) => {
+        document.getElementById(`opt-${qIdx}-${idx}`).classList.remove('selected');
+      });
+      
+      // Highlight selected button
+      document.getElementById(`opt-${qIdx}-${oIdx}`).classList.add('selected');
+    }
+
+    // Submit Quiz & Grade
+    function submitQuiz() {
+      if (activeQuizList.length === 0) return;
+
+      let unanswered = false;
+      let correctCount = 0;
+
+      // Check if all questions are answered
+      for (let i = 0; i < activeQuizList.length; i++) {
+        if (selectedAnswers[i] === undefined) {
+          unanswered = true;
+          break;
+        }
+      }
+
+      const feedback = document.getElementById('quiz-feedback');
+
+      if (unanswered) {
+        feedback.className = 'text-xs font-semibold text-accentred';
+        feedback.innerText = '⚠️ กรุณาตอบแบบฝึกหัดให้ครบทุกข้อก่อนกดตรวจ';
+        return;
+      }
+
+      // Grade the responses
+      activeQuizList.forEach((quiz, qIdx) => {
+        const chosen = selectedAnswers[qIdx];
+        const isCorrect = (chosen === quiz.correct);
+        if (isCorrect) {
+          correctCount++;
+        }
+      });
+
+      const submitBtn = document.getElementById('quiz-submit-btn');
+      const retryBtn = document.getElementById('quiz-retry-btn');
+      submitBtn.classList.add('hidden');
+
+      if (correctCount === activeQuizList.length) {
+        // Passed!
+        feedback.className = 'text-xs font-semibold text-accentemerald animate-bounce';
+        feedback.innerText = `🎉 ยอดเยี่ยม! ทำแบบฝึกหัดได้ 5/5 ถูกต้องครบทั้งหมด ทบทวนบทนี้ผ่านแล้ว!`;
+        
+        // Highlight correct options
+        activeQuizList.forEach((quiz, qIdx) => {
+          const chosen = selectedAnswers[qIdx];
+          const chosenBtn = document.getElementById(`opt-${qIdx}-${chosen}`);
+          chosenBtn.classList.remove('selected');
+          chosenBtn.classList.add('correct-highlight');
+          
+          // Disable options
+          quiz.a.forEach((_, oIdx) => {
+            document.getElementById(`opt-${qIdx}-${oIdx}`).disabled = true;
+          });
+        });
+
+        // Save to localStorage
+        progressData[activeLessonId] = true;
+        saveProgress();
+        showScoreSubmitCard();
+      } else {
+        // Failed some questions
+        feedback.className = 'text-xs font-semibold text-accentred';
+        feedback.innerText = `❌ คุณตอบถูก ${correctCount}/${activeQuizList.length} ข้อ ยังไม่ผ่านเกณฑ์ (ต้องได้ 5/5 คะแนนเต็ม) ระบบจะไม่แสดงเฉลยข้อที่ผิด กรุณากดปุ่ม 'ทำควิซชุดใหม่' เพื่อลองใหม่อีกครั้ง`;
+        
+        // Highlight their selected options in red/wrong and disable them
+        activeQuizList.forEach((quiz, qIdx) => {
+          const chosen = selectedAnswers[qIdx];
+          const chosenBtn = document.getElementById(`opt-${qIdx}-${chosen}`);
+          chosenBtn.classList.remove('selected');
+          chosenBtn.classList.add('wrong-highlight');
+          
+          quiz.a.forEach((_, oIdx) => {
+            document.getElementById(`opt-${qIdx}-${oIdx}`).disabled = true;
+          });
+        });
+
+        retryBtn.innerHTML = '🔄 ทำควิซชุดใหม่';
+        retryBtn.classList.remove('hidden');
+      }
+    }
+
+    // Reset quiz to retry (generates a new randomized quiz from the pool)
+    function retryQuiz() {
+      if (!activeLessonId) return;
+      openLesson(activeLessonId);
+    }
+
+    // Show score submission form
+    function showScoreSubmitCard() {
+      const scoreCard = document.getElementById('score-submit-card');
+      const statusMsg = document.getElementById('submit-status-msg');
+      const sendBtn = document.getElementById('send-score-btn');
+      
+      scoreCard.classList.remove('hidden');
+      statusMsg.classList.add('hidden');
+      statusMsg.innerText = '';
+      sendBtn.classList.remove('hidden');
+      sendBtn.disabled = false;
+      
+      // Re-enable form fields
+      document.getElementById('submit-room').disabled = false;
+      document.getElementById('submit-no').disabled = false;
+      document.getElementById('submit-name').disabled = false;
+    }
+
+    // Send Score to Google Sheets Web App
+    function sendScoreToSheet() {
+      const room = document.getElementById('submit-room').value;
+      const no = document.getElementById('submit-no').value.trim();
+      const name = document.getElementById('submit-name').value.trim();
+      const statusMsg = document.getElementById('submit-status-msg');
+      const sendBtn = document.getElementById('send-score-btn');
+      
+      if (!no || !name) {
+        statusMsg.className = "text-[10px] font-semibold text-accentred block";
+        statusMsg.innerText = "⚠️ กรุณากรอกเลขที่และชื่อ-นามสกุลจริงให้ครบถ้วน";
+        statusMsg.classList.remove('hidden');
+        return;
+      }
+      
+      const lesson = lessonsData.find(l => l.id === activeLessonId);
+      if (!lesson) return;
+      
+      statusMsg.className = "text-[10px] font-semibold text-accentamber block";
+      statusMsg.innerText = "⏳ กำลังบันทึกส่งคะแนนพิเศษไปยังระบบเซิร์ฟเวอร์...";
+      statusMsg.classList.remove('hidden');
+      sendBtn.disabled = true;
+      
+      // apps script URL
+      const scriptUrl = 'https://script.google.com/macros/s/AKfycbw3eNbBuhg-P-dLxBeZkYIggp0FW9GM1TdL1wVd1XeyxvwRTzw4BcMNiPBEyyWH1le-/exec';
+      
+      const scoreValue = activeQuizList.length; // 5 questions
+      const totalValue = activeQuizList.length; // 5 questions
+      
+      const params = {
+        action: 'quiz_save',
+        room: room,
+        no: no,
+        name: name,
+        lessonId: lesson.id,
+        lessonTitle: lesson.title,
+        score: scoreValue.toString(),
+        total: totalValue.toString()
+      };
+      
+      const url = scriptUrl + '?' + new URLSearchParams(params).toString();
+      
+      // mode: 'no-cors' allows writing to Google sheets without CORS redirection blocks
+      fetch(url, { mode: 'no-cors' })
+        .then(() => {
+          statusMsg.className = "text-[10px] font-semibold text-accentemerald block";
+          statusMsg.innerText = "✅ ส่งคะแนนพิเศษสำเร็จเรียบร้อย! ข้อมูลบันทึกลงชีตคุณครูนิวตรอนเรียบร้อยแล้ว";
+          sendBtn.classList.add('hidden');
+          
+          // Lock inputs
+          document.getElementById('submit-room').disabled = true;
+          document.getElementById('submit-no').disabled = true;
+          document.getElementById('submit-name').disabled = true;
+        })
+        .catch(err => {
+          console.error(err);
+          statusMsg.className = "text-[10px] font-semibold text-accentred block";
+          statusMsg.innerText = "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองส่งอีกครั้ง";
+          sendBtn.disabled = false;
+        });
+    }
+
+    // Close modal when clicking outside content area
+    window.onclick = function(event) {
+      const modal = document.getElementById('lesson-modal');
+      if (event.target === modal) {
+        closeLesson();
+      }
+    }
+
+    // ==========================================
+    //  INITIALIZE ON PAGE LOAD
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadProgress();
+      switchTab('all');
+    });
+
+  </script>
+</body>
+</html>
