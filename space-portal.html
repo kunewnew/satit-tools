@@ -143,7 +143,7 @@
   <div class="w-full min-h-screen bg-spacebg flex flex-col lg:flex-row relative overflow-hidden">
     
     <!-- Background Looping Space Video (ดาวอวกาศลึกเคลื่อนไหวเบาๆ ด้านหลัง) -->
-    <video autoplay loop muted playsinline class="fixed inset-0 w-full h-full object-cover z-0 opacity-[0.12] pointer-events-none">
+    <video autoplay loop muted playsinline class="fixed inset-0 w-full h-full object-cover z-0 opacity-[0.38] pointer-events-none">
       <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260331_151551_992053d1-3d3e-4b8c-abac-45f22158f411.mp4" type="video/mp4">
     </video>
 
@@ -157,7 +157,7 @@
     <!-- ========================================================
          ฝั่งซ้าย: โลโก้, มาสคอตแมว 3D หรูหรา, และการ์ดนาฬิกาเรืองแสง
          ======================================================== -->
-    <div class="w-full lg:w-[35%] xl:w-[32%] lg:h-screen lg:sticky lg:top-0 p-8 sm:p-12 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10 bg-black/20 backdrop-blur-md z-10">
+    <div class="w-full lg:w-[35%] xl:w-[32%] lg:h-screen lg:sticky lg:top-0 p-8 sm:p-12 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-white/10 bg-black/5 backdrop-blur-sm z-10">
       
       <!-- โลโก้ด้านบนสุด -->
       <div class="flex items-center gap-3">
@@ -173,26 +173,13 @@
         </div>
       </div>
 
-      <!-- ส่วนกลาง: มาสคอตแมว 3D แบบมีออร่า และหัวข้อหลักแบบไล่เฉดสี -->
-      <div class="my-10 sm:my-12 lg:my-0 flex flex-col items-center lg:items-start text-center lg:text-left gap-8">
-        
-        <!-- ตัวการ์ตูนขยับลอย + หันตามเมาส์ได้ + มีออร่าเรืองแสงหลังตัวแมว -->
-        <div class="relative w-[180px] sm:w-[210px] md:w-[230px] lg:w-[245px]">
-          <div class="absolute inset-8 rounded-full bg-neon/15 blur-3xl pointer-events-none"></div>
-          <div id="mascot-wrapper" class="cursor-pointer relative z-10" style="will-change: transform; transition: transform 0.6s ease-in-out;">
-            <img 
-              src="images/mascot_animated.webp" 
-              alt="ครูนิวตรอน มาสคอต" 
-              class="w-full h-auto object-contain pointer-events-none drop-shadow-[0_20px_50px_rgba(111,255,0,0.25)] animate-float-breath"
-            />
-          </div>
-        </div>
-
-        <div>
-          <h1 class="shiny-text font-black text-4xl sm:text-5xl lg:text-[2.85rem] leading-none font-kanit tracking-tight mb-3">
+      <!-- ส่วนกลาง: หัวข้อหลักแบบไล่เฉดสีในกล่องกระจกเรืองแสงพรีเมียม -->
+      <div class="my-auto py-8 flex flex-col items-center lg:items-start text-center lg:text-left gap-4 relative z-10 w-full">
+        <div class="liquid-glass rounded-[28px] p-8 w-full border border-white/15 bg-black/45 backdrop-blur-lg shadow-[0_20px_50px_rgba(111,255,0,0.05)]">
+          <h1 class="shiny-text font-black text-4xl sm:text-5xl lg:text-[2.85rem] leading-none font-kanit tracking-tight mb-4 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
             ครูนิวตรอน.com
           </h1>
-          <p class="text-cream/70 font-light text-xs sm:text-sm max-w-[320px] leading-relaxed">
+          <p class="text-cream/90 font-normal text-sm sm:text-base leading-relaxed drop-shadow-[0_1px_5px_rgba(0,0,0,0.5)]">
             พอร์ตทัลอัจฉริยะรวบรวมระบบจัดการชั้นเรียน เช็คชื่อรายวิชา ส่งการบ้าน วัดประเมินเกรด และกิจกรรมบอร์ดเกม
           </p>
         </div>
