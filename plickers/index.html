@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📷 ระบบสแกนการ์ดตอบคำถาม (Plickers Console) - ครูนิวตรอน.com</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          },
+          colors: {
+            spacebg: '#01061E',
+            cream: '#EFF4FF',
+            neon: '#6FFF00',
+            darkcard: '#090D2A',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- js-aruco CDNs (Adaptive thresholding & polygon matching) -->
+  <script src="https://cdn.jsdelivr.net/npm/js-aruco@0.1.0/src/cv.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-aruco@0.1.0/src/aruco.js"></script>
+
+  <!-- SheetJS CDN (for Excel export) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    html, body {
+      background-color: #01061E;
+      color: #EFF4FF;
+      font-family: 'Kanit', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #01061E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Liquid Glass Card Style */
+    .liquid-glass {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 
+        inset 0 1px 1px rgba(255, 255, 255, 0.15), 
+        0 15px 35px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .liquid-glass::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1.2px;
+      background: linear-gradient(180deg,
+        rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 30%,
+        rgba(255,255,255,0) 50%, rgba(255,255,255,0) 70%,
+        rgba(255,255,255,0.05) 80%, rgba(255,255,255,0.2) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .shiny-text {
+      background: linear-gradient(135deg, #EFF4FF 20%, #a5b4fc 55%, #6FFF00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    /* Neon glow animation */
+    @keyframes neonPulse {
+      0%, 100% { box-shadow: 0 0 5px rgba(111,255,0,0.1), inset 0 0 5px rgba(111,255,0,0.05); }
+      50% { box-shadow: 0 0 20px rgba(111,255,0,0.35), inset 0 0 10px rgba(111,255,0,0.15); }
+    }
+    .scanned-active {
+      border-color: #6FFF00 !important;
+      animation: neonPulse 1.8s infinite;
+      background: rgba(111,255,0,0.04) !important;
+    }
+  </style>
+</head>
+<body class="select-none font-kanit">
+
+  <!-- Main Container -->
+  <div class="w-full min-h-screen p-4 md:p-8 flex flex-col gap-6 max-w-[1600px] mx-auto">
+    
+    <!-- Top Header Navigation -->
+    <header class="w-full flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-white/5 pb-4">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="p-3 bg-white/5 border border-white/10 rounded-2xl text-white hover:text-neon hover:border-neon/40 hover:shadow-[0_0_20px_rgba(111,255,0,0.2)] transition-all duration-300 active:scale-95">
+          <svg class="w-5 h-5 fill-none stroke-current stroke-[2.5]" viewBox="0 0 24 24">
+            <path d="M19 12H5M12 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <div>
+          <h1 class="text-xl font-black shiny-text leading-none uppercase">ครูนิวตรอน.com</h1>
+          <span class="text-[10px] text-cream/55 font-light tracking-widest uppercase mt-0.5 block">Camera Plickers Quiz Scanner</span>
+        </div>
+      </div>
+      
+      <!-- Room & Quiz selection -->
+      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <select id="roomSelect" class="bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-neon transition-colors w-full sm:w-[180px]">
+          <option value="" disabled selected>กำลังโหลดห้องเรียน...</option>
+        </select>
+        
+        <a href="print-cards.html" target="_blank" class="px-4 py-2 border border-white/10 bg-white/5 hover:border-neon/30 hover:bg-neon/10 hover:text-neon rounded-xl text-xs font-bold transition-all text-center w-full sm:w-auto">
+          🖨️ พิมพ์การ์ดเด็ก
+        </a>
+      </div>
+    </header>
+
+    <!-- Content Grid Layout -->
+    <div class="w-full flex flex-col lg:flex-row gap-6">
+      
+      <!-- LEFT COLUMN: CAMERA FEED & QUIZ CONSOLE (40% width) -->
+      <div class="w-full lg:w-[40%] flex flex-col gap-6">
+        
+        <!-- Video Stream Container -->
+        <div class="liquid-glass rounded-3xl p-4 flex flex-col gap-3 relative">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-neon tracking-wide flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+              กล้องสแกนกระดาษคำตอบ
+            </h3>
+            
+            <!-- Camera Device Selector -->
+            <select id="cameraSelect" class="bg-black/60 border border-white/10 rounded-lg px-2.5 py-1 text-[11px] text-white/80 focus:outline-none focus:border-neon max-w-[180px]">
+              <option value="">เลือกกล้อง...</option>
+            </select>
+          </div>
+          
+          <!-- Camera Feed Canvas View -->
+          <div class="relative w-full aspect-[4/3] bg-black/80 rounded-2xl overflow-hidden border border-white/5 flex items-center justify-center">
+            <video id="videoFeed" class="hidden" autoplay playsinline muted></video>
+            <canvas id="scannerCanvas" class="w-full h-full object-cover"></canvas>
+            
+            <!-- Scan Overlay (HUD style) -->
+            <div id="scanHud" class="absolute inset-0 border-2 border-dashed border-white/10 pointer-events-none rounded-2xl flex items-center justify-center">
+              <div class="text-[10px] font-bold text-white/20 uppercase tracking-widest no-print">กวาดกล้องให้ครอบคลุมการ์ด</div>
+            </div>
+          </div>
+          
+          <!-- Camera Feed Controls -->
+          <div class="flex items-center justify-between gap-3 text-xs">
+            <div class="flex gap-2">
+              <button id="toggleCamBtn" onclick="toggleCamera()" class="px-4 py-2 bg-neon text-black font-extrabold rounded-xl transition-all hover:bg-emerald-400 active:scale-95 shadow-md shadow-neon/10">
+                🎥 เปิดกล้อง
+              </button>
+            </div>
+            
+            <!-- Mirror and Audio options -->
+            <div class="flex items-center gap-4 text-cream/70">
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" id="mirrorFeed" class="w-3.5 h-3.5 accent-neon bg-black/40 border-white/10 rounded" checked>
+                <span>กลับซ้าย-ขวา</span>
+              </label>
+              
+              <label class="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" id="audioAlert" class="w-3.5 h-3.5 accent-neon bg-black/40 border-white/10 rounded" checked>
+                <span>เสียงแจ้งเตือน</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Control Panel -->
+        <div class="liquid-glass rounded-3xl p-5 flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-bold text-white tracking-wide">🕹️ แผงควบคุมข้อสอบ</h3>
+            
+            <div class="flex items-center gap-1.5 font-outfit text-xs font-semibold bg-white/5 border border-white/10 px-2.5 py-1 rounded-lg">
+              <span>ข้อที่:</span>
+              <button onclick="changeQuestion(-1)" class="text-neon hover:text-emerald-400">◀</button>
+              <span id="questionNumText" class="text-white px-1">1</span>
+              <button onclick="changeQuestion(1)" class="text-neon hover:text-emerald-400">▶</button>
+            </div>
+          </div>
+
+          <!-- Answer Key Selector -->
+          <div class="flex flex-col gap-2">
+            <span class="text-xs text-cream/60">เฉลยคำตอบที่ถูกต้อง (Answer Key)</span>
+            <div class="grid grid-cols-4 gap-2">
+              <button onclick="setCorrectAnswer('A')" id="btn-ans-A" class="ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit">A</button>
+              <button onclick="setCorrectAnswer('B')" id="btn-ans-B" class="ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit">B</button>
+              <button onclick="setCorrectAnswer('C')" id="btn-ans-C" class="ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit">C</button>
+              <button onclick="setCorrectAnswer('D')" id="btn-ans-D" class="ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit">D</button>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="grid grid-cols-2 gap-3 mt-1">
+            <button onclick="revealAnswers()" id="revealBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-blue-600/10">
+              📊 เฉลย & สรุปผล
+            </button>
+            <button onclick="clearCurrentAnswers()" class="bg-white/5 hover:bg-red-500/20 hover:text-red-400 border border-white/10 hover:border-red-500/30 text-cream/80 font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95">
+              🔄 เคลียร์สแกนใหม่
+            </button>
+          </div>
+
+          <!-- Score summary bar -->
+          <div id="statsSummary" class="hidden flex items-center justify-between bg-black/40 border border-white/5 rounded-xl p-3.5 text-xs text-cream/70 leading-relaxed transition-all">
+            <div>
+              สแกนได้: <span id="statAnsweredCount" class="font-bold text-neon font-outfit">0</span> / <span id="statTotalStudents" class="font-outfit">0</span> คน
+            </div>
+            <div id="correctRatioText" class="text-right">
+              ตอบถูก: <span id="statCorrectPercent" class="font-bold text-blue-400 font-outfit">0%</span>
+            </div>
+          </div>
+          
+          <!-- Simple CSS Bar Chart for responses (only shown after reveal) -->
+          <div id="barChartContainer" class="hidden flex flex-col gap-2 bg-black/20 border border-white/5 rounded-xl p-4 text-xs">
+            <span class="font-bold text-cream/80 mb-1">ผลสรุปตัวเลือก (Response Stats):</span>
+            <div class="flex flex-col gap-2.5">
+              <!-- A -->
+              <div class="flex items-center gap-3">
+                <span class="font-bold w-4 text-center">A</span>
+                <div class="flex-1 bg-white/5 h-4 rounded-full overflow-hidden relative border border-white/5">
+                  <div id="bar-A" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count-A" class="w-10 text-right font-outfit text-white/70">0 คน</span>
+              </div>
+              <!-- B -->
+              <div class="flex items-center gap-3">
+                <span class="font-bold w-4 text-center">B</span>
+                <div class="flex-1 bg-white/5 h-4 rounded-full overflow-hidden relative border border-white/5">
+                  <div id="bar-B" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count-B" class="w-10 text-right font-outfit text-white/70">0 คน</span>
+              </div>
+              <!-- C -->
+              <div class="flex items-center gap-3">
+                <span class="font-bold w-4 text-center">C</span>
+                <div class="flex-1 bg-white/5 h-4 rounded-full overflow-hidden relative border border-white/5">
+                  <div id="bar-C" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count-C" class="w-10 text-right font-outfit text-white/70">0 คน</span>
+              </div>
+              <!-- D -->
+              <div class="flex items-center gap-3">
+                <span class="font-bold w-4 text-center">D</span>
+                <div class="flex-1 bg-white/5 h-4 rounded-full overflow-hidden relative border border-white/5">
+                  <div id="bar-D" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <span id="count-D" class="w-10 text-right font-outfit text-white/70">0 คน</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-2 border-t border-white/5 pt-3">
+            <button onclick="exportToExcel()" class="text-[11px] font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1">
+              📥 ดาวน์โหลดสถิติวิเคราะห์ (Excel)
+            </button>
+            <span class="text-[9px] text-white/30">* ข้อมูลผลสอบเก็บสะสมไว้ในเบราว์เซอร์เครื่องนี้</span>
+          </div>
+
+        </div>
+      </div>
+      
+      <!-- RIGHT COLUMN: SCOREBOARD / ROSTER GRID (60% width) -->
+      <div class="w-full lg:w-[60%] flex flex-col gap-4">
+        
+        <!-- Stats summary chips -->
+        <div class="flex justify-between items-center bg-[#11162b] border border-white/10 rounded-2xl px-6 py-4">
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-sm tracking-wide">👥 แผงรายชื่อนักเรียน</span>
+            <span id="rosterCountText" class="text-xs text-white/50">(เลือกห้องเรียนก่อนดำเนินการ)</span>
+          </div>
+          <div class="flex gap-3 text-xs">
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-white/10 border border-white/20"></span>
+              <span class="text-white/60">ยังไม่สแกน</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-neon/20 border border-neon/50"></span>
+              <span class="text-neon">สแกนแล้ว</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Cards Grid -->
+        <div id="studentGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <!-- Populated by JS -->
+          <div class="col-span-full text-center text-white/30 py-24 bg-white/[0.01] border border-dashed border-white/15 rounded-3xl">
+            กรุณาเลือกห้องเรียนด้านบน เพื่อเรียกดูข้อมูลนักเรียนทั้งหมด
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Global App States
+    let rosterData = {};
+    let currentRoom = '';
+    let currentQuestionIdx = 0; // 0-based
+    let correctAnswer = ''; // 'A', 'B', 'C', or 'D'
+    let isRevealed = false;
+    
+    // Scanned answers structure:
+    // scannedAnswers[questionIdx][studentNo] = choice
+    let scannedAnswers = {};
+    let correctAnswers = {}; // {questionIdx: choice}
+    
+    // Camera feed handlers
+    let stream = null;
+    let cameraActive = false;
+    let detector = null;
+    let videoEl = document.getElementById('videoFeed');
+    let canvasEl = document.getElementById('scannerCanvas');
+    let ctx = canvasEl.getContext('2d');
+    let scanAnimationFrameId = null;
+    let lastScanBeepTime = {}; // debounce beep sound
+
+    // Audio Context for synthetic beeps
+    let audioCtx = null;
+
+    // Load Roster middle-ware
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initialize ArUco Detector
+      detector = new AR.Detector();
+
+      // Load roster data
+      fetch('../ทะเบียนนักเรียน-ม1-6-ปี69.json')
+        .then(response => response.json())
+        .then(data => {
+          rosterData = data;
+          populateRoomDropdown();
+          // Restore saved states if any
+          loadFromLocalStorage();
+        })
+        .catch(err => {
+          console.error("Failed to load student roster JSON:", err);
+          document.getElementById('roomSelect').innerHTML = `<option value="" disabled selected>❌ โหลดทะเบียนล้มเหลว</option>`;
+        });
+        
+      // Request available cameras
+      setupCameras();
+    });
+
+    // Save state to LocalStorage
+    function saveToLocalStorage() {
+      if (!currentRoom) return;
+      localStorage.setItem(`plickers_currentRoom`, currentRoom);
+      localStorage.setItem(`plickers_${currentRoom}_currentQuestionIdx`, currentQuestionIdx);
+      localStorage.setItem(`plickers_${currentRoom}_scannedAnswers`, JSON.stringify(scannedAnswers));
+      localStorage.setItem(`plickers_${currentRoom}_correctAnswers`, JSON.stringify(correctAnswers));
+    }
+
+    // Load state from LocalStorage
+    function loadFromLocalStorage() {
+      const savedRoom = localStorage.getItem(`plickers_currentRoom`);
+      if (savedRoom && rosterData[savedRoom]) {
+        currentRoom = savedRoom;
+        document.getElementById('roomSelect').value = currentRoom;
+        
+        // Restore room state
+        const savedQIdx = localStorage.getItem(`plickers_${currentRoom}_currentQuestionIdx`);
+        if (savedQIdx !== null) {
+          currentQuestionIdx = parseInt(savedQIdx, 10);
+          document.getElementById('questionNumText').textContent = currentQuestionIdx + 1;
+        } else {
+          currentQuestionIdx = 0;
+          document.getElementById('questionNumText').textContent = 1;
+        }
+
+        try {
+          scannedAnswers = JSON.parse(localStorage.getItem(`plickers_${currentRoom}_scannedAnswers`)) || {};
+        } catch (e) {
+          scannedAnswers = {};
+        }
+
+        try {
+          correctAnswers = JSON.parse(localStorage.getItem(`plickers_${currentRoom}_correctAnswers`)) || {};
+        } catch (e) {
+          correctAnswers = {};
+        }
+
+        correctAnswer = correctAnswers[currentQuestionIdx] || '';
+        
+        // Highlight active correct answer button
+        document.querySelectorAll('.ans-btn').forEach(btn => {
+          btn.className = "ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit";
+        });
+        if (correctAnswer) {
+          const activeBtn = document.getElementById(`btn-ans-${correctAnswer}`);
+          if (activeBtn) {
+            activeBtn.className = "ans-btn bg-neon/15 text-neon border border-neon/50 rounded-xl py-3 text-sm font-bold transition-all font-outfit shadow-[0_0_15px_rgba(111,255,0,0.15)]";
+          }
+        }
+
+        loadRoster(currentRoom);
+      }
+    }
+
+    // Populate Room Dropdown
+    function populateRoomDropdown() {
+      const roomSelect = document.getElementById('roomSelect');
+      roomSelect.innerHTML = `<option value="" disabled selected>-- เลือกห้องเรียน --</option>`;
+      Object.keys(rosterData).forEach(room => {
+        const option = document.createElement('option');
+        option.value = room;
+        option.textContent = room;
+        roomSelect.appendChild(option);
+      });
+
+      roomSelect.addEventListener('change', (e) => {
+        currentRoom = e.target.value;
+        
+        // Reset room-specific states or load them
+        currentQuestionIdx = 0;
+        correctAnswer = '';
+        isRevealed = false;
+        scannedAnswers = {};
+        correctAnswers = {};
+
+        const savedQIdx = localStorage.getItem(`plickers_${currentRoom}_currentQuestionIdx`);
+        if (savedQIdx !== null) {
+          currentQuestionIdx = parseInt(savedQIdx, 10);
+        }
+        try {
+          scannedAnswers = JSON.parse(localStorage.getItem(`plickers_${currentRoom}_scannedAnswers`)) || {};
+        } catch (e) {
+          scannedAnswers = {};
+        }
+        try {
+          correctAnswers = JSON.parse(localStorage.getItem(`plickers_${currentRoom}_correctAnswers`)) || {};
+        } catch (e) {
+          correctAnswers = {};
+        }
+        correctAnswer = correctAnswers[currentQuestionIdx] || '';
+
+        // Update UI displays
+        document.getElementById('questionNumText').textContent = currentQuestionIdx + 1;
+        document.querySelectorAll('.ans-btn').forEach(btn => {
+          btn.className = "ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit";
+        });
+        if (correctAnswer) {
+          const activeBtn = document.getElementById(`btn-ans-${correctAnswer}`);
+          if (activeBtn) {
+            activeBtn.className = "ans-btn bg-neon/15 text-neon border border-neon/50 rounded-xl py-3 text-sm font-bold transition-all font-outfit shadow-[0_0_15px_rgba(111,255,0,0.15)]";
+          }
+        }
+
+        // Reset Reveal Button
+        const revealBtn = document.getElementById('revealBtn');
+        revealBtn.textContent = '📊 เฉลย & สรุปผล';
+        revealBtn.className = "bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-blue-600/10";
+        document.getElementById('statsSummary').classList.add('hidden');
+        document.getElementById('barChartContainer').classList.add('hidden');
+
+        localStorage.setItem(`plickers_currentRoom`, currentRoom);
+        saveToLocalStorage();
+
+        loadRoster(currentRoom);
+      });
+    }
+
+    // Populate Cameras dropdown
+    function setupCameras() {
+      const cameraSelect = document.getElementById('cameraSelect');
+      navigator.mediaDevices.enumerateDevices()
+        .then(devices => {
+          const videoDevices = devices.filter(device => device.kind === 'videoinput');
+          cameraSelect.innerHTML = '';
+          
+          if (videoDevices.length === 0) {
+            cameraSelect.innerHTML = `<option value="">ไม่พบกล้องเชื่อมต่อ</option>`;
+            return;
+          }
+          
+          videoDevices.forEach((device, idx) => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            // Provide descriptive label or fallbacks
+            option.textContent = device.label || `กล้องตัวที่ ${idx + 1}`;
+            // Set rear camera as default on mobile
+            if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear') || device.label.toLowerCase().includes('environment')) {
+              option.selected = true;
+            }
+            cameraSelect.appendChild(option);
+          });
+        })
+        .catch(err => {
+          console.error("Failed to enumerate media devices:", err);
+        });
+    }
+
+    // Play synthesized beep
+    function playBeep(isSuccess) {
+      if (!document.getElementById('audioAlert').checked) return;
+      
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'sine';
+        if (isSuccess) {
+          osc.frequency.setValueAtTime(950, audioCtx.currentTime); // High pitch success
+          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.12);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.12);
+        } else {
+          osc.frequency.setValueAtTime(180, audioCtx.currentTime); // Low buzz fail
+          gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, audioCtx.currentTime + 0.25);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.25);
+        }
+      } catch (err) {
+        console.error("Web Audio API beep failure:", err);
+      }
+    }
+
+    // Render Student Cards
+    function loadRoster(roomName) {
+      const students = rosterData[roomName] || [];
+      const studentGrid = document.getElementById('studentGrid');
+      const rosterCountText = document.getElementById('rosterCountText');
+      
+      studentGrid.innerHTML = '';
+      rosterCountText.textContent = `(${students.length} คน)`;
+      
+      if (students.length === 0) {
+        studentGrid.innerHTML = `<div class="col-span-full text-center py-12 text-white/30">ไม่พบรายชื่อในห้องเรียนนี้</div>`;
+        return;
+      }
+
+      students.forEach(student => {
+        const div = document.createElement('div');
+        div.id = `student-card-${student.no}`;
+        div.className = `liquid-glass rounded-2xl p-4 flex flex-col justify-between aspect-[4/3] border border-white/10 transition-all duration-300 relative`;
+        
+        div.innerHTML = `
+          <div class="flex justify-between items-start">
+            <span class="font-outfit font-black text-xl text-white/20" id="card-no-${student.no}">#${student.no}</span>
+            <span id="card-badge-${student.no}" class="hidden text-[9px] font-bold px-2 py-0.5 rounded-full border"></span>
+          </div>
+          
+          <div class="mt-2">
+            <div class="text-[10px] text-white/40 tracking-wider">ชื่อ-นามสกุล</div>
+            <div class="font-bold text-sm text-white truncate max-w-[130px]" title="${student.name}">${student.name}</div>
+          </div>
+          
+          <!-- Inner overlay for answer choice (revealed later) -->
+          <div id="card-choice-overlay-${student.no}" class="hidden absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 backdrop-blur-sm transition-all">
+            <span class="font-outfit font-black text-4xl text-white"></span>
+          </div>
+        `;
+        
+        studentGrid.appendChild(div);
+      });
+
+      // Reset answers for current room if first time
+      if (!scannedAnswers[currentQuestionIdx]) {
+        scannedAnswers[currentQuestionIdx] = {};
+      }
+      
+      updateScoreboardUI();
+      updateStats();
+    }
+
+    // Toggle Camera Access
+    function toggleCamera() {
+      const toggleCamBtn = document.getElementById('toggleCamBtn');
+      
+      if (cameraActive) {
+        // Stop Camera
+        stopCamera();
+        toggleCamBtn.textContent = '🎥 เปิดกล้อง';
+        toggleCamBtn.className = "px-4 py-2 bg-neon text-black font-extrabold rounded-xl transition-all hover:bg-emerald-400 active:scale-95 shadow-md shadow-neon/10";
+      } else {
+        // Start Camera
+        if (!currentRoom) {
+          alert("⚠️ กรุณาเลือกห้องเรียนก่อนเริ่มเปิดกล้องสแกนครับ");
+          return;
+        }
+        startCamera();
+        toggleCamBtn.textContent = '🛑 ปิดกล้อง';
+        toggleCamBtn.className = "px-4 py-2 bg-red-500 text-white font-extrabold rounded-xl transition-all hover:bg-red-600 active:scale-95 shadow-md shadow-red-500/10";
+      }
+    }
+
+    // Start Camera Feed
+    function startCamera() {
+      const cameraSelect = document.getElementById('cameraSelect');
+      const selectedDeviceId = cameraSelect.value;
+      
+      const constraints = {
+        video: selectedDeviceId ? { deviceId: { exact: selectedDeviceId } } : { facingMode: 'environment' },
+        audio: false
+      };
+
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(mediaStream => {
+          stream = mediaStream;
+          videoEl.srcObject = stream;
+          videoEl.setAttribute('playsinline', true);
+          videoEl.play();
+          cameraActive = true;
+          
+          // Set canvas sizes once video meta loads
+          videoEl.onloadedmetadata = () => {
+            canvasEl.width = videoEl.videoWidth;
+            canvasEl.height = videoEl.videoHeight;
+            // Begin scanning loop
+            scanAnimationFrameId = requestAnimationFrame(scanLoop);
+          };
+        })
+        .catch(err => {
+          console.error("Camera access failed:", err);
+          alert("❌ ไม่สามารถเข้าถึงกล้องถ่ายภาพได้ กรุณาอนุมัติสิทธิ์กล้องในเบราว์เซอร์");
+        });
+    }
+
+    // Stop Camera Feed
+    function stopCamera() {
+      if (scanAnimationFrameId) {
+        cancelAnimationFrame(scanAnimationFrameId);
+        scanAnimationFrameId = null;
+      }
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+      }
+      videoEl.srcObject = null;
+      cameraActive = false;
+      
+      // Clear canvas display
+      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+    }
+
+    // Main real-time computer vision scan loop
+    function scanLoop() {
+      if (!cameraActive) return;
+
+      // Draw video frame to screen canvas
+      ctx.save();
+      const isMirrored = document.getElementById('mirrorFeed').checked;
+      if (isMirrored) {
+        ctx.scale(-1, 1);
+        ctx.drawImage(videoEl, -canvasEl.width, 0, canvasEl.width, canvasEl.height);
+      } else {
+        ctx.drawImage(videoEl, 0, 0, canvasEl.width, canvasEl.height);
+      }
+      ctx.restore();
+
+      // Read image pixels from canvas
+      try {
+        const imageData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+        // Detect markers (ID 1-1023)
+        const markers = detector.detect(imageData);
+        
+        // Draw overlay markers on screen
+        drawMarkerOverlays(markers);
+        
+        // Process detected markers in background logic
+        processScannedMarkers(markers);
+      } catch (err) {
+        console.error("Error during frame processing:", err);
+      }
+
+      // Loop frame
+      scanAnimationFrameId = requestAnimationFrame(scanLoop);
+    }
+
+    // Draw HUD boxes on screen
+    function drawMarkerOverlays(markers) {
+      if (markers.length === 0) return;
+
+      markers.forEach(marker => {
+        const corners = marker.corners;
+        
+        // Draw polygon outline (green)
+        ctx.beginPath();
+        ctx.strokeStyle = '#6FFF00';
+        ctx.lineWidth = 4;
+        ctx.moveTo(corners[0].x, corners[0].y);
+        ctx.lineTo(corners[1].x, corners[1].y);
+        ctx.lineTo(corners[2].x, corners[2].y);
+        ctx.lineTo(corners[3].x, corners[3].y);
+        ctx.closePath();
+        ctx.stroke();
+
+        // Draw top-left marker anchor point (c0) in red to indicate orientation
+        ctx.beginPath();
+        ctx.arc(corners[0].x, corners[0].y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+
+        // Calculate center to write text
+        const cx = (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4;
+        const cy = (corners[0].y + corners[1].y + corners[2].y + corners[3].y) / 4;
+
+        // Draw text label
+        const markerId = marker.id;
+        const students = rosterData[currentRoom] || [];
+        // Only label if matching valid student number
+        if (markerId >= 1 && markerId <= students.length) {
+          const student = students[markerId - 1];
+          const text = `#${markerId} ${student.name.substring(0, 7)}...`;
+          
+          ctx.fillStyle = 'rgba(1, 6, 30, 0.85)';
+          ctx.fillRect(cx - 50, cy - 25, 100, 22);
+          ctx.strokeStyle = '#6FFF00';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(cx - 50, cy - 25, 100, 22);
+          
+          ctx.font = 'bold 11px Kanit';
+          ctx.fillStyle = '#6FFF00';
+          ctx.textAlign = 'center';
+          ctx.fillText(text, cx, cy - 10);
+        }
+      });
+    }
+
+    // Process scanned marker orientations and map to choices
+    function processScannedMarkers(markers) {
+      if (markers.length === 0 || isRevealed) return;
+
+      const students = rosterData[currentRoom] || [];
+      const currentAnswers = scannedAnswers[currentQuestionIdx] || {};
+
+      markers.forEach(marker => {
+        const markerId = marker.id;
+        // Only process IDs mapping to actual student numbers in selected room
+        if (markerId < 1 || markerId > students.length) return;
+
+        const corners = marker.corners;
+        
+        // Calculate center of the marker square
+        const cx = (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4;
+        const cy = (corners[0].y + corners[1].y + corners[2].y + corners[3].y) / 4;
+
+        // Calculate center of the native top edge (corners[0] and corners[1])
+        const tx = (corners[0].x + corners[1].x) / 2;
+        const ty = (corners[0].y + corners[1].y) / 2;
+
+        // Vector from center pointing to the native top edge
+        const vx = tx - cx;
+        const vy = ty - cy;
+
+        // Determine orientation
+        const absX = Math.abs(vx);
+        const absY = Math.abs(vy);
+        let choice = '';
+
+        if (absY > absX) {
+          // Vertical axis dominates (pointing UP or DOWN in screen space)
+          choice = vy < 0 ? 'A' : 'C'; // vy < 0 means pointing towards top of screen (0,0)
+        } else {
+          // Horizontal axis dominates (pointing LEFT or RIGHT)
+          const isMirrored = document.getElementById('mirrorFeed').checked;
+          if (vx > 0) {
+            // Points to the right of the screen
+            choice = isMirrored ? 'B' : 'D';
+          } else {
+            // Points to the left of the screen
+            choice = isMirrored ? 'D' : 'B';
+          }
+        }
+
+        // Check if student answer is different or new
+        const previousChoice = currentAnswers[markerId];
+        if (previousChoice !== choice) {
+          // Save answer choice
+          currentAnswers[markerId] = choice;
+          scannedAnswers[currentQuestionIdx] = currentAnswers;
+          
+          // Debounce sound alert (play beep only if not spammed in 800ms)
+          const now = Date.now();
+          if (!lastScanBeepTime[markerId] || now - lastScanBeepTime[markerId] > 800) {
+            playBeep(true);
+            lastScanBeepTime[markerId] = now;
+          }
+
+          // Real-time update single student card UI
+          updateStudentCardUI(markerId, choice);
+          updateStats();
+          saveToLocalStorage();
+        }
+      });
+    }
+
+    // Update single student card status during scan
+    function updateStudentCardUI(studentNo, choice) {
+      const card = document.getElementById(`student-card-${studentNo}`);
+      const badge = document.getElementById(`card-badge-${studentNo}`);
+      
+      if (!card || !badge) return;
+
+      card.classList.add('scanned-active');
+      badge.classList.remove('hidden');
+      badge.textContent = 'สแกนแล้ว';
+      badge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full border border-neon/30 text-neon bg-neon/10';
+      
+      // Update choice inside the overlay (but keep overlay hidden until reveal)
+      const overlay = document.getElementById(`card-choice-overlay-${studentNo}`);
+      if (overlay) {
+        overlay.querySelector('span').textContent = choice;
+      }
+    }
+
+    // Batch update all student cards based on saved state
+    function updateScoreboardUI() {
+      const students = rosterData[currentRoom] || [];
+      const currentAnswers = scannedAnswers[currentQuestionIdx] || {};
+
+      students.forEach(student => {
+        const studentNo = student.no;
+        const choice = currentAnswers[studentNo];
+        
+        const card = document.getElementById(`student-card-${studentNo}`);
+        const badge = document.getElementById(`card-badge-${studentNo}`);
+        const overlay = document.getElementById(`card-choice-overlay-${studentNo}`);
+
+        if (!card || !badge) return;
+
+        // Reset all colors/badges
+        card.className = "liquid-glass rounded-2xl p-4 flex flex-col justify-between aspect-[4/3] border border-white/10 transition-all duration-300 relative";
+        badge.className = 'hidden text-[9px] font-bold px-2 py-0.5 rounded-full border';
+        badge.classList.add('hidden');
+        
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.className = 'hidden absolute inset-0 flex items-center justify-center rounded-2xl bg-black/60 backdrop-blur-sm transition-all';
+          overlay.querySelector('span').className = 'font-outfit font-black text-4xl text-white';
+        }
+
+        if (choice) {
+          // Already scanned
+          card.classList.add('scanned-active');
+          badge.classList.remove('hidden');
+          badge.textContent = 'สแกนแล้ว';
+          badge.className = 'text-[9px] font-bold px-2 py-0.5 rounded-full border border-neon/30 text-neon bg-neon/10';
+          
+          if (overlay) {
+            overlay.querySelector('span').textContent = choice;
+          }
+
+          if (isRevealed) {
+            // Evaluated mode
+            overlay.classList.remove('hidden');
+            if (correctAnswer) {
+              if (choice === correctAnswer) {
+                // Correct answer! Glow green
+                overlay.className = 'absolute inset-0 flex items-center justify-center rounded-2xl bg-emerald-500/25 border border-emerald-500/40 backdrop-blur-[2px] transition-all';
+                overlay.querySelector('span').className = 'font-outfit font-black text-4xl text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]';
+              } else {
+                // Wrong answer! Glow red
+                overlay.className = 'absolute inset-0 flex items-center justify-center rounded-2xl bg-red-500/20 border border-red-500/40 backdrop-blur-[2px] transition-all';
+                overlay.querySelector('span').className = 'font-outfit font-black text-4xl text-red-400 drop-shadow-[0_0_10px_rgba(248,113,113,0.5)]';
+              }
+            } else {
+              // Just show selected choice normally
+              overlay.classList.remove('hidden');
+            }
+          }
+        }
+      });
+    }
+
+    // Calculate response tallies and statistics
+    function updateStats() {
+      const students = rosterData[currentRoom] || [];
+      const totalStudents = students.length;
+      
+      const currentAnswers = scannedAnswers[currentQuestionIdx] || {};
+      const answeredCount = Object.keys(currentAnswers).length;
+
+      document.getElementById('statAnsweredCount').textContent = answeredCount;
+      document.getElementById('statTotalStudents').textContent = totalStudents;
+
+      // Calculate ratios and averages
+      let correctCount = 0;
+      let countA = 0, countB = 0, countC = 0, countD = 0;
+
+      Object.keys(currentAnswers).forEach(no => {
+        const choice = currentAnswers[no];
+        if (choice === 'A') countA++;
+        else if (choice === 'B') countB++;
+        else if (choice === 'C') countC++;
+        else if (choice === 'D') countD++;
+
+        if (correctAnswer && choice === correctAnswer) {
+          correctCount++;
+        }
+      });
+
+      // Update percent answered text
+      const pctCorrect = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+      
+      if (correctAnswer) {
+        document.getElementById('statCorrectPercent').textContent = `${pctCorrect}%`;
+        document.getElementById('correctRatioText').innerHTML = `ตอบถูก: <span class="font-bold text-emerald-400 font-outfit">${correctCount}</span> / <span class="font-outfit font-bold">${answeredCount}</span> คน (${pctCorrect}%)`;
+      } else {
+        document.getElementById('statCorrectPercent').textContent = `N/A`;
+        document.getElementById('correctRatioText').innerHTML = `ตอบถูก: <span class="text-white/40">(ยังไม่มีเฉลย)</span>`;
+      }
+
+      // Update Bar charts
+      const maxVal = Math.max(countA, countB, countC, countD, 1); // prevent divide by zero
+      document.getElementById('bar-A').style.width = `${(countA / maxVal) * 100}%`;
+      document.getElementById('bar-B').style.width = `${(countB / maxVal) * 100}%`;
+      document.getElementById('bar-C').style.width = `${(countC / maxVal) * 100}%`;
+      document.getElementById('bar-D').style.width = `${(countD / maxVal) * 100}%`;
+
+      document.getElementById('count-A').textContent = `${countA} คน`;
+      document.getElementById('count-B').textContent = `${countB} คน`;
+      document.getElementById('count-C').textContent = `${countC} คน`;
+      document.getElementById('count-D').textContent = `${countD} คน`;
+
+      // Highlight correct answer bar in green if revealed
+      ['A', 'B', 'C', 'D'].forEach(c => {
+        const bar = document.getElementById(`bar-${c}`);
+        if (isRevealed && correctAnswer && c === correctAnswer) {
+          bar.className = 'bg-emerald-400 h-full rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(52,211,153,0.5)]';
+        } else {
+          bar.className = 'bg-blue-500 h-full rounded-full transition-all duration-500';
+        }
+      });
+    }
+
+    // Set Correct Answer Key
+    function setCorrectAnswer(ans) {
+      if (correctAnswer === ans) {
+        // Deselect
+        correctAnswer = '';
+        document.querySelectorAll('.ans-btn').forEach(btn => {
+          btn.className = "ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit";
+        });
+      } else {
+        correctAnswer = ans;
+        document.querySelectorAll('.ans-btn').forEach(btn => {
+          btn.className = "ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit";
+        });
+        const activeBtn = document.getElementById(`btn-ans-${ans}`);
+        if (activeBtn) {
+          // Highlight correct answer button in neon green
+          activeBtn.className = "ans-btn bg-neon/15 text-neon border border-neon/50 rounded-xl py-3 text-sm font-bold transition-all font-outfit shadow-[0_0_15px_rgba(111,255,0,0.15)]";
+        }
+      }
+
+      correctAnswers[currentQuestionIdx] = correctAnswer;
+      saveToLocalStorage();
+      updateStats();
+      if (isRevealed) {
+        updateScoreboardUI();
+      }
+    }
+
+    // Toggle showing result overlays
+    function revealAnswers() {
+      const revealBtn = document.getElementById('revealBtn');
+      const statsSummary = document.getElementById('statsSummary');
+      const barChartContainer = document.getElementById('barChartContainer');
+
+      if (isRevealed) {
+        // Hide
+        isRevealed = false;
+        revealBtn.textContent = '📊 เฉลย & สรุปผล';
+        revealBtn.className = "bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-blue-600/10";
+        statsSummary.classList.add('hidden');
+        barChartContainer.classList.add('hidden');
+      } else {
+        // Reveal
+        isRevealed = true;
+        revealBtn.textContent = '👁️ ซ่อนผลเฉลย';
+        revealBtn.className = "bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-amber-600/10";
+        statsSummary.classList.remove('hidden');
+        barChartContainer.classList.remove('hidden');
+
+        playBeep(true);
+      }
+      
+      updateScoreboardUI();
+      updateStats();
+    }
+
+    // Reset current question answers
+    function clearCurrentAnswers() {
+      if (!currentRoom) return;
+      if (confirm("ต้องการล้างประวัติการสแกนคำตอบของข้อนี้และสแกนใหม่ใช่หรือไม่?")) {
+        scannedAnswers[currentQuestionIdx] = {};
+        isRevealed = false;
+        saveToLocalStorage();
+        
+        // Reset Reveal Button
+        const revealBtn = document.getElementById('revealBtn');
+        revealBtn.textContent = '📊 เฉลย & สรุปผล';
+        revealBtn.className = "bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-blue-600/10";
+        document.getElementById('statsSummary').classList.add('hidden');
+        document.getElementById('barChartContainer').classList.add('hidden');
+
+        updateScoreboardUI();
+        updateStats();
+      }
+    }
+
+    // Shift between questions
+    function changeQuestion(dir) {
+      if (!currentRoom) {
+        alert("กรุณาเลือกห้องเรียนก่อนเลือกข้อสอบครับ");
+        return;
+      }
+      
+      // Save state
+      currentQuestionIdx = Math.max(0, currentQuestionIdx + dir);
+      document.getElementById('questionNumText').textContent = currentQuestionIdx + 1;
+      
+      // Load correct answer from stored map
+      correctAnswer = correctAnswers[currentQuestionIdx] || '';
+      isRevealed = false;
+      
+      // Reset Button Highlights and highlight correct answer if saved
+      document.querySelectorAll('.ans-btn').forEach(btn => {
+        btn.className = "ans-btn bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-sm font-bold transition-all font-outfit";
+      });
+      if (correctAnswer) {
+        const activeBtn = document.getElementById(`btn-ans-${correctAnswer}`);
+        if (activeBtn) {
+          activeBtn.className = "ans-btn bg-neon/15 text-neon border border-neon/50 rounded-xl py-3 text-sm font-bold transition-all font-outfit shadow-[0_0_15px_rgba(111,255,0,0.15)]";
+        }
+      }
+
+      document.getElementById('revealBtn').textContent = '📊 เฉลย & สรุปผล';
+      document.getElementById('revealBtn').className = "bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all active:scale-95 shadow-md shadow-blue-600/10";
+      document.getElementById('statsSummary').classList.add('hidden');
+      document.getElementById('barChartContainer').classList.add('hidden');
+
+      if (!scannedAnswers[currentQuestionIdx]) {
+        scannedAnswers[currentQuestionIdx] = {};
+      }
+
+      saveToLocalStorage();
+      updateScoreboardUI();
+      updateStats();
+    }
+
+    // Export current quiz scores to Excel
+    function exportToExcel() {
+      if (!currentRoom) {
+        alert("กรุณาเลือกห้องเรียนก่อนส่งออกข้อมูลครับ");
+        return;
+      }
+
+      const students = rosterData[currentRoom] || [];
+      const currentAnswers = scannedAnswers[currentQuestionIdx] || {};
+
+      // Prepare Excel rows
+      const data = students.map(student => {
+        const choice = currentAnswers[student.no] || '-';
+        const isCorrect = correctAnswer ? (choice === correctAnswer ? 'ถูก (1)' : choice === '-' ? 'ไม่ส่ง (0)' : 'ผิด (0)') : 'ไม่ได้ระบุเฉลย';
+        return {
+          'เลขที่': student.no,
+          'รหัสนักเรียน': student.id || '-',
+          'ชื่อ-นามสกุล': student.name,
+          'คำตอบที่เลือก': choice,
+          'สถานะตรวจ': isCorrect
+        };
+      });
+
+      // Add summary details
+      const sheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, sheet, "ผลการสอบการ์ดสแกน");
+
+      // Auto fit columns
+      const maxColWidth = [{ wch: 8 }, { wch: 15 }, { wch: 30 }, { wch: 15 }, { wch: 15 }];
+      sheet['!cols'] = maxColWidth;
+
+      // Write and download
+      const fileName = `ผลสอบการ์ดสแกน_${currentRoom}_ข้อที่_${currentQuestionIdx + 1}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+    }
+  </script>
+</body>
+</html>

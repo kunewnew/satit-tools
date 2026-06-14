@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🖨️ เครื่องมือพิมพ์การ์ดตอบคำถาม - ครูนิวตรอน.com</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS (for layout and controls) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            kanit: ['Kanit', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    body {
+      background-color: #0c0f1d;
+      color: #eff4ff;
+      font-family: 'Kanit', sans-serif;
+    }
+    
+    /* Card Styles for screen and printing */
+    .plickers-card {
+      background: white;
+      color: black;
+      border: 2px solid #000;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      position: relative;
+      font-family: 'Outfit', 'Kanit', sans-serif;
+      box-sizing: border-box;
+      page-break-inside: avoid;
+    }
+
+    /* Print settings */
+    @media print {
+      body {
+        background-color: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-area {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+      .plickers-card {
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row">
+
+  <!-- Sidebar: Controls (Hidden on Print) -->
+  <div class="no-print w-full md:w-[350px] bg-[#11162b] border-b md:border-b-0 md:border-r border-white/10 p-6 flex flex-col gap-6 sticky top-0 md:h-screen md:overflow-y-auto">
+    <div class="flex items-center gap-3">
+      <a href="../index.html" class="p-2 bg-white/5 border border-white/10 rounded-xl text-white hover:text-green-400 hover:border-green-400/40 transition-all duration-300">
+        🏠
+      </a>
+      <div>
+        <h1 class="text-lg font-black bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent leading-none">ครูนิวตรอน.com</h1>
+        <span class="text-[10px] text-white/50 tracking-wider">PLICKERS CARDS GENERATOR</span>
+      </div>
+    </div>
+
+    <hr class="border-white/10">
+
+    <!-- Step 1: Select Room -->
+    <div class="flex flex-col gap-2">
+      <label class="text-xs font-semibold text-green-400 tracking-wider">1. เลือกห้องเรียน</label>
+      <select id="roomSelect" class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-green-400 transition-colors">
+        <option value="" disabled selected>กำลังโหลดรายชื่อห้อง...</option>
+      </select>
+    </div>
+
+    <!-- Step 2: Select Card Size -->
+    <div class="flex flex-col gap-2">
+      <label class="text-xs font-semibold text-green-400 tracking-wider">2. ขนาดการ์ดต่อกระดาษ A4</label>
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="setCardLayout('2')" id="btn-layout-2" class="layout-btn bg-green-500/20 text-green-400 border border-green-500/40 rounded-xl py-2.5 text-xs font-bold transition-all">
+          2 การ์ด / A4 (กลาง)
+        </button>
+        <button onclick="setCardLayout('1')" id="btn-layout-1" class="layout-btn bg-white/5 text-white/75 border border-white/10 rounded-xl py-2.5 text-xs font-bold transition-all">
+          1 การ์ด / A4 (ใหญ่)
+        </button>
+        <button onclick="setCardLayout('4')" id="btn-layout-4" class="layout-btn bg-white/5 text-white/75 border border-white/10 rounded-xl py-2.5 text-xs font-bold transition-all col-span-2">
+          4 การ์ด / A4 (ประหยัด)
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Card Options -->
+    <div class="flex flex-col gap-3">
+      <label class="text-xs font-semibold text-green-400 tracking-wider">3. ตัวเลือกการ์ด</label>
+      
+      <label class="flex items-center gap-3 text-xs text-white/80 cursor-pointer">
+        <input type="checkbox" id="showStudentName" checked class="w-4 h-4 rounded border-white/15 bg-black/40 accent-green-400" onchange="renderCards()">
+        <span>พิมพ์ชื่อ-นามสกุลบนการ์ด</span>
+      </label>
+
+      <label class="flex items-center gap-3 text-xs text-white/80 cursor-pointer">
+        <input type="checkbox" id="coloredCard" class="w-4 h-4 rounded border-white/15 bg-black/40 accent-green-400" onchange="renderCards()">
+        <span>ระบายแถบสีประจำห้องเรียน</span>
+      </label>
+    </div>
+
+    <!-- Print Button -->
+    <button onclick="window.print()" class="w-full bg-green-400 hover:bg-green-500 text-black font-extrabold rounded-xl py-3 text-sm flex items-center justify-center gap-2 shadow-lg shadow-green-400/20 active:scale-95 transition-all mt-4">
+      🖨️ สั่งพิมพ์การ์ดตอบคำถาม
+    </button>
+
+    <div class="mt-auto pt-6 text-[10px] text-white/30 text-center leading-relaxed">
+      การ์ด ArUco ขนาด ID 1-50 จะจับคู่กับเลขที่นักเรียน 1-50 โดยตรง<br>
+      แนะนำพิมพ์ด้วยเครื่องพิมพ์เลเซอร์และตัดตามกรอบเพื่อความคมชัด
+    </div>
+  </div>
+
+  <!-- Print Area / Cards Grid -->
+  <div class="print-area flex-1 p-8 md:p-12 overflow-y-auto max-h-screen">
+    
+    <!-- Screen only description -->
+    <div class="no-print mb-8 bg-white/5 border border-white/10 rounded-2xl p-5 text-sm leading-relaxed text-white/70">
+      <h2 class="font-bold text-white text-base mb-1.5 flex items-center gap-2">
+        💡 วิธีใช้งานกระดาษคำตอบ Plickers
+      </h2>
+      <ul class="list-decimal pl-5 space-y-1 text-xs">
+        <li>เลือกห้องเรียนที่มุมซ้าย ระบบจะดึงรายชื่อและสร้างการ์ดรายบุคคลให้โดยอัตโนมัติ</li>
+        <li>สั่งพิมพ์การ์ดลงกระดาษ A4 (แนะนำความหนา 120 แกรมขึ้นไป เพื่อไม่ให้กระดาษพับงอระหว่างยกชู)</li>
+        <li>ตัดกระดาษแบ่งตามการ์ด แจกจ่ายนักเรียนให้ตรงตามเลขที่/ชื่อ</li>
+        <li><strong>วิธีตอบคำถาม:</strong> เมื่อตอบคำถาม ให้นักเรียนชูการ์ดโดยหันเอา **ตัวเลือกที่เลือก (A, B, C, D)** ขึ้นด้านบนสุด คุณครูจะใช้กล้องสแกนเพื่อกวาดรับคำตอบของทุกคนพร้อมกัน</li>
+      </ul>
+    </div>
+
+    <!-- Cards Grid Container -->
+    <div id="cardsGrid" class="flex flex-col items-center gap-8 print:gap-0">
+      <div class="no-print text-center text-white/40 py-16">
+        <svg class="w-16 h-16 mx-auto mb-4 stroke-current fill-none stroke-[1.5]" viewBox="0 0 24 24">
+          <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+          <path d="M6 14h12v8H6z" />
+        </svg>
+        กรุณาเลือกห้องเรียนด้านซ้ายเพื่อสร้างการ์ดกระดาษคำตอบ
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global database of student rosters
+    let rosterData = {};
+    let currentLayout = '2'; // '1', '2', or '4' cards per page
+
+    // Pre-calculated ArUco 5x5 bits dictionary for ID 1 to 100
+    // Based on Hamming code (7,4) used in standard ArUco
+    // We use the same generation function as bhollis/aruco-marker
+    function getArUcoMatrix(id) {
+      const ids = [16, 23, 9, 14];
+      const marker = Array.from({ length: 5 }, () => Array(5).fill(0));
+      for (let y = 0; y < 5; y++) {
+        const index = (id >> (2 * (4 - y))) & 3;
+        const val = ids[index];
+        for (let x = 0; x < 5; x++) {
+          marker[x][y] = (val >> (4 - x)) & 1;
+        }
+      }
+      return marker;
+    }
+
+    // Generate SVG string for ArUco Marker
+    function getArUcoSVG(id) {
+      const matrix = getArUcoMatrix(id);
+      let svg = `<svg viewBox="0 0 7 7" shape-rendering="crispEdges" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">`;
+      // Outer border is black
+      svg += `<rect x="0" y="0" width="7" height="7" fill="black" />`;
+      // Inner 5x5 bits (0 = black, 1 = white)
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          if (matrix[c][r] === 1) {
+            svg += `<rect x="${c + 1}" y="${r + 1}" width="1" height="1" fill="white" />`;
+          }
+        }
+      }
+      svg += `</svg>`;
+      return svg;
+    }
+
+    // Initialize Page & Load Roster
+    window.addEventListener('DOMContentLoaded', () => {
+      fetch('../ทะเบียนนักเรียน-ม1-6-ปี69.json')
+        .then(response => response.json())
+        .then(data => {
+          rosterData = data;
+          populateRoomDropdown();
+        })
+        .catch(err => {
+          console.error("Failed to load student roster JSON:", err);
+          document.getElementById('roomSelect').innerHTML = `<option value="" disabled selected>❌ โหลดรายชื่อล้มเหลว</option>`;
+        });
+    });
+
+    // Populate Room Select Dropdown
+    function populateRoomDropdown() {
+      const roomSelect = document.getElementById('roomSelect');
+      roomSelect.innerHTML = `<option value="" disabled selected>-- เลือกห้องเรียน --</option>`;
+      
+      Object.keys(rosterData).forEach(room => {
+        const option = document.createElement('option');
+        option.value = room;
+        option.textContent = room;
+        roomSelect.appendChild(option);
+      });
+
+      roomSelect.addEventListener('change', () => {
+        renderCards();
+      });
+    }
+
+    // Handle Layout Selection
+    function setCardLayout(layout) {
+      currentLayout = layout;
+      // Toggle button active styles
+      document.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.className = "layout-btn bg-white/5 text-white/75 border border-white/10 rounded-xl py-2.5 text-xs font-bold transition-all";
+      });
+      const activeBtn = document.getElementById(`btn-layout-${layout}`);
+      if (activeBtn) {
+        activeBtn.className = "layout-btn bg-green-500/20 text-green-400 border border-green-500/40 rounded-xl py-2.5 text-xs font-bold transition-all";
+      }
+      
+      // Re-render
+      renderCards();
+    }
+
+    // Generate Room Accent Colors based on class name
+    function getRoomColor(roomName) {
+      if (roomName.includes("เตรียมวิศวะ")) return "#dc2626"; // red
+      if (roomName.includes("6/")) return "#ec4899"; // pink
+      if (roomName.includes("5/")) return "#8b5cf6"; // purple
+      if (roomName.includes("4/")) return "#3b82f6"; // blue
+      if (roomName.includes("3/")) return "#14b8a6"; // teal
+      if (roomName.includes("2/")) return "#f59e0b"; // amber
+      return "#10b981"; // green
+    }
+
+    // Render Cards in Container
+    function renderCards() {
+      const roomSelect = document.getElementById('roomSelect');
+      const selectedRoom = roomSelect.value;
+      const cardsGrid = document.getElementById('cardsGrid');
+      
+      if (!selectedRoom || !rosterData[selectedRoom]) return;
+      
+      const students = rosterData[selectedRoom];
+      const showName = document.getElementById('showStudentName').checked;
+      const showColor = document.getElementById('coloredCard').checked;
+      const themeColor = getRoomColor(selectedRoom);
+      
+      cardsGrid.innerHTML = '';
+      
+      // Determine classes for sizing depending on layout
+      let cardStyle = '';
+      let gridContainerClass = '';
+      
+      if (currentLayout === '1') {
+        // 1 card per A4 (Large)
+        // A4 height is ~297mm. So 1 card can be ~200mm x 200mm.
+        cardStyle = 'width: 190mm; height: 190mm; margin: 5mm auto;';
+        gridContainerClass = 'w-full flex flex-col gap-0';
+      } else if (currentLayout === '2') {
+        // 2 cards per A4 (Medium)
+        // Fits 2 vertically. Card size ~135mm x 135mm.
+        cardStyle = 'width: 135mm; height: 135mm; margin: 6mm auto;';
+        gridContainerClass = 'w-full flex flex-col gap-0';
+      } else {
+        // 4 cards per A4 (Small)
+        // 2x2 grid on A4. Card size ~95mm x 95mm.
+        cardStyle = 'width: 95mm; height: 95mm; margin: 3mm;';
+        gridContainerClass = 'grid grid-cols-2 gap-0 justify-center';
+      }
+
+      // Add wrapper div to support column/grid printing
+      const wrapper = document.createElement('div');
+      wrapper.className = gridContainerClass + " print:block";
+      cardsGrid.appendChild(wrapper);
+
+      students.forEach((student, idx) => {
+        // Student ID maps to ArUco marker ID
+        // Note: ArUco IDs should be positive, we use the student number 'no' or map to a unique ID.
+        // Plickers uses marker ID starting from 1. Standard js-aruco handles IDs up to 1023.
+        const markerId = student.no; 
+        
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'plickers-card flex flex-col items-center justify-center print:border-black';
+        cardDiv.style = cardStyle;
+        
+        // Marker size scales with card size
+        let markerSize = 'w-[60%] h-[60%]';
+        let labelFontSize = 'text-3xl';
+        let studentInfoFontSize = 'text-sm';
+        
+        if (currentLayout === '1') {
+          markerSize = 'w-[110mm] h-[110mm]';
+          labelFontSize = 'text-4xl';
+          studentInfoFontSize = 'text-base';
+        } else if (currentLayout === '2') {
+          markerSize = 'w-[75mm] h-[75mm]';
+          labelFontSize = 'text-3xl';
+          studentInfoFontSize = 'text-sm';
+        } else {
+          markerSize = 'w-[50mm] h-[50mm]';
+          labelFontSize = 'text-xl';
+          studentInfoFontSize = 'text-[10px]';
+        }
+
+        // Colored stripe on top if color selected
+        const colorStripeHtml = showColor 
+          ? `<div class="absolute top-0 left-0 right-0 h-2 print:h-2" style="background-color: ${themeColor};"></div>` 
+          : '';
+
+        // Build HTML layout for cards
+        cardDiv.innerHTML = `
+          ${colorStripeHtml}
+          
+          <!-- Edge Labels: A (Top), B (Right), C (Bottom), D (Left) -->
+          <!-- A (Top) -->
+          <div class="absolute top-3 left-1/2 -translate-x-1/2 font-bold ${labelFontSize} select-none font-outfit">A</div>
+          
+          <!-- B (Right) -->
+          <div class="absolute right-3 top-1/2 -translate-y-1/2 font-bold ${labelFontSize} rotate-90 select-none font-outfit">B</div>
+          
+          <!-- C (Bottom) -->
+          <div class="absolute bottom-3 left-1/2 -translate-x-1/2 font-bold ${labelFontSize} rotate-180 select-none font-outfit">C</div>
+          
+          <!-- D (Left) -->
+          <div class="absolute left-3 top-1/2 -translate-y-1/2 font-bold ${labelFontSize} -rotate-90 select-none font-outfit">D</div>
+          
+          <!-- Student Info (Small print on margins so it doesn't distract the camera) -->
+          <div class="absolute bottom-3 left-4 text-left font-semibold ${studentInfoFontSize} leading-tight text-gray-500">
+            ${selectedRoom}<br>
+            NO: <span class="font-outfit font-black text-black">${student.no}</span>
+          </div>
+
+          <div class="absolute bottom-3 right-4 text-right font-semibold ${studentInfoFontSize} leading-tight text-gray-500">
+            ${showName ? student.name : ''}
+          </div>
+
+          <!-- Top indicator of ID for teacher's reference (extremely tiny on the corner) -->
+          <div class="absolute top-3 left-4 font-outfit font-bold text-[9px] text-gray-400">
+            ID: ${markerId}
+          </div>
+          
+          <!-- ArUco Marker -->
+          <div class="${markerSize} flex items-center justify-center">
+            ${getArUcoSVG(markerId)}
+          </div>
+        `;
+        
+        wrapper.appendChild(cardDiv);
+
+        // Add page break after every N cards depending on layout to ensure clean printouts
+        if (currentLayout === '1') {
+          // Break page after each card
+          const pageBreak = document.createElement('div');
+          pageBreak.style = 'page-break-after: always;';
+          pageBreak.className = 'no-print-layout'; // empty helper
+          wrapper.appendChild(pageBreak);
+        } else if (currentLayout === '2' && (idx + 1) % 2 === 0) {
+          // Break page after every 2 cards
+          const pageBreak = document.createElement('div');
+          pageBreak.style = 'page-break-after: always;';
+          wrapper.appendChild(pageBreak);
+        } else if (currentLayout === '4' && (idx + 1) % 4 === 0) {
+          // Break page after every 4 cards
+          const pageBreak = document.createElement('div');
+          pageBreak.style = 'page-break-after: always;';
+          wrapper.appendChild(pageBreak);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
