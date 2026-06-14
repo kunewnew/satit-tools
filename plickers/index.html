@@ -360,12 +360,23 @@
 
     // Load Roster middle-ware
     window.addEventListener('DOMContentLoaded', () => {
-      // Initialize ArUco Detector
-      detector = new AR.Detector();
+      // Initialize ArUco Detector safely
+      try {
+        if (typeof AR !== 'undefined') {
+          detector = new AR.Detector();
+        } else {
+          console.warn("ArUco library (AR) is not loaded yet.");
+        }
+      } catch (e) {
+        console.warn("Failed to initialize ArUco Detector:", e);
+      }
 
       // Load roster data
       fetch('../ทะเบียนนักเรียน-ม1-6-ปี69.json')
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) throw new Error("HTTP error " + response.status);
+          return response.json();
+        })
         .then(data => {
           rosterData = data;
           populateRoomDropdown();
@@ -373,8 +384,17 @@
           loadFromLocalStorage();
         })
         .catch(err => {
-          console.error("Failed to load student roster JSON:", err);
-          document.getElementById('roomSelect').innerHTML = `<option value="" disabled selected>❌ โหลดทะเบียนล้มเหลว</option>`;
+          console.warn("Failed to load student roster JSON, using offline fallback:", err);
+          // Fallback mock classroom so the app does not break locally or offline
+          rosterData = {
+            "ห้องเรียนทดสอบ (ระบบออฟไลน์)": Array.from({ length: 45 }, (_, i) => ({
+              no: i + 1,
+              id: (7000 + i).toString(),
+              name: `นักเรียนสมมติ เลขที่ ${i + 1}`
+            }))
+          };
+          populateRoomDropdown();
+          loadFromLocalStorage();
         });
         
       // Request available cameras
@@ -502,6 +522,13 @@
     // Populate Cameras dropdown
     function setupCameras() {
       const cameraSelect = document.getElementById('cameraSelect');
+      
+      // Safe guard for non-secure contexts (HTTP) where mediaDevices is undefined
+      if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        cameraSelect.innerHTML = `<option value="">ไม่สนับสนุนการเชื่อมต่อกล้อง (กรุณาใช้งานผ่าน HTTPS)</option>`;
+        return;
+      }
+
       navigator.mediaDevices.enumerateDevices()
         .then(devices => {
           const videoDevices = devices.filter(device => device.kind === 'videoinput');
@@ -517,8 +544,9 @@
             option.value = device.deviceId;
             // Provide descriptive label or fallbacks
             option.textContent = device.label || `กล้องตัวที่ ${idx + 1}`;
-            // Set rear camera as default on mobile
-            if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear') || device.label.toLowerCase().includes('environment')) {
+            // Set rear camera as default on mobile safely
+            const label = (device.label || '').toLowerCase();
+            if (label.includes('back') || label.includes('rear') || label.includes('environment')) {
               option.selected = true;
             }
             cameraSelect.appendChild(option);
@@ -641,6 +669,11 @@
       const cameraSelect = document.getElementById('cameraSelect');
       const selectedDeviceId = cameraSelect.value;
       
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("❌ เบราว์เซอร์ของคุณไม่รองรับการใช้งานกล้อง หรือไม่ได้ใช้งานผ่านการเชื่อมต่อแบบปลอดภัย (HTTPS) ครับ");
+        return;
+      }
+      
       const constraints = {
         video: selectedDeviceId ? { deviceId: { exact: selectedDeviceId } } : { facingMode: 'environment' },
         audio: false
@@ -703,6 +736,16 @@
       // Read image pixels from canvas
       try {
         const imageData = ctx.getImageData(0, 0, canvasEl.width, canvasEl.height);
+        
+        // Ensure detector is initialized dynamically if CDN was slow to load
+        if (!detector) {
+          if (typeof AR !== 'undefined') {
+            detector = new AR.Detector();
+          } else {
+            throw new Error("ไม่สามารถเริ่มต้นระบบสแกนการ์ดได้ เนื่องจากไลบรารีสแกนล้มเหลวในการดาวน์โหลด");
+          }
+        }
+        
         // Detect markers (ID 1-1023)
         const markers = detector.detect(imageData);
         
