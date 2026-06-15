@@ -466,10 +466,10 @@
     <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--accent-light); margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">📷 เครื่องสแกน QR / Barcode</h3>
     
     <!-- พื้นที่แสดงกล้อง -->
-    <div id="scanner-view-container" style="position: relative; width: 100%; height: 250px; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 12px; border: 1.5px solid var(--border);">
+    <div id="scanner-view-container" style="position: relative; width: 100%; height: 360px; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 12px; border: 1.5px solid var(--border);">
       <div id="scanner-view" style="width: 100%; height: 100%;"></div>
       <!-- กรอบนำทางสายตาเพื่อสแกน -->
-      <div style="position: absolute; inset: 35px; border: 2px dashed rgba(200, 149, 42, 0.7); border-radius: 8px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);"></div>
+      <div style="position: absolute; inset: 20px; border: 2px dashed rgba(200, 149, 42, 0.7); border-radius: 8px; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);"></div>
     </div>
     
     <!-- ตั้งค่าสถานะเมื่อสแกนได้ -->
@@ -1583,11 +1583,6 @@ function initCamera(cameraId) {
   html5QrCode = new Html5Qrcode("scanner-view");
   const config = { 
     fps: 25, 
-    qrbox: (width, height) => {
-      const min = Math.min(width, height);
-      const boxSize = Math.floor(min * 0.85);
-      return { width: boxSize, height: boxSize };
-    },
     experimentalFeatures: {
       useBarCodeDetectorIfSupported: true
     }
