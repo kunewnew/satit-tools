@@ -62,7 +62,9 @@ const ROLE_DETAILS = {
 // MQTT Broker config
 const BROKERS = [
     { host: "broker.hivemq.com", port: 8884, path: "/mqtt" },
-    { host: "broker.emqx.io", port: 8084, path: "/mqtt" }
+    { host: "broker.emqx.io", port: 8084, path: "/mqtt" },
+    { host: "mqtt.eclipseprojects.io", port: 443, path: "/mqtt" },
+    { host: "test.mosquitto.org", port: 443, path: "/mqtt" }
 ];
 let currentBrokerIndex = 0;
 

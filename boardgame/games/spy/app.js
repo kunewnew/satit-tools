@@ -12,7 +12,9 @@ let mqttClient = null;
 let currentBrokerIndex = 0;
 const BROKERS = [
     { host: "broker.hivemq.com", port: 8884 },
-    { host: "broker.emqx.io", port: 8084 }
+    { host: "broker.emqx.io", port: 8084 },
+    { host: "mqtt.eclipseprojects.io", port: 443 },
+    { host: "test.mosquitto.org", port: 443 }
 ];
 
 // In-memory databases
