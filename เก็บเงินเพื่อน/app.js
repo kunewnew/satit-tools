@@ -264,10 +264,32 @@ function getSeedData(studentList, collectorName) {
   return transactions;
 }
 
+// Helper: Send POST request to Google Sheets to write data (prevents URL length limits and CORS preflight options)
+function postToCloud(payload) {
+  if (!state.config.appsScriptUrl) return Promise.resolve(null);
+  
+  return fetch(state.config.appsScriptUrl, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "text/plain" // Prevents CORS preflight OPTIONS request
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    console.log("Cloud sync POST result:", data);
+    return data;
+  })
+  .catch(e => {
+    console.error("Cloud sync POST failed:", e);
+    throw e;
+  });
+}
+
 // Helper: Sync transaction to Google Sheets
 function syncTransactionToCloud(newTx) {
-  if (!state.config.appsScriptUrl) return;
-  const params = new URLSearchParams({
+  postToCloud({
     action: "save_transaction",
     id: newTx.id,
     timestamp: newTx.timestamp,
@@ -281,26 +303,19 @@ function syncTransactionToCloud(newTx) {
     method: newTx.method,
     slipUrl: newTx.slipUrl
   });
-  
-  fetch(`${state.config.appsScriptUrl}?${params.toString()}`)
-    .then(r => r.json())
-    .then(data => console.log("Cloud sync save transaction result:", data))
-    .catch(e => console.error("Cloud sync transaction failed", e));
 }
 
 // Helper: Sync deletion to Google Sheets
 function syncDeleteToCloud(txid) {
-  if (!state.config.appsScriptUrl) return;
-  fetch(`${state.config.appsScriptUrl}?action=delete_transaction&id=${txid}`)
-    .then(r => r.json())
-    .then(data => console.log("Cloud sync delete transaction result:", data))
-    .catch(e => console.error("Cloud sync delete failed", e));
+  postToCloud({
+    action: "delete_transaction",
+    id: txid
+  });
 }
 
 // Helper: Sync configuration settings to Google Sheets
 function syncSettingsToCloud() {
-  if (!state.config.appsScriptUrl) return;
-  const params = new URLSearchParams({
+  postToCloud({
     action: "save_settings",
     goalPerPerson: state.config.goalPerPerson,
     teacherName: state.config.teacherName,
@@ -310,37 +325,24 @@ function syncSettingsToCloud() {
     collectorPassword: state.config.collectorPassword,
     teacherPassword: state.config.teacherPassword
   });
-
-  fetch(`${state.config.appsScriptUrl}?${params.toString()}`)
-    .then(r => r.json())
-    .then(data => console.log("Cloud sync save settings result:", data))
-    .catch(e => console.error("Cloud sync settings failed", e));
 }
 
 // Helper: Sync audit history logs to Google Sheets
 function syncHistoryToCloud(log) {
-  if (!state.config.appsScriptUrl) return;
-  const params = new URLSearchParams({
+  postToCloud({
     action: "save_history",
     timestamp: log.timestamp,
     title: log.title,
     desc: log.desc,
     author: log.author
   });
-
-  fetch(`${state.config.appsScriptUrl}?${params.toString()}`)
-    .then(r => r.json())
-    .then(data => console.log("Cloud sync history log result:", data))
-    .catch(e => console.error("Cloud sync history log failed", e));
 }
 
 // Helper: Sync reset action to Google Sheets
 function syncResetToCloud() {
-  if (!state.config.appsScriptUrl) return;
-  fetch(`${state.config.appsScriptUrl}?action=reset_database`)
-    .then(r => r.json())
-    .then(data => console.log("Cloud sync reset result:", data))
-    .catch(e => console.error("Cloud sync reset failed", e));
+  postToCloud({
+    action: "reset_database"
+  });
 }
 
 // Initial Data Load
