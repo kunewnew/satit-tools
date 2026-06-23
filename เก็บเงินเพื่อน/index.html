@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>💰 ClassFund ม.6/1 - ระบบบันทึกและติดตามเงินห้องเรียนโปร่งใส</title>
+  <meta name="description" content="ระบบติดตามเงินห้องเรียน ม.6/1 ปีการศึกษา 2569 บันทึกรายรับ-รายจ่าย ตรวจสอบสลิป ป้องกันการทุจริต โปร่งใส ตรวจสอบได้ 100%">
+  
+  <!-- Google Fonts - Kanit, Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons for modern visuals -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Premium Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-vault"></i>
+        </div>
+        <div class="brand-text">
+          <h2>ClassFund</h2>
+          <span>ม.6/1 (ปี 2569)</span>
+        </div>
+      </div>
+      
+      <nav class="sidebar-menu">
+        <button class="menu-item active" data-tab="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>ภาพรวมห้องเรียน</span>
+        </button>
+        <button class="menu-item" data-tab="students">
+          <i class="fa-solid fa-users"></i>
+          <span>รายชื่อ & การจ่ายเงิน</span>
+        </button>
+        <button class="menu-item" data-tab="transactions">
+          <i class="fa-solid fa-list-check"></i>
+          <span>ประวัติรายรับ-รายจ่าย</span>
+        </button>
+        <button class="menu-item" data-tab="settings">
+          <i class="fa-solid fa-user-shield"></i>
+          <span>ผู้ดูแล & การตั้งค่า</span>
+        </button>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="current-collector-box">
+          <span class="label">คนเก็บเงินคนปัจจุบัน</span>
+          <span class="name" id="sidebar-collector-name">กำลังโหลด...</span>
+        </div>
+        <a href="../index.html" class="back-link">
+          <i class="fa-solid fa-arrow-left-long"></i>
+          <span>กลับหน้าหลักครู</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Navbar -->
+      <header class="top-navbar">
+        <div class="navbar-left">
+          <h1 id="page-title">ภาพรวมเงินห้องเรียน ม.6/1</h1>
+          <p id="page-subtitle">อัปเดตข้อมูลและสถิติตัวเลขในแบบเรียลไทม์</p>
+        </div>
+        <div class="navbar-right" style="display: flex; gap: 12px; align-items: center;">
+          <div class="role-selector-container">
+            <button class="btn btn-secondary btn-sm" id="btn-toggle-role" style="border-radius: 30px; background-color: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.2); color: var(--warning);">
+              <i class="fa-solid fa-lock"></i> <span id="role-text">โหมดนักเรียน (ดูอย่างเดียว)</span>
+            </button>
+          </div>
+          <div class="status-indicator">
+            <span class="dot-online"></span>
+            <span>ระบบเก็บข้อมูลภายใน (Local Database)</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Panel Content Container -->
+      <div class="panel-container">
+        
+        <!-- Tab 1: Dashboard Panel -->
+        <section class="tab-panel active" id="panel-dashboard">
+          <!-- Summary Cards Grid -->
+          <div class="summary-cards">
+            <div class="card card-balance">
+              <div class="card-glow"></div>
+              <div class="card-icon">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+              <div class="card-info">
+                <h3>ยอดเงินคงเหลือสะสม</h3>
+                <h2 id="stat-balance">฿0.00</h2>
+                <p>จำนวนเงินที่ใช้ได้ในห้องตอนนี้</p>
+              </div>
+            </div>
+            
+            <div class="card card-income">
+              <div class="card-icon">
+                <i class="fa-solid fa-circle-arrow-down"></i>
+              </div>
+              <div class="card-info">
+                <h3>รายรับรวมทั้งหมด</h3>
+                <h2 id="stat-income">฿0.00</h2>
+                <p>เงินห้องที่เก็บสะสมได้ทั้งหมด</p>
+              </div>
+            </div>
+            
+            <div class="card card-expense">
+              <div class="card-icon">
+                <i class="fa-solid fa-circle-arrow-up"></i>
+              </div>
+              <div class="card-info font-red">
+                <h3>รายจ่ายรวมทั้งหมด</h3>
+                <h2 id="stat-expense">฿0.00</h2>
+                <p>ค่าใช้จ่ายห้องเรียนที่จ่ายออกแล้ว</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress and Quick Actions Grid -->
+          <div class="dashboard-grid">
+            <!-- Goal & Analytics Box -->
+            <div class="glass-box box-goal">
+              <h3><i class="fa-solid fa-bullseye icon-color"></i> เป้าหมายเงินห้องเรียนประจำเทอม</h3>
+              <div class="goal-stats">
+                <div class="goal-item">
+                  <span class="label">ค่าเงินห้องเป้าหมายต่อคน:</span>
+                  <span class="val" id="goal-per-person">฿200.00</span>
+                </div>
+                <div class="goal-item">
+                  <span class="label">เป้าหมายรวมทั้งห้อง (36 คน):</span>
+                  <span class="val" id="goal-total">฿7,200.00</span>
+                </div>
+              </div>
+              
+              <!-- Progress Bar -->
+              <div class="progress-section">
+                <div class="progress-info">
+                  <span class="progress-percent" id="goal-progress-percent">0%</span>
+                  <span class="progress-text" id="goal-progress-text">เก็บเงินได้ ฿0 / ฿7,200</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="goal-progress-fill" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <!-- Quick Student Stats Grid -->
+              <div class="student-ratio-grid">
+                <div class="ratio-item">
+                  <div class="ratio-label">จ่ายครบถ้วนแล้ว</div>
+                  <div class="ratio-number text-success" id="ratio-paid-count">0 / 36</div>
+                </div>
+                <div class="ratio-item">
+                  <div class="ratio-label">ยังจ่ายบางส่วน / ค้างจ่าย</div>
+                  <div class="ratio-number text-pending" id="ratio-pending-count">36 / 36</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Target & QR Code -->
+            <div class="glass-box box-payment-qr">
+              <h3><i class="fa-solid fa-qrcode icon-color"></i> สแกนจ่ายเงินห้อง</h3>
+              <p class="qr-desc">สแกน QR Code พร้อมเพย์นี้เพื่อโอนเงินเข้ากองกลางห้อง</p>
+              
+              <div class="qr-container">
+                <div class="qr-placeholder" id="qr-code-display">
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                </div>
+                <div class="qr-details">
+                  <h4 id="qr-account-name">ชื่อบัญชี: -</h4>
+                  <p id="qr-account-number">พร้อมเพย์: -</p>
+                  <p class="qr-amount-info">ยอดโอนเป้าหมาย: <strong id="qr-target-amount">฿200</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Transactions -->
+          <div class="glass-box box-recent-transactions">
+            <div class="box-header">
+              <h3><i class="fa-solid fa-clock-rotate-left icon-color"></i> รายการล่าสุด</h3>
+              <button class="btn btn-secondary btn-sm" id="btn-view-all-transactions">ดูทั้งหมด</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="recent-transactions-table">
+                <thead>
+                  <tr>
+                    <th>วันเวลา</th>
+                    <th>ประเภท</th>
+                    <th>รายการ</th>
+                    <th>จำนวนเงิน</th>
+                    <th>คนเก็บเงิน/ผู้รับรอง</th>
+                    <th>หลักฐาน</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="6" class="text-center">กำลังโหลดรายการล่าสุด...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 2: Students List & Payment Status -->
+        <section class="tab-panel" id="panel-students">
+          <div class="glass-box">
+            <!-- Table Header Control Panel -->
+            <div class="control-panel">
+              <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="student-search-input" placeholder="ค้นหาเลขที่, ชื่อ หรือรหัสประจำตัว...">
+              </div>
+              <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                <div class="filter-group">
+                  <button class="filter-btn active" data-filter="all">ทั้งหมด (36)</button>
+                  <button class="filter-btn" data-filter="paid">จ่ายครบ (0)</button>
+                  <button class="filter-btn" data-filter="pending">ค้างจ่าย (36)</button>
+                </div>
+                <button class="btn btn-primary btn-sm" id="btn-add-batch-modal-students">
+                  <i class="fa-solid fa-list-check"></i> บันทึกเก็บเงินรายวันแบบด่วน
+                </button>
+              </div>
+            </div>
+
+            <!-- Student List Table -->
+            <div class="table-responsive">
+              <table class="table align-middle" id="students-table">
+                <thead>
+                  <tr>
+                    <th width="80px">เลขที่</th>
+                    <th width="120px">รหัสตัว</th>
+                    <th>ชื่อ - นามสกุล</th>
+                    <th width="150px">สถานะ</th>
+                    <th width="150px" class="text-right">ยอดที่จ่ายแล้ว</th>
+                    <th width="150px" class="text-center">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="6" class="text-center">กำลังโหลดข้อมูลทะเบียนนักเรียน...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 3: Full Transaction History -->
+        <section class="tab-panel" id="panel-transactions">
+          <div class="glass-box">
+            <div class="box-header mb-4">
+              <h3>ประวัติการเงินโดยละเอียด</h3>
+              <div class="action-buttons">
+                <button class="btn btn-danger" id="btn-add-expense-modal">
+                  <i class="fa-solid fa-minus-circle"></i> บันทึกค่าใช้จ่าย (รายจ่าย)
+                </button>
+                <button class="btn btn-success" id="btn-add-income-modal">
+                  <i class="fa-solid fa-plus-circle"></i> บันทึกรายรับ (เงินสมทบห้อง)
+                </button>
+                <button class="btn btn-primary" id="btn-add-batch-modal">
+                  <i class="fa-solid fa-list-check"></i> บันทึกเก็บเงินรายวันแบบด่วน
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Type & Date -->
+            <div class="control-panel mb-4" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+              <div class="filter-group" id="transaction-type-filter" style="margin-bottom: 0;">
+                <button class="filter-btn active" data-type="all">ธุรกรรมทั้งหมด</button>
+                <button class="filter-btn" data-type="income">รายรับเฉพาะเงินห้อง</button>
+                <button class="filter-btn" data-type="expense">รายจ่ายเฉพาะค่าใช้จ่าย</button>
+              </div>
+              <div class="date-filter-box" style="display: flex; align-items: center; gap: 8px;">
+                <label for="transaction-date-filter" style="font-size: 0.8rem; color: var(--text-muted); margin: 0; white-space: nowrap;"><i class="fa-solid fa-calendar-days text-primary"></i> กรองรายวัน:</label>
+                <input type="date" id="transaction-date-filter" class="form-control" style="width: 160px; padding: 8px 12px; border-radius: 30px; font-size: 0.8rem; margin: 0;">
+                <button class="btn btn-secondary btn-sm" id="btn-clear-date-filter" style="border-radius: 30px; font-size: 0.75rem; padding: 6px 12px; display: none;">ล้างตัวกรอง</button>
+              </div>
+            </div>
+
+            <!-- Daily summary banner (shown only when date filter is active) -->
+            <div id="transaction-daily-summary-bar" class="mb-4" style="display: none; justify-content: space-between; align-items: center; padding: 12px 18px; background-color: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.1); border-radius: var(--border-radius-md); font-size: 0.85rem;">
+              <!-- JS จะเติมสรุปยอดการเงินของวันที่เลือกตรงนี้ -->
+            </div>
+
+            <!-- Transaction Table -->
+            <div class="table-responsive">
+              <table class="table" id="full-transactions-table">
+                <thead>
+                  <tr>
+                    <th>วันเวลาที่ทำรายการ</th>
+                    <th>ประเภท</th>
+                    <th>รายละเอียด / ผู้โอน</th>
+                    <th>จำนวนเงิน</th>
+                    <th>คนบันทึก/ผู้รับรอง</th>
+                    <th>ใบเสร็จ / สลิปหลักฐาน</th>
+                    <th width="100px" class="text-center">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colspan="7" class="text-center">ไม่มีข้อมูลธุรกรรมในระบบ</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- Tab 4: Settings & Collectors Panel -->
+        <section class="tab-panel" id="panel-settings">
+          <div class="settings-grid">
+            <!-- Collector Management Card -->
+            <div class="glass-box">
+              <h3><i class="fa-solid fa-user-shield icon-color"></i> ผู้ดูแลเงินห้องปัจจุบัน</h3>
+              <p class="section-desc">ระบุตัวตนของผู้รับผิดชอบเงินและอัปเดตสิทธิ์การบันทึกข้อมูล</p>
+              
+              <form id="form-collector-settings" class="mt-4">
+                <div class="form-group">
+                  <label for="input-current-collector">คนเก็บเงินคนปัจจุบัน (นักเรียน ม.6/1)</label>
+                  <select id="input-current-collector" class="form-control" required>
+                    <!-- โหลดรายชื่อนักเรียน ม.6/1 อัตโนมัติ -->
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label for="input-teacher-name">คุณครูประจำชั้น (ผู้ควบคุมหลัก)</label>
+                  <input type="text" id="input-teacher-name" class="form-control" value="ครูนิวตรอน" placeholder="ชื่อครูประจำชั้น">
+                </div>
+
+                <div class="form-group">
+                  <label for="input-promptpay-id">เบอร์โทรศัพท์/เลขที่พร้อมเพย์รับเงินห้อง</label>
+                  <input type="text" id="input-promptpay-id" class="form-control" value="091-234-5678" placeholder="เลขพร้อมเพย์ผู้เก็บเงิน">
+                  <small class="form-text text-muted">ใช้สำหรับทำ QR Code หน้าแรกเพื่อการจ่ายเงินที่สะดวกรวดเร็ว</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="input-promptpay-name">ชื่อเจ้าของบัญชี (ผู้เก็บเงิน)</label>
+                  <input type="text" id="input-promptpay-name" class="form-control" value="นายณัฏฐพร โชติช่วง (เหรัญญิก ม.6/1)" placeholder="ระบุชื่อบัญชีสแกนจ่าย">
+                </div>
+
+                <div class="form-group">
+                  <label for="input-apps-script-url">Google Apps Script Web App URL (เชื่อมต่อ Google Sheets ออนไลน์)</label>
+                  <input type="url" id="input-apps-script-url" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
+                  <small class="form-text text-muted">ป้อน URL ที่ได้จากการ Deploy Web App เพื่อดึงและเซฟข้อมูลลงใน Google Sheet ออนไลน์ร่วมกัน</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-2">
+                  <i class="fa-solid fa-floppy-disk"></i> บันทึกข้อมูลและอัปเดต QR Code
+                </button>
+              </form>
+            </div>
+
+            <!-- Goal Setup Card -->
+            <div class="glass-box">
+              <h3><i class="fa-solid fa-sliders icon-color"></i> ตั้งค่าเป้าหมายเงินห้อง</h3>
+              <p class="section-desc">ตั้งค่าอัตราเงินห้องต่อหัวเพื่อคำนวณสถิติความคืบหน้า</p>
+              
+              <form id="form-goal-settings" class="mt-4">
+                <div class="form-group">
+                  <label for="input-goal-amount">อัตราค่าเงินห้องต่อคน (บาท)</label>
+                  <input type="number" id="input-goal-amount" class="form-control" value="200" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                  <label>คำนวณเป้าหมายห้องทั้งหมด (36 คน)</label>
+                  <input type="text" id="input-goal-total-calc" class="form-control" value="฿7,200.00" disabled>
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-2">
+                  <i class="fa-solid fa-floppy-disk"></i> บันทึกตั้งค่าเงินห้อง
+                </button>
+              </form>
+
+              <!-- Reset Data Section -->
+              <div class="reset-zone mt-6">
+                <h4 class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> เขตอันตราย</h4>
+                <p>ปุ่มนี้ใช้สำหรับรีเซ็ตธุรกรรมและยอดเงินที่เคยจ่ายไปแล้ว เพื่อเริ่มต้นเก็บเงินใหม่ในเทอมถัดไป</p>
+                <button class="btn btn-danger btn-sm mt-2" id="btn-reset-database">
+                  <i class="fa-solid fa-trash-can"></i> รีเซ็ตรายการเงินห้องและสถิติทั้งหมด
+                </button>
+              </div>
+            </div>
+
+            <!-- Trust Audit Log Box -->
+            <div class="glass-box col-span-2">
+              <h3><i class="fa-solid fa-history icon-color"></i> บันทึกประวัติการเปลี่ยนคนเก็บเงิน (Collector History Log)</h3>
+              <p class="section-desc">ประวัติระบบการเปลี่ยนคนดูแลกระเป๋าเงินห้อง ป้องกันการนำเงินห้องไปหมุนใช้ส่วนตัวโดยไม่มีร่องรอย</p>
+              
+              <div class="timeline mt-4" id="collector-audit-timeline">
+                <!-- ข้อมูลตัวอย่างประวัติการส่งมอบความไว้วางใจ -->
+                <div class="timeline-item">
+                  <div class="timeline-dot"></div>
+                  <div class="timeline-content">
+                    <h4>เปลี่ยนผู้เก็บเงินห้องเป็น: นายณัฏฐพร โชติช่วง (เลขที่ 1)</h4>
+                    <p class="time">23 มิ.ย. 2569 - 07:15 น.</p>
+                    <p class="desc">ครูประจำชั้นเปลี่ยนคนเก็บเงินเนื่องจากเหรัญญิกเดิมลาออก ยอดส่งมอบสุทธิ ฿0.00 (เปิดห้องเรียนเทอมใหม่)</p>
+                    <span class="author">บันทึกโดย: ครูนิวตรอน</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal 1: Record Student Payment (รายรับ) -->
+  <div class="modal" id="modal-record-payment">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-file-invoice-dollar text-success"></i> บันทึกการจ่ายเงินของนักเรียน</h3>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="form-record-payment">
+          <div class="modal-body">
+            <input type="hidden" id="payment-student-no">
+            
+            <div class="form-group">
+              <label>นักเรียน</label>
+              <input type="text" id="payment-student-display" class="form-control" disabled>
+            </div>
+            
+            <div class="form-group">
+              <label for="payment-amount">จำนวนเงินที่จ่าย (บาท)</label>
+              <input type="number" id="payment-amount" class="form-control" value="200" min="1" required>
+            </div>
+
+            <div class="form-group">
+              <label for="payment-method">ช่องทางการจ่ายเงิน *</label>
+              <select id="payment-method" class="form-control" required>
+                <option value="cash" selected>💵 เงินสด (จ่ายให้คนเก็บเงินโดยตรง)</option>
+                <option value="transfer">📱 โอนผ่านธนาคาร / พร้อมเพย์</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="payment-description">บันทึกช่วยจำ</label>
+              <input type="text" id="payment-description" class="form-control" value="จ่ายเงินห้อง ม.6/1" placeholder="เช่น เงินห้องสัปดาห์ที่ 1">
+            </div>
+
+            <div class="form-group">
+              <label for="payment-collector">คนรับเงิน/คนลงบันทึก</label>
+              <input type="text" id="payment-collector" class="form-control" value="" disabled>
+            </div>
+
+            <div class="form-group" id="payment-slip-group">
+              <label id="payment-slip-label">รูปภาพหลักฐานใบเสร็จเงินสด (ไม่จำเป็นสำหรับเงินสด)</label>
+              <div class="slip-upload-area" id="payment-slip-upload-zone">
+                <i class="fa-solid fa-cloud-arrow-up icon-upload"></i>
+                <p>กดเพื่อเลือกไฟล์สลิป หรือลากไฟล์มาวางที่นี่</p>
+                <input type="file" id="payment-slip-file" accept="image/*" style="display:none">
+                <img id="payment-slip-preview" class="slip-preview-img" style="display:none">
+              </div>
+              <small class="form-text text-muted" id="payment-slip-help">แนบรูปถ่ายกระดาษเขียนรับเงินสดหรือสลิปโอน (หากมี)</small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-close-modal">ยกเลิก</button>
+            <button type="submit" class="btn btn-success">
+              <i class="fa-solid fa-check"></i> บันทึกข้อมูล
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Record General Income / Expense -->
+  <div class="modal" id="modal-record-transaction">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="transaction-modal-title"><i class="fa-solid fa-circle-plus"></i> บันทึกรายการใหม่</h3>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="form-record-transaction">
+          <div class="modal-body">
+            <input type="hidden" id="trans-type" value="income">
+            
+            <div class="form-group" id="student-select-group">
+              <label for="trans-student-select">เลือกนักเรียนที่จ่ายเงิน (กรณีระบุตัวตนรายรับ)</label>
+              <select id="trans-student-select" class="form-control">
+                <option value="">-- รายรับกองกลาง (ไม่เจาะจงรายคน) --</option>
+                <!-- โหลดรายชื่อนักเรียน ม.6/1 อัตโนมัติ -->
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="trans-description">รายละเอียดรายการ *</label>
+              <input type="text" id="trans-description" class="form-control" required placeholder="เช่น ซื้อพานพุ่ม, ซื้อสีตกแต่งห้อง, จัดอาหารว่างวันไหว้ครู">
+            </div>
+
+            <div class="form-group">
+              <label for="trans-amount">จำนวนเงิน (บาท) *</label>
+              <input type="number" id="trans-amount" class="form-control" min="1" required placeholder="0.00">
+            </div>
+
+            <div class="form-group" id="trans-method-group">
+              <label for="trans-method">ช่องทางการเงิน *</label>
+              <select id="trans-method" class="form-control" required>
+                <option value="cash" selected>💵 เงินสด</option>
+                <option value="transfer">📱 โอนผ่านธนาคาร / พร้อมเพย์</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="trans-collector">คนทำรายการ / ผู้รับรองสิทธิ์</label>
+              <input type="text" id="trans-collector" class="form-control" value="" disabled>
+            </div>
+
+            <div class="form-group">
+              <label>หลักฐานใบเสร็จ / สลิปการชำระเงิน</label>
+              <div class="slip-upload-area" id="trans-slip-upload-zone">
+                <i class="fa-solid fa-cloud-arrow-up icon-upload"></i>
+                <p>กดเพื่อเลือกไฟล์หลักฐาน หรือลากไฟล์มาวางที่นี่</p>
+                <input type="file" id="trans-slip-file" accept="image/*" style="display:none">
+                <img id="trans-slip-preview" class="slip-preview-img" style="display:none">
+              </div>
+              <small class="form-text text-muted">ภาพถ่ายใบเสร็จร้านค้าหรือสลิปโอนเงินจ่ายค่าใช้จ่ายห้องเพื่อตรวจสอบบัญชี</small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-close-modal">ยกเลิก</button>
+            <button type="submit" class="btn btn-primary" id="btn-save-transaction">บันทึกธุรกรรม</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: View Slip/Receipt Image -->
+  <div class="modal" id="modal-view-slip">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-receipt icon-color"></i> ตรวจสอบหลักฐานสลิป / ใบเสร็จ</h3>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body text-center">
+          <div id="slip-view-details" class="mb-4 text-left">
+            <!-- แสดงรายละเอียดประวัติเงินตรงนี้ -->
+          </div>
+          <div class="slip-img-container">
+            <img id="slip-image-full" src="" alt="ภาพหลักฐานการเงิน" class="slip-image-full">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-close-modal">ปิดหน้าต่าง</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Batch Record Student Payments (เก็บเงินรายวันแบบด่วน) -->
+  <div class="modal" id="modal-batch-payment">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-list-check text-success"></i> บันทึกเก็บเงินรายวันแบบด่วน</h3>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="form-batch-payment">
+          <div class="modal-body">
+            <!-- Batch configuration fields -->
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="batch-date">วันที่เก็บเงิน *</label>
+                <input type="date" id="batch-date" class="form-control" required>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="batch-amount">จำนวนเงินที่เรียกเก็บต่อคน (บาท) *</label>
+                <input type="number" id="batch-amount" class="form-control" value="50" min="1" required>
+              </div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 15px;">
+              <label for="batch-description">คำอธิบาย / รายละเอียดเพิ่มเติม *</label>
+              <input type="text" id="batch-description" class="form-control" value="เงินเก็บสะสมรายวัน" placeholder="เช่น ค่าทำป้ายนิเทศห้อง, ค่าเงินเก็บประจำวัน" required>
+            </div>
+
+            <!-- Checklist control buttons -->
+            <div class="box-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
+              <h4 style="font-size: 0.9rem; font-weight: 600; margin: 0;"><i class="fa-solid fa-users text-primary"></i> รายชื่อเพื่อนห้อง ม.6/1 (36 คน)</h4>
+              <div class="filter-group">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-batch-check-all" style="font-size: 0.75rem; padding: 4px 10px;">ติ๊กจ่ายทั้งหมด</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-batch-uncheck-all" style="font-size: 0.75rem; padding: 4px 10px;">ล้างทั้งหมด</button>
+              </div>
+            </div>
+
+            <!-- Student checklist scrollable container -->
+            <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); background-color: rgba(0, 0, 0, 0.1);">
+              <table class="table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr style="position: sticky; top: 0; z-index: 5; background-color: #0E121B;">
+                    <th width="80px" class="text-center">ติ๊กจ่าย</th>
+                    <th width="80px">เลขที่</th>
+                    <th>ชื่อ - นามสกุล</th>
+                    <th width="180px" class="text-right">จำนวนเงินจ่ายจริง (บาท)</th>
+                  </tr>
+                </thead>
+                <tbody id="batch-student-list-body">
+                  <!-- JS จะเติมรายชื่อนักเรียน 36 คน และช่องกรอกจำนวนเงินรายคนตรงนี้ -->
+                </tbody>
+              </table>
+            </div>
+
+            <div class="mt-4" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background-color: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.1); border-radius: var(--border-radius-md); margin-top: 15px;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">สรุปรายการชำระเงินวันนี้:</span>
+              <strong style="font-size: 0.95rem; color: var(--success);" id="batch-total-summary">จ่ายแล้ว 0 คน | ยอดรวม ฿0.00</strong>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-close-modal">ยกเลิก</button>
+            <button type="submit" class="btn btn-success">
+              <i class="fa-solid fa-cloud-arrow-up"></i> บันทึกรับเงินทั้งหมด
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Enter Admin Password -->
+  <div class="modal" id="modal-admin-auth">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fa-solid fa-key text-warning"></i> ยืนยันสิทธิ์ผู้เข้าถึงระบบ</h3>
+          <button class="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="form-admin-auth">
+          <div class="modal-body">
+            <p class="mb-4 text-xs text-textlight/70" style="font-size: 0.8rem; line-height: 1.6; color: var(--text-muted);">
+              กรุณากรอกรหัสผ่านความปลอดภัยตามบทบาทเพื่อทำการปลดล็อกระบบ:
+              <br><span style="color: var(--primary);">• <strong>รหัสเหรัญญิก (สำหรับบันทึกรับเงิน/รายจ่าย)</strong>: ป้อน <strong>1234</strong></span>
+              <br><span style="color: var(--success);">• <strong>รหัสคุณครูประจำชั้น (สิทธิ์ลบรายการ/แก้ไขตั้งค่า)</strong>: ป้อน <strong>2301</strong></span>
+            </p>
+            <div class="form-group">
+              <label for="admin-password-input">รหัสผ่านความปลอดภัย (4 หลัก) *</label>
+              <input type="password" id="admin-password-input" class="form-control" placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
+              <span class="text-danger text-xs mt-2" id="auth-error-msg" style="display:none; color: var(--danger); font-size: 0.8rem; margin-top: 8px;">✕ รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</span>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-close-modal">ยกเลิก</button>
+            <button type="submit" class="btn btn-primary">ยืนยันรหัสผ่าน</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Code Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
