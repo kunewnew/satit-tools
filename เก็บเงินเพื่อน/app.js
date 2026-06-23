@@ -405,7 +405,9 @@ async function loadInitialData() {
   if (!state.config.promptpayId) state.config.promptpayId = "091-234-5678";
   if (!state.config.promptpayName) state.config.promptpayName = "นายณัฏฐพร โชติช่วง (เหรัญญิก ม.6/1)";
   if (!state.config.collectorPassword) state.config.collectorPassword = "1234";
-  if (!state.config.teacherPassword) state.config.teacherPassword = "2301";
+  if (!state.config.teacherPassword || state.config.teacherPassword === "9999") {
+    state.config.teacherPassword = "2301";
+  }
   if (!state.config.appsScriptUrl) state.config.appsScriptUrl = "https://script.google.com/macros/s/AKfycbz-F0PVMgQel2G7PIutsmvIW_D7UeSwXau39cGn4G8gnKHK2O_AXJnofNu5X5AMmdDafQ/exec";
 
   // 3. Connect to Google Sheets if Web App URL is provided
@@ -428,6 +430,14 @@ async function loadInitialData() {
           const originalUrl = state.config.appsScriptUrl;
           state.config = gsData.config;
           state.config.appsScriptUrl = originalUrl; // keep current URL in state
+          
+          // Migrate old password if fetched from sheet
+          if (state.config.teacherPassword === "9999") {
+            state.config.teacherPassword = "2301";
+            saveToLocalStorage();
+            syncSettingsToCloud();
+          }
+          
           state.transactions = gsData.transactions;
           state.collectorHistory = gsData.collectorHistory;
           
@@ -1585,7 +1595,15 @@ function setupEventListeners() {
     const pinVal = document.getElementById("admin-password-input").value.trim();
     
     const collectorPin = state.config.collectorPassword || "1234";
-    const teacherPin = state.config.teacherPassword || "2301";
+    let teacherPin = state.config.teacherPassword || "2301";
+    
+    // Automatically migrate old 9999 password
+    if (teacherPin === "9999") {
+      teacherPin = "2301";
+      state.config.teacherPassword = "2301";
+      saveToLocalStorage();
+      syncSettingsToCloud();
+    }
 
     if (pinVal === teacherPin) {
       userRole = "teacher";
