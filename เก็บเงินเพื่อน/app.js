@@ -480,7 +480,10 @@ async function loadInitialData() {
   if (!state.config.teacherPassword || state.config.teacherPassword === "9999") {
     state.config.teacherPassword = "2301";
   }
-  if (!state.config.appsScriptUrl) state.config.appsScriptUrl = "https://script.google.com/macros/s/AKfycbz-F0PVMgQel2G7PIutsmvIW_D7UeSwXau39cGn4G8gnKHK2O_AXJnofNu5X5AMmdDafQ/exec";
+  const defaultUrl = "https://script.google.com/macros/s/AKfycbz-F0PVMgQel2G7PIutsmvIW_D7UeSwXau39cGn4G8gnKHK2O_AXJnofNu5X5AMmdDafQ/exec";
+  if (!state.config.appsScriptUrl || state.config.appsScriptUrl.includes("...") || state.config.appsScriptUrl.trim() === "") {
+    state.config.appsScriptUrl = defaultUrl;
+  }
 
   // *** Render Cached Local Data Instantly (Stale-While-Revalidate) ***
   calculateStats();
@@ -528,6 +531,13 @@ async function loadInitialData() {
           calculateStats();
           saveToLocalStorage();
           renderAll();
+        } else {
+          console.warn("Google Sheets sync returned success=false:", gsData.error);
+          if (statusText) statusText.textContent = "ออฟไลน์ (เชื่อมต่อชีตล้มเหลว)";
+          if (statusDot) {
+            statusDot.style.backgroundColor = "var(--warning)";
+            statusDot.style.boxShadow = "0 0 8px var(--warning)";
+          }
         }
       }
     } catch (err) {
